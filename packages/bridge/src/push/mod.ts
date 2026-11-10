@@ -1,8 +1,8 @@
 /**
  * Web Push (DESIGN-v2 T11): VAPID keys in `<state>/vapid.json`, subscriptions in `<state>/push.json`, RFC 8291
  * `aes128gcm` with WebCrypto, alerts when a status leaves `working` for `blocked` / `done` / `idle` / `error`,
- * deduplicated by `(address, turn)`, muted while a device is visible, endpoints limited to the three push services.
- * Use {@link PushService}.
+ * deduplicated by `(address, turn)`, muted while a device is visible, endpoints limited to the three push services;
+ * `push.test` sends a device one test notification. Use {@link PushService}.
  */
 
 export {
@@ -22,7 +22,12 @@ export {
   pushPayload,
   PushService,
   type PushServiceOptions,
+  type PushTestResult,
+  REASON_MAX,
   SEND_TIMEOUT_MS,
+  TEST_INTERVAL_MS,
+  TEST_TAG,
+  TEST_TITLE,
 } from "./service.ts";
 export {
   ensureVapidKeys,
@@ -34,12 +39,14 @@ export {
   SubscriptionStore,
   VAPID_FILE,
 } from "./store.ts";
+export { PUSH_SUBJECT_ENV, PUSH_SUBJECT_FALLBACK, subjectOverride, subjectProblem, vapidSubject } from "./subject.ts";
 export {
   decodeSubscriptionKeys,
   type EncryptOptions,
   encryptPayload,
   fromBase64url,
   isAllowedEndpoint,
+  MAX_BODY_BYTES,
   MAX_PAYLOAD_BYTES,
   PUSH_SERVICE_HOSTS,
   RECORD_SIZE,

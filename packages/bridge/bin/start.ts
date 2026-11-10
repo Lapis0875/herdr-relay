@@ -28,6 +28,7 @@ import { ConfigError, homeFrom, stateDirOf } from "../src/config.ts";
 import { MIRROR_CACHE_DIR } from "../src/mirror.ts";
 import { type Platform, TAILSCALE_BIN_ENV } from "../src/platform.ts";
 import { bridgeDenyReadUnderHome } from "../src/policy/scripts.ts";
+import { PUSH_SUBJECT_ENV } from "../src/push/subject.ts";
 import { PUSH_SERVICE_HOSTS } from "../src/push/webpush.ts";
 import { noteEnvironment } from "./environment.ts";
 import type { LauncherHost } from "./host.ts";
@@ -53,6 +54,7 @@ export const BRIDGE_ENV = [
   "HERDR_RELAY_DEV",
   "PATH",
   TAILSCALE_BIN_ENV,
+  PUSH_SUBJECT_ENV,
 ] as const;
 /** The programs each sandbox provider starts hosts with (`hosts/sandbox.ts` ids). */
 const SANDBOX_PROGRAMS: Readonly<Record<string, readonly string[]>> = { seatbelt: ["sandbox-exec"] };

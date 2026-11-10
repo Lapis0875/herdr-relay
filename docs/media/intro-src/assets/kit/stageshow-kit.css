@@ -1,0 +1,1602 @@
+/* Stageshow kit CSS (MIT, Copyright (c) 2026 Benji Taylor): stage.css, window.css and phone.css, copied from the
+   stageshow skill's kit so the film's phone and terminal are the kit's own frames. One token changed: --ss-mono
+   points at the product's terminal face, JetBrains Mono (a file in assets/fonts), instead of the system SF Mono. */
+/* Stageshow kit: the stage. Tokens, the looks (theme, palette,
+   fidelity), edge fades, the still and placing switches, the keyframes more
+   than one part shares, and the guards against host CSS. Imported by
+   stage.tsx; every other component imports its own file. */
+
+@layer stageshow {
+  /* Stageshow kit. Tokens, the stage, the cursor, window chrome and faux atoms.
+     Copy this file with the rest of kit/ and import it once. */
+
+  .ss-fit {
+    position: relative;
+    width: 100%;
+    /* Stopped at its design size in a wider slot, a stage sits in the middle
+       of it, not against its left edge */
+    margin-inline: auto;
+  }
+
+  .ss-stage {
+    /* Surfaces */
+    --ss-canvas: #f6f5f4;
+    --ss-surface: #fff;
+    --ss-chrome: #fff;
+
+    /* Placeholder ink, lightest to darkest. Faux UI lives in these five. */
+    --ss-ink-1: rgba(0, 0, 0, 0.04);
+    --ss-ink-2: rgba(0, 0, 0, 0.06);
+    --ss-ink-3: rgba(0, 0, 0, 0.08);
+    /* ink-3 flattened onto the surface: an opaque fill for shapes that overlap
+       (avatars in a pile), so the overlap never paints darker */
+    --ss-fill: #ebebeb;
+    --ss-ink-4: rgba(0, 0, 0, 0.1);
+    --ss-ink-5: rgba(0, 0, 0, 0.15);
+
+    /* Lines and real text */
+    --ss-line: rgba(0, 0, 0, 0.06);
+    --ss-line-faint: rgba(0, 0, 0, 0.04);
+    /* Opaque, so icons that inherit them are one solid color (a translucent
+       color paints darker wherever strokes meet) */
+    --ss-text: #7a7a7d;
+    --ss-text-strong: #262628;
+    --ss-text-faint: #9a9a9d;
+    /* Icons: opaque, so strokes that overlap or meet never paint darker. Never
+       color an icon with a translucent ink or text token. */
+    --ss-icon: #707074;
+    --ss-icon-faint: #c4c4c7;
+
+    /* One accent, spent on the thing being acted on. Status colors only
+       where status is the subject. */
+    --ss-accent: #3b82f6;
+    --ss-accent-soft: rgba(59, 130, 246, 0.12);
+    --ss-success: #22c55e;
+    --ss-danger: #ef4444;
+    --ss-warning: #f59e0b;
+
+    /* The stage behind a framed shot */
+    --ss-well: #efeeec;
+
+    /* Status tints for diffs, badges and pills: soft fill, strong text */
+    --ss-success-soft: rgba(34, 197, 94, 0.12);
+    --ss-success-text: #15803d;
+    --ss-danger-soft: rgba(239, 68, 68, 0.1);
+    --ss-danger-text: #b91c1c;
+    --ss-warning-soft: rgba(245, 158, 11, 0.14);
+    --ss-warning-text: #b45309;
+    /* A second accent stop, for gradient meters and lines */
+    --ss-accent-2: #8b5cf6;
+    /* The accent as text (a link, a selected label). Darkened so it reads on
+       white; a custom accent gets the same treatment automatically */
+    --ss-accent-text: color-mix(in srgb, var(--ss-accent) 82%, #000);
+
+    /* Depth */
+    --ss-shadow-window: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.08);
+    --ss-shadow-float: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.12), 0 12px 32px rgba(0, 0, 0, 0.08);
+    --ss-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04);
+    /* Framing depth: the hero window on the stage, satellites over the hero */
+    /* The ring gives every edge a line: the drop falls downward, so the top and
+       a light sidebar on a light ground would otherwise vanish */
+    --ss-shadow-hero: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 30px 60px -12px rgba(50, 50, 93, 0.25), 0 18px 36px -18px rgba(0, 0, 0, 0.3);
+    /* Something picked up and carried (a dragged card) */
+    --ss-shadow-lift: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 12px 28px -6px rgba(50, 50, 93, 0.28), 0 6px 12px -6px rgba(0, 0, 0, 0.16);
+    /* Tight on purpose: a wide blur over a white window reads as a gray smear */
+    --ss-raised: #fff;
+    --ss-shadow-satellite: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 14px 32px -8px rgba(50, 50, 93, 0.24), 0 4px 10px -4px rgba(0, 0, 0, 0.1);
+    /* A small window resting on the stage's ground, not over another window:
+       a hairline and a long, faint fall. The satellite's tight, dark contact
+       shadow reads harsh under a small window on open ground */
+    --ss-shadow-ground: 0 0 0 1px rgba(50, 50, 93, 0.06), 0 24px 48px -24px rgba(50, 50, 93, 0.18);
+
+    --ss-font: system-ui, -apple-system, sans-serif;
+    --ss-mono: "JetBrains Mono", monospace;
+
+    /* Shape: the radius scale the product's own parts use. A look sets these
+       to its design system's values; each rounded part reads one */
+    --ss-radius-sm: 6px; /* a menu row, a segment's thumb */
+    --ss-radius-md: 8px; /* a field, a segmented track, a drop slot */
+    --ss-radius-lg: 10px; /* a popover, a toast */
+    --ss-radius-window: 12px; /* the product window */
+    --ss-radius-pill: 999px; /* badges and chips */
+
+    /* Density: the heights the parts are built on */
+    --ss-control: 34px; /* a text field */
+    --ss-row: 26px; /* a menu row, a segment */
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
+    font-family: var(--ss-font);
+    -webkit-font-smoothing: antialiased;
+    user-select: none;
+    /* The baseline every demo is designed against, pinned here so the host
+       page's type (a blog's 15px body, its letter-spacing) never reaches in */
+    font-size: 16px;
+    font-weight: 400;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-align: start;
+    text-indent: 0;
+    text-transform: none;
+    white-space: normal;
+    color: #000;
+  }
+
+  /* Orbs: a pale tile lit by a few huge, soft color orbs (Stage ground).
+     Under everything in the scene (the stage is its own stacking context),
+     so glass has color to take and white cards lift off it. Each orb is
+     wider than the tile and mostly off it, so only its soft edge shows */
+  .ss-ground {
+    --ss-orb-1: #c9b8ff;
+    --ss-orb-2: #ffc59a;
+    --ss-orb-3: #a9d8ff;
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    /* A tile: set --ss-ground-radius to 0 for one that runs to the page's edges */
+    border-radius: var(--ss-ground-radius, 20px);
+    background:
+      radial-gradient(60% 75% at 8% 4%, color-mix(in srgb, var(--ss-orb-1) 85%, transparent), transparent 70%),
+      radial-gradient(55% 70% at 96% 92%, color-mix(in srgb, var(--ss-orb-2) 80%, transparent), transparent 70%),
+      radial-gradient(45% 55% at 78% 8%, color-mix(in srgb, var(--ss-orb-3) 55%, transparent), transparent 70%),
+      var(--ss-canvas);
+    pointer-events: none;
+  }
+
+  .ss-stage[data-theme="dark"] .ss-ground {
+    background:
+      radial-gradient(60% 75% at 8% 4%, color-mix(in srgb, var(--ss-orb-1) 30%, transparent), transparent 70%),
+      radial-gradient(55% 70% at 96% 92%, color-mix(in srgb, var(--ss-orb-2) 24%, transparent), transparent 70%),
+      radial-gradient(45% 55% at 78% 8%, color-mix(in srgb, var(--ss-orb-3) 18%, transparent), transparent 70%),
+      var(--ss-canvas);
+  }
+
+  .ss-stage[data-theme="dark"] {
+    --ss-canvas: #111113;
+    --ss-surface: #1a1a1d;
+    --ss-chrome: #1d1d20;
+    --ss-ink-1: rgba(255, 255, 255, 0.05);
+    --ss-ink-2: rgba(255, 255, 255, 0.07);
+    --ss-ink-3: rgba(255, 255, 255, 0.1);
+    /* ink-3 flattened onto the surface: an opaque fill for shapes that overlap
+       (avatars in a pile), so the overlap never paints darker */
+    --ss-fill: #313134;
+    --ss-ink-4: rgba(255, 255, 255, 0.13);
+    --ss-ink-5: rgba(255, 255, 255, 0.2);
+    --ss-line: rgba(255, 255, 255, 0.08);
+    --ss-line-faint: rgba(255, 255, 255, 0.05);
+    --ss-text: #9d9da1;
+    --ss-text-strong: #ececee;
+    --ss-text-faint: #6c6c70;
+    --ss-icon: #9a9aa0;
+    --ss-icon-faint: #4a4a50;
+    --ss-accent-soft: rgba(59, 130, 246, 0.2);
+    --ss-accent-text: color-mix(in srgb, var(--ss-accent) 70%, #fff);
+    --ss-well: #0a0a0b;
+    --ss-success-soft: rgba(34, 197, 94, 0.16);
+    --ss-success-text: #4ade80;
+    --ss-danger-soft: rgba(239, 68, 68, 0.16);
+    --ss-danger-text: #f87171;
+    --ss-warning-soft: rgba(245, 158, 11, 0.18);
+    --ss-warning-text: #fbbf24;
+    --ss-shadow-lift: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 12px 28px -6px rgba(0, 0, 0, 0.6);
+    --ss-shadow-window: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 4px 16px rgba(0, 0, 0, 0.4);
+    --ss-shadow-float: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 4px 16px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.3);
+    --ss-shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.05);
+    --ss-shadow-hero: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 30px 60px -12px rgba(0, 0, 0, 0.6);
+    /* On dark, depth comes mostly from a lighter surface: put satellites on
+       --ss-raised. A wide blur on a dark window barely registers. */
+    --ss-shadow-satellite: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 14px 32px -8px rgba(0, 0, 0, 0.7), 0 4px 10px -4px rgba(0, 0, 0, 0.5);
+    --ss-shadow-ground: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 24px 48px -24px rgba(0, 0, 0, 0.6);
+    --ss-raised: #26262a;
+  }
+
+  /* Blueprint: drawn, not painted. Surfaces become outlines on a blue ground. */
+  .ss-stage[data-theme="blueprint"] {
+    --ss-canvas: transparent;
+    /* Opaque, a step lighter than the ground: the grid shows around UI, not
+       through it */
+    --ss-surface: #1857bd;
+    --ss-raised: #1b5cc4;
+    --ss-chrome: transparent;
+    --ss-ink-1: rgba(214, 232, 255, 0.12);
+    --ss-ink-2: rgba(214, 232, 255, 0.16);
+    --ss-ink-3: rgba(214, 232, 255, 0.22);
+    /* ink-3 flattened onto the surface: an opaque fill for shapes that overlap
+       (avatars in a pile), so the overlap never paints darker */
+    --ss-fill: #4277cc;
+    --ss-ink-4: rgba(214, 232, 255, 0.3);
+    --ss-ink-5: rgba(214, 232, 255, 0.45);
+    --ss-line: rgba(214, 232, 255, 0.35);
+    --ss-line-faint: rgba(214, 232, 255, 0.2);
+    --ss-text: #b3c9ec;
+    --ss-text-strong: #f0f6ff;
+    --ss-text-faint: #7fa1da;
+    --ss-icon: #c9dcf7;
+    --ss-icon-faint: #6f97d6;
+    --ss-accent: #ffffff;
+    --ss-accent-soft: rgba(255, 255, 255, 0.15);
+    --ss-success: #e6f0ff;
+    --ss-danger: #e6f0ff;
+    --ss-warning: #e6f0ff;
+    /* Status reads by mark and word on blueprint, never by green or red */
+    --ss-success-soft: rgba(255, 255, 255, 0.14);
+    --ss-danger-soft: rgba(255, 255, 255, 0.14);
+    --ss-warning-soft: rgba(255, 255, 255, 0.14);
+    --ss-success-text: #ffffff;
+    --ss-danger-text: #ffffff;
+    --ss-warning-text: #ffffff;
+    --ss-well: #1450b4;
+    --ss-shadow-window: 0 0 0 1px rgba(214, 232, 255, 0.55);
+    --ss-shadow-float: 0 0 0 1px rgba(214, 232, 255, 0.7);
+    --ss-shadow-card: 0 0 0 1px rgba(214, 232, 255, 0.35);
+    --ss-shadow-hero: 0 0 0 1px rgba(214, 232, 255, 0.55);
+    --ss-shadow-satellite: 0 0 0 1px rgba(214, 232, 255, 0.8);
+    --ss-shadow-ground: 0 0 0 1px rgba(214, 232, 255, 0.7);
+    background-color: var(--ss-well);
+    background-image:
+      linear-gradient(rgba(214, 232, 255, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(214, 232, 255, 0.08) 1px, transparent 1px);
+    background-size: 16px 16px;
+    /* Shift the grid so window edges sit on its lines: a 24px gutter wants 8px */
+    background-position: var(--ss-grid-x, 0) var(--ss-grid-y, 0);
+  }
+
+  /* Glass: frosted, translucent panels over a soft color field drawn from the
+     accent. Panels blur what's behind them; text and icons stay opaque. Give
+     your own panels the class ss-glass to frost them too. */
+  .ss-stage[data-theme="glass"] {
+    --ss-canvas: rgba(255, 255, 255, 0.5);
+    --ss-surface: rgba(255, 255, 255, 0.62);
+    --ss-chrome: rgba(255, 255, 255, 0.38);
+    --ss-raised: rgba(255, 255, 255, 0.74);
+    --ss-line: rgba(255, 255, 255, 0.65);
+    --ss-line-faint: rgba(255, 255, 255, 0.45);
+    --ss-well: #ebe9f5;
+    --ss-shadow-window: inset 0 0 0 1px rgba(255, 255, 255, 0.75), 0 20px 50px -14px rgba(40, 40, 90, 0.28);
+    --ss-shadow-hero: inset 0 0 0 1px rgba(255, 255, 255, 0.75), 0 30px 60px -16px rgba(40, 40, 90, 0.3);
+    --ss-shadow-satellite: inset 0 0 0 1px rgba(255, 255, 255, 0.85), 0 16px 36px -10px rgba(40, 40, 90, 0.32);
+    --ss-shadow-float: inset 0 0 0 1px rgba(255, 255, 255, 0.85), 0 12px 32px -8px rgba(40, 40, 90, 0.28);
+    --ss-shadow-ground: inset 0 0 0 1px rgba(255, 255, 255, 0.85), 0 24px 48px -24px rgba(40, 40, 90, 0.24);
+    --ss-shadow-card: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+    background:
+      radial-gradient(55% 65% at 12% 18%, color-mix(in srgb, var(--ss-accent) 42%, transparent), transparent 70%),
+      radial-gradient(50% 60% at 88% 28%, color-mix(in srgb, var(--ss-accent-2) 38%, transparent), transparent 70%),
+      radial-gradient(60% 55% at 58% 100%, rgba(255, 168, 120, 0.42), transparent 70%),
+      var(--ss-well);
+  }
+
+  .ss-stage[data-theme="glass"] .ss-window,
+  .ss-stage[data-theme="glass"] .ss-popover,
+  .ss-stage[data-theme="glass"] .ss-glass {
+    backdrop-filter: blur(24px) saturate(1.6);
+    -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  }
+
+  /* Cool grays (Stage greys="cool"): the canvas and well lose their warmth,
+     for a scene that wants one cool family (macOS, a blue ground). Light
+     theme only; dark, blueprint and glass have their own grounds */
+  .ss-stage[data-greys="cool"]:not([data-theme="dark"], [data-theme="blueprint"], [data-theme="glass"]) {
+    --ss-canvas: #f4f5f8;
+    --ss-well: #eceef2;
+  }
+
+  /* Grayscale: the accent and status colors fall back to the strongest ink */
+  .ss-stage[data-palette="mono"] {
+    --ss-accent: #1a1a1a;
+    --ss-accent-soft: rgba(0, 0, 0, 0.06);
+    --ss-success: #1a1a1a;
+    --ss-danger: #1a1a1a;
+    --ss-warning: #1a1a1a;
+    --ss-accent-2: #1a1a1a;
+    --ss-success-text: #1a1a1a;
+    --ss-danger-text: #1a1a1a;
+    --ss-success-soft: rgba(0, 0, 0, 0.06);
+    --ss-danger-soft: rgba(0, 0, 0, 0.04);
+  }
+
+  .ss-stage[data-palette="mono"][data-theme="dark"] {
+    --ss-accent: #f2f2f2;
+    --ss-accent-soft: rgba(255, 255, 255, 0.1);
+    --ss-success: #f2f2f2;
+    --ss-danger: #f2f2f2;
+    --ss-warning: #f2f2f2;
+    --ss-accent-2: #f2f2f2;
+    --ss-success-text: #f2f2f2;
+    --ss-danger-text: #f2f2f2;
+    --ss-success-soft: rgba(255, 255, 255, 0.1);
+    --ss-danger-soft: rgba(255, 255, 255, 0.06);
+  }
+
+  /* Images, logos and avatars lose their color in grayscale */
+  .ss-stage[data-palette="mono"] img,
+  .ss-stage[data-palette="mono"] .ss-keep-mono {
+    filter: grayscale(1);
+  }
+
+  /* Edge fades. A crop must explain itself: content fades into the page
+     instead of being sliced. Length via --ss-fade. */
+  .ss-fade-b { mask-image: linear-gradient(to bottom, #000 calc(100% - var(--ss-fade, 64px)), transparent); }
+
+  .ss-fade-r { mask-image: linear-gradient(to right, #000 calc(100% - var(--ss-fade, 64px)), transparent); }
+
+  .ss-fade-br {
+    mask-image:
+      linear-gradient(to bottom, #000 calc(100% - var(--ss-fade, 64px)), transparent),
+      linear-gradient(to right, #000 calc(100% - var(--ss-fade, 64px)), transparent);
+    mask-composite: intersect;
+  }
+
+  /* A layer that steps back when another comes forward */
+  .ss-recede {
+    transition: opacity 0.3s ease;
+  }
+
+  .ss-recede[data-receded="true"] {
+    opacity: 0.4;
+  }
+
+  /* Transitions off for one patch (act.snap), stage-wide or in one target */
+  .ss-stage [data-instant],
+  .ss-stage[data-instant] *,
+  .ss-stage [data-instant] *,
+  .ss-stage[data-instant] *::before,
+  .ss-stage[data-instant] *::after {
+    transition: none !important;
+  }
+
+  @keyframes ss-spin {
+    to { transform: rotate(1turn); }
+  }
+
+  @keyframes ss-fade-in {
+    from { opacity: 0; filter: blur(2px); transform: translateY(3px); }
+  }
+
+  /* A still (reduced motion, or no script) is the poster, settled: nothing in
+     it transitions or animates, so it never shows a frame caught mid-fade */
+  .ss-stage[data-still] *,
+  .ss-stage[data-still] *::before,
+  .ss-stage[data-still] *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  /* Offscreen resets settle immediately. Pausing keyframes alone leaves
+     newly-created CSS transitions running after the story clock stops.
+     Visible hover exits keep their normal glide; completed once scenes hold. */
+  .ss-stage[data-offscreen],
+  .ss-stage[data-offscreen] *,
+  .ss-stage[data-offscreen] *::before,
+  .ss-stage[data-offscreen] *::after {
+    transition: none !important;
+    animation-play-state: paused !important;
+  }
+
+  /* Settling (first paint, a layout switch): things placed from measurements
+     arrive in place instead of traveling there. Entrance animations still play. */
+  .ss-stage[data-placing] *,
+  .ss-stage[data-placing] *::before,
+  .ss-stage[data-placing] *::after {
+    transition: none !important;
+  }
+
+  .ss-stage *,
+  .ss-stage *::before,
+  .ss-stage *::after {
+    box-sizing: border-box;
+  }
+
+  /* The auto cursor's hit test (stage.tsx): for that one read, everything
+     counts as hittable except the cursor itself */
+  .ss-stage[data-hit] * {
+    pointer-events: auto !important;
+  }
+}
+
+/* Outside the layer, on purpose. Everything above is in @layer stageshow so
+   a demo's own (unlayered) CSS always wins over the kit. These few rules are
+   different: they exist to beat the host page's CSS, and an unlayered host
+   rule (a blog's `p { margin }`, `img { max-width: 100% }`) would beat
+   anything in a layer. So they stay unlayered.
+
+   Their specificity is pitched between the two: three type selectors'
+   worth (`:where()` adds nothing, each `:not(html)`-style test adds one
+   type), so they beat a host's element rules (`p`, `article p`) but lose to
+   any class, which keeps a demo's own class rules winning whatever order the
+   files load in. A bundler can load the kit's CSS again after a demo's (one
+   copy per lazily loaded chunk), so order can't be relied on here. */
+
+/* A host page's element rules (a blog's p margins, link colors, list
+   bullets) roll back to the browser's defaults inside a stage, which is what
+   every demo is designed against. A host that styles prose through a class
+   (.article p) out-ranks this: exclude stages there with
+   :not(:where(.ss-stage *)). */
+:where(.ss-stage) :is(p, h1, h2, h3, h4, h5, h6, ul, ol, li, dl, dt, dd, a, figure, figcaption, blockquote, pre, code, hr, table, th, td, button, input, label):not(html):not(body) {
+  all: revert;
+}
+
+/* A universal reset (Tailwind v3's preflight: `* { border-width: 0;
+   box-sizing: border-box }`) is unlayered, so it would beat the kit's own
+   borders, box model and spacing (a bare `* { padding: 0 }` put window
+   lights flush against the edge on a blog). revert-layer hands each property back to the kit's
+   layer. One type selector's worth, so it beats `*` but not a host's element
+   rules, which the guard above already handles */
+:where(.ss-stage, .ss-stage *, .ss-stage ::before, .ss-stage ::after):not(html) {
+  border-width: revert-layer;
+  border-style: revert-layer;
+  border-color: revert-layer;
+  box-sizing: revert-layer;
+  padding: revert-layer;
+  margin: revert-layer;
+}
+
+/* Hosts often cap images and SVGs at their container (max-width: 100%),
+   which squeezes an icon or ring drawn larger than its slot off-center.
+   Tailwind v3 also aligns them to the middle */
+:where(.ss-stage) :is(svg, img):not(html):not(body) {
+  max-width: none;
+  vertical-align: revert-layer;
+}
+
+/* What a Fly or an Expand carries stays inside it, so its own max-width has
+   to beat the guard above, which a layered rule can't: one type more */
+:where(.ss-stage :is(.ss-fly__lift, .ss-expand__face)) > :is(svg, img):not(html):not(body):not(head) {
+  max-width: 100%;
+}
+/* Window chrome (window.tsx): browser, app and sidebar app, plus the Bar and
+   Text placeholders. */
+
+@layer stageshow {
+  /* Drawn: lights and fields are outlines, not fills */
+  .ss-stage[data-theme="blueprint"] .ss-window__dot {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--ss-line);
+  }
+
+  .ss-stage[data-theme="blueprint"] .ss-window__url {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--ss-line-faint);
+  }
+
+  /* Traffic lights go gray too */
+  .ss-stage[data-palette="mono"] .ss-window__dot {
+    background: var(--ss-ink-5);
+    box-shadow: none;
+  }
+
+  :where(.ss-window) {
+    position: relative;
+    /* Where the lights sit: their center's distance from the window's top
+       (and from its left edge), their size, and the floating sidebar's
+       inset. lightsSize, barSize and sidebarStyle set these */
+    --ss-lights-y: 19px;
+    --ss-dot: 9px;
+    --ss-side-inset: 0px;
+  }
+
+  .ss-window {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--ss-canvas);
+    border-radius: var(--ss-radius-window);
+    box-shadow: var(--ss-shadow-window);
+  }
+
+  .ss-window__bar {
+    /* A fixed height, so the traffic lights sit in the same place whether the
+       bar holds an address, a title or nothing. */
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 6px;
+    height: 38px;
+    /* The lights sit as far from the left edge as from the top: (38 - 9) / 2 */
+    padding: 0 calc(var(--ss-lights-y) - var(--ss-dot) / 2);
+    background: var(--ss-chrome);
+    border-bottom: 1px solid var(--ss-line);
+  }
+
+  .ss-window__lights {
+    display: flex;
+    flex-shrink: 0;
+    /* macOS proportions: 12pt lights, 8pt apart */
+    gap: 6px;
+  }
+
+  .ss-window__dot {
+    width: var(--ss-dot);
+    height: var(--ss-dot);
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.12);
+  }
+
+  .ss-window__dot:nth-child(1) { background: #ff5f57; }
+
+  .ss-window__dot:nth-child(2) { background: #febc2e; }
+
+  .ss-window__dot:nth-child(3) { background: #28c840; }
+
+  .ss-window__url {
+    flex: 1;
+    min-width: 0;
+    margin-left: 8px;
+    padding: 4px 10px;
+    overflow: hidden;
+    background: var(--ss-ink-1);
+    border-radius: 6px;
+    /* Chrome type is the browser's, never the page's: small and quiet, whatever
+       size the page inside sets */
+    color: var(--ss-text-faint);
+    font-size: 10.5px;
+    line-height: 1.4;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  /* urlShape="pill": the round address field of current Safari and Chrome */
+  .ss-window[data-url-shape="pill"] .ss-window__url {
+    padding-inline: 12px;
+    border-radius: 999px;
+  }
+
+  .ss-window__title {
+    flex: 1;
+    /* Optically centered: offsets the three dots on the left */
+    margin-right: 36px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ss-text-strong);
+  }
+
+  .ss-window__body {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .ss-window__spacer {
+    flex: 1;
+  }
+
+  /* lights="grey": quiet lights for any chrome */
+  .ss-window[data-lights="grey"] .ss-window__dot {
+    background: rgba(186, 200, 218, 0.5);
+    box-shadow: none;
+  }
+
+  /* lights="white": translucent white lights remain distinct over a strong
+     color field, where gray lights can lose contrast. */
+  .ss-window[data-lights="white"] .ss-window__dot {
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: none;
+  }
+
+  /* chrome="glass": a frosted frame that takes
+     the color behind it, no bar fill or rule, the address centered on the
+     window, and the page a white card inset in the frame. Nested radii: the
+     frame's 12 is the card's 6 plus the 6 inset */
+  .ss-window[data-chrome="glass"] {
+    background: rgba(248, 250, 253, 0.45);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
+    box-shadow:
+      0 0 0 1px rgba(229, 237, 245, 0.5),
+      0 15px 35px rgba(23, 23, 23, 0.08);
+  }
+
+  .ss-window[data-chrome="glass"] > .ss-window__bar {
+    display: grid;
+    grid-template-columns: 1fr minmax(0, 262px) 1fr;
+    gap: 12px;
+    height: 35px;
+    padding: 0 20px;
+    background: none;
+    border: 0;
+  }
+
+  .ss-window[data-chrome="glass"] .ss-window__lights {
+    gap: 4px;
+  }
+
+  .ss-window[data-chrome="glass"] .ss-window__dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .ss-window[data-chrome="glass"] .ss-window__url {
+    display: flex;
+    grid-column: 2;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    height: 20px;
+    margin: 0;
+    padding: 0 8px;
+    background: rgba(255, 255, 255, 0.38);
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px rgba(229, 237, 245, 0.5);
+    color: #50617a;
+    font-size: 10px;
+  }
+
+  .ss-window__lock {
+    flex-shrink: 0;
+    color: #667691;
+  }
+
+  .ss-window__url-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ss-window[data-chrome="glass"] .ss-window__end {
+    display: flex;
+    grid-column: 3;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+
+  /* The page is white, not the canvas tone: the step from frosted frame to
+     clean white page is what draws the card */
+  .ss-window[data-chrome="glass"] > .ss-window__body {
+    margin: 0 6px 6px;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 3px 6px rgba(23, 23, 23, 0.06);
+  }
+
+  /* chrome="card": one white card. Pale dots and a wide pale address bar,
+     no bar fill and no rule, so the page runs straight up into the chrome;
+     the long, soft shadow lifts it */
+  .ss-window[data-chrome="card"] {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow:
+      0 50px 100px -20px rgba(50, 50, 93, 0.25),
+      0 30px 60px -30px rgba(0, 0, 0, 0.3);
+  }
+
+  .ss-window[data-chrome="card"] > .ss-window__bar {
+    gap: 14px;
+    height: 44px;
+    padding: 0 16px;
+    background: none;
+    border: 0;
+  }
+
+  .ss-window[data-chrome="card"]:not([data-lights="color"]) .ss-window__dot {
+    background: #ecf2f7;
+    box-shadow: none;
+  }
+
+  .ss-window[data-chrome="card"] .ss-window__url {
+    flex: 1;
+    height: 24px;
+    margin: 0;
+    padding: 0 10px;
+    background: #ecf2f7;
+    border-radius: 4px;
+    box-shadow: none;
+    color: #425466;
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 24px;
+  }
+
+  .ss-window[data-chrome="card"] .ss-window__end:empty {
+    display: none;
+  }
+
+  .ss-window[data-chrome="card"] > .ss-window__body {
+    background: #fff;
+  }
+
+  /* chrome="hairline": a short bar over a 1px rule, tiny dots, the address
+     as bare centered text */
+  .ss-window[data-chrome="hairline"] {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.06),
+      0 12px 28px -12px rgba(50, 50, 93, 0.2);
+  }
+
+  .ss-window[data-chrome="hairline"] > .ss-window__bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    height: 20px;
+    padding: 0 8px;
+    background: none;
+    border: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .ss-window[data-chrome="hairline"] .ss-window__lights {
+    gap: 3px;
+  }
+
+  .ss-window[data-chrome="hairline"] .ss-window__dot {
+    width: 5px;
+    height: 5px;
+  }
+
+  .ss-window[data-chrome="hairline"]:not([data-lights="color"]) .ss-window__dot {
+    background: #e3e8ee;
+    box-shadow: none;
+  }
+
+  .ss-window[data-chrome="hairline"] .ss-window__url {
+    grid-column: 2;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    color: #8792a2;
+    font-size: 9px;
+  }
+
+  .ss-window[data-chrome="hairline"] .ss-window__end {
+    grid-column: 3;
+    justify-self: end;
+  }
+
+  /* chrome="terminal": one dark surface. The bar is the same color as the
+     body with no rule, the title dim and centered on the window; a hairline
+     light edge keeps the frame from melting into a dark stage */
+  .ss-window[data-chrome="terminal"] {
+    --ss-term-bg: #17171a;
+    background: var(--ss-term-bg);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.07),
+      var(--ss-shadow-hero, var(--ss-shadow-window));
+  }
+
+  .ss-window[data-chrome="terminal"] > .ss-window__bar {
+    position: relative;
+    background: none;
+    border: 0;
+  }
+
+  .ss-window[data-chrome="terminal"][data-lights="grey"] .ss-window__dot {
+    background: rgba(255, 255, 255, 0.16);
+    box-shadow: none;
+  }
+
+  .ss-term__title {
+    position: absolute;
+    left: 50%;
+    translate: -50% 0;
+    color: rgba(255, 255, 255, 0.42);
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* Mono at a size that reads, lines with room: output a step dimmer than
+     what was typed, so the command is what the eye finds */
+  .ss-term {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 4px 16px 16px;
+    overflow: hidden;
+    color: #9d9da6;
+    font: 11.5px/1.65 var(--ss-mono);
+    font-variant-ligatures: none;
+  }
+
+  .ss-term > * + .ss-term__prompt {
+    margin-top: 8px;
+  }
+
+  .ss-term__line,
+  .ss-term > div,
+  .ss-term > p {
+    margin: 0;
+    white-space: pre;
+  }
+
+  /* Terminal colors are tokens with these defaults: set --ss-term-path,
+     --ss-term-sigil, --ss-term-ok, --ss-term-err or --ss-term-dim on the
+     window (or any parent) to match a product's accent */
+  .ss-term__path {
+    color: var(--ss-term-path, #6f8ccf);
+  }
+
+  .ss-term__sigil {
+    margin: 0 7px;
+    color: var(--ss-term-sigil, #6ee7a8);
+  }
+
+  .ss-term__cmd {
+    color: #f1f1f3;
+  }
+
+  /* Status color, sparingly: a pass, a failure, a dim aside */
+  .ss-term .ok { color: var(--ss-term-ok, #6ee7a8); }
+  .ss-term .err { color: var(--ss-term-err, #f87171); }
+  .ss-term .dim { color: var(--ss-term-dim, #63636b); }
+
+  .ss-term__caret {
+    display: inline-block;
+    width: 0.6em;
+    height: 1.2em;
+    margin-left: 1px;
+    vertical-align: -0.22em;
+    background: #e8e8ec;
+    animation: ss-term-blink 1.06s steps(1) infinite;
+  }
+
+  .ss-term__caret[data-still] {
+    animation: none;
+  }
+
+  @keyframes ss-term-blink {
+    50% { opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ss-term__caret { animation: none; }
+  }
+
+  /* With toolbar controls the bar becomes a unified toolbar, as in Notes or
+     Finder: the title goes left beside the lights and the controls go right. */
+  .ss-window__title[data-toolbar] {
+    margin: 0 0 0 14px;
+    text-align: left;
+  }
+
+  .ss-window__nav {
+    display: flex;
+    flex-shrink: 0;
+    gap: 6px;
+    margin-left: 10px;
+    color: var(--ss-text-faint);
+  }
+
+  .ss-window__nav + .ss-window__url {
+    margin-left: 4px;
+  }
+
+  /* Browser with tabs: the strip holds the lights at the same 38px height; the
+     active tab is the toolbar's color and joins it, the strip sits a step back. */
+  .ss-window__tabs {
+    display: flex;
+    flex-shrink: 0;
+    align-items: flex-end;
+    gap: 2px;
+    height: 38px;
+    padding: 0 calc(var(--ss-lights-y) - var(--ss-dot) / 2);
+    background: var(--ss-canvas);
+  }
+
+  .ss-window__tabs .ss-window__lights {
+    align-self: center;
+    margin-right: 14px;
+  }
+
+  .ss-window__tab {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    width: 140px;
+    min-width: 0;
+    height: 30px;
+    padding: 0 12px;
+    border-radius: 8px 8px 0 0;
+    font-size: 11px;
+    color: var(--ss-text-faint);
+  }
+
+  .ss-window__tab[data-active] {
+    background: var(--ss-chrome);
+    color: var(--ss-text-strong);
+  }
+
+  .ss-window__tab-label {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .ss-window__favicon {
+    flex-shrink: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    background: var(--ss-ink-4);
+  }
+
+  .ss-window__tab[data-active] .ss-window__favicon {
+    background: var(--ss-accent);
+  }
+
+  [data-kind="tabs"] > .ss-window__bar .ss-window__url {
+    margin-left: 0;
+  }
+
+  [data-kind="tabs"] > .ss-window__bar .ss-window__nav {
+    margin-left: 0;
+  }
+
+  /* Sidebar app: the sidebar runs the full height, the lights sit in its top
+     38px at the same spot as every other chrome, and the content column has
+     its own bar with a left-aligned title. */
+  .ss-window[data-kind="sidebar"] {
+    flex-direction: row;
+  }
+
+  .ss-window__side {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    background: var(--ss-canvas);
+    border-right: 1px solid var(--ss-line);
+  }
+
+  .ss-window__side-top {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    /* Centers the lights --ss-lights-y down from the window's top, as far in
+       from its left edge, inside a floating panel too */
+    height: calc((var(--ss-lights-y) - var(--ss-side-inset)) * 2);
+    padding: 0 calc(var(--ss-lights-y) - var(--ss-side-inset) - var(--ss-dot) / 2);
+  }
+
+  .ss-window__main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    background: var(--ss-surface);
+  }
+
+  .ss-window__main > .ss-window__bar {
+    padding: 0 16px;
+  }
+
+  .ss-window__heading {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ss-text-strong);
+  }
+
+  .ss-bar {
+    display: block;
+    flex-shrink: 0;
+  }
+
+  /* A line gives way in a row too narrow for it, never past its container
+     (Bar shrink, on by default for lines). Where it fits, nothing changes */
+  .ss-bar[data-shrink] {
+    flex-shrink: 1;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* lightsSize="large": macOS 26's 12pt lights, 8pt apart */
+  .ss-window[data-lights-size="large"] {
+    --ss-dot: 12px;
+  }
+
+  .ss-window[data-lights-size="large"] .ss-window__lights {
+    gap: 8px;
+  }
+
+  /* barSize="tall": a 64px icon-and-label toolbar with no fill or rule.
+     Controls are 32px at the top, so they center 26px down, with their
+     labels under them; the lights and the title sit level with them */
+  .ss-window[data-bar="tall"] {
+    --ss-lights-y: 26px;
+  }
+
+  .ss-window[data-bar="tall"] > .ss-window__bar,
+  .ss-window[data-bar="tall"] .ss-window__main > .ss-window__bar {
+    align-items: flex-start;
+    height: 64px;
+    padding-top: 10px;
+    background: none;
+    border-bottom: 0;
+  }
+
+  .ss-window[data-bar="tall"] > .ss-window__bar > .ss-window__lights {
+    margin-top: calc(16px - var(--ss-dot) / 2);
+  }
+
+  /* The address field is shorter than a control: center it on their row */
+  .ss-window[data-bar="tall"] .ss-window__url {
+    margin-top: 5px;
+  }
+
+  .ss-window[data-bar="tall"] .ss-window__title,
+  .ss-window[data-bar="tall"] .ss-window__heading {
+    line-height: 32px;
+  }
+
+  /* sidebarStyle="floating": macOS 26's sidebar, a rounded panel inset on
+     the top, left and bottom with a faint edge and shadow. Nested radii: the
+     window's 24 is the panel's 16 plus the 8 inset */
+  .ss-window[data-side="floating"] {
+    --ss-side-inset: 8px;
+    border-radius: 24px;
+    background: var(--ss-surface);
+  }
+
+  .ss-window[data-side="floating"] > .ss-window__side {
+    position: relative;
+    z-index: 1;
+    margin: var(--ss-side-inset) 0 var(--ss-side-inset) var(--ss-side-inset);
+    border-right: 0;
+    border-radius: 16px;
+    box-shadow:
+      0 0 0 0.5px rgba(0, 0, 0, 0.07),
+      inset 0 0.5px 0 rgba(255, 255, 255, 1),
+      0 3px 14px rgba(20, 35, 70, 0.07);
+  }
+
+  .ss-stage[data-theme="dark"] .ss-window[data-side="floating"] > .ss-window__side {
+    background: var(--ss-raised);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.08),
+      0 3px 14px rgba(0, 0, 0, 0.3);
+  }
+
+  .ss-text {
+    white-space: nowrap;
+  }
+
+  .ss-text[data-wrap] {
+    white-space: normal;
+  }
+}
+/* Phones (phone.tsx): frames, the status bar, the lock screen and
+   notification banners. */
+
+@layer stageshow {
+  /* Zero specificity for the positioning, so a demo's own class (.xx-phone
+     { position: absolute }) wins whichever stylesheet happens to load last */
+  :where(.ss-phone) {
+    position: relative;
+  }
+
+  .ss-phone {
+    flex-shrink: 0;
+    box-shadow:
+      0 calc(var(--ps) * 40) calc(var(--ps) * 80) calc(var(--ps) * -16) rgba(50, 50, 93, 0.25),
+      0 calc(var(--ps) * 24) calc(var(--ps) * 48) calc(var(--ps) * -24) rgba(0, 0, 0, 0.3);
+  }
+
+  .ss-phone__glass {
+    height: 100%;
+  }
+
+  .ss-phone__window {
+    position: relative;
+    overflow: hidden;
+    /* Keeps the scaled screen clipped to the rounded corners in Safari */
+    isolation: isolate;
+  }
+
+  /* The iOS frames paint their bands as strokes of the screen's outline
+     (Phone's BANDS), from these colors; the body and glass paint nothing */
+  .ss-phone:is([data-frame="pro"], [data-frame="silver"], [data-frame="bezel"], [data-frame="clay"], [data-frame="outline"], [data-frame="bare"]) {
+    --ss-phone-glass: #0b0b0c;
+    --ss-phone-rim: #2c2c2d;
+    --ss-phone-seam: #e0dfdc;
+    --ss-phone-line: var(--ss-text-faint, #9a9a9d);
+    background: none;
+  }
+
+  .ss-phone__bands {
+    position: absolute;
+    inset: 0;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .ss-phone:is([data-frame="pro"], [data-frame="silver"], [data-frame="bezel"], [data-frame="clay"], [data-frame="outline"]) .ss-phone__glass {
+    position: relative;
+  }
+
+  /* Pro: brushed titanium band around black glass */
+  .ss-phone[data-frame="pro"] {
+    --ss-phone-band-1: #e3e3e6;
+    --ss-phone-band-2: #9a9ba0;
+    --ss-phone-band-3: #cfd0d4;
+    --ss-phone-band-4: #85868b;
+    --ss-phone-band-5: #c9cacd;
+  }
+
+  /* On dark stages, black titanium: a light band would be the brightest thing in the shot */
+  .ss-stage[data-theme="dark"] .ss-phone[data-frame="pro"],
+  .ss-stage[data-theme="glass"] .ss-phone[data-frame="pro"][data-dark] {
+    --ss-phone-band-1: #5b5c61;
+    --ss-phone-band-2: #2b2c2f;
+    --ss-phone-band-3: #48494d;
+    --ss-phone-band-4: #232427;
+    --ss-phone-band-5: #404145;
+  }
+
+  /* Silver: light titanium around black glass */
+  .ss-phone[data-frame="silver"] {
+    --ss-phone-band-1: #f4f4f6;
+    --ss-phone-band-2: #c9cacf;
+    --ss-phone-band-3: #eeeef1;
+    --ss-phone-band-4: #b9babf;
+    --ss-phone-band-5: #e6e6ea;
+  }
+
+  /* Bezel: a plain black border */
+  .ss-phone[data-frame="bezel"] {
+    --ss-phone-glass: #111113;
+  }
+
+  /* Clay: one matte color, soft and thick, lit from above like a rendered
+     model rather than a black ring. Light by default; set --ss-phone-clay */
+  .ss-phone[data-frame="clay"] {
+    --ss-phone-clay-top: color-mix(in srgb, var(--ss-phone-clay, #ecebe8), #fff 45%);
+    --ss-phone-clay-bottom: color-mix(in srgb, var(--ss-phone-clay, #ecebe8), #000 6%);
+    box-shadow:
+      0 calc(var(--ps) * 30) calc(var(--ps) * 60) calc(var(--ps) * -12) rgba(50, 50, 93, 0.2),
+      0 calc(var(--ps) * 16) calc(var(--ps) * 32) calc(var(--ps) * -16) rgba(0, 0, 0, 0.16);
+  }
+
+  .ss-stage[data-theme="dark"] .ss-phone[data-frame="clay"] {
+    --ss-phone-clay-top: color-mix(in srgb, var(--ss-phone-clay, #2a2a2e), #fff 6%);
+    --ss-phone-clay-bottom: var(--ss-phone-clay, #2a2a2e);
+    --ss-phone-seam: #333338;
+  }
+
+  /* Outline: line art. One fine stroke for the body, a hairline for the
+     screen; no shadow, nothing filled */
+  .ss-phone[data-frame="outline"] {
+    box-shadow: none;
+  }
+
+  .ss-stage[data-theme="blueprint"] .ss-phone[data-frame="outline"] {
+    --ss-phone-line: var(--ss-line);
+  }
+
+  /* Every iPhone frame lays the status bar out exactly as Apple's iOS 27 UI
+     kit does (Status bar, iPhone, in points): the time centered in the first
+     138.5, its 22pt line from y 21.5; signal, wifi and battery from x 285.25,
+     8 apart, their tops at 26.33, 25.33 and 25.67 */
+  .ss-phone:not([data-frame="android"], [data-frame="soft"]) .ss-phone__status {
+    height: 62px;
+    padding: 0;
+  }
+
+  .ss-phone:not([data-frame="android"], [data-frame="soft"]) .ss-phone__time {
+    position: absolute;
+    top: 21.5px;
+    left: 0;
+    width: 138.5px;
+    line-height: 22px;
+    text-align: center;
+  }
+
+  .ss-phone:not([data-frame="android"], [data-frame="soft"]) .ss-phone__glyphs {
+    position: absolute;
+    top: 25.33px;
+    left: 285.25px;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .ss-phone:not([data-frame="android"], [data-frame="soft"]) .ss-phone__signal {
+    margin-top: 1px;
+  }
+
+  .ss-phone:not([data-frame="android"], [data-frame="soft"]) .ss-phone__battery {
+    margin-top: 0.33px;
+  }
+
+  /* Photo: Apple's iPhone 18 Pro product bezel, silver, black on dark stages.
+     The body paints nothing but keeps the phone's soft shadow (a shadow on
+     the image would also fall inward, through its cut-out, onto the screen);
+     the image lies over the screen, its cut-out framing it */
+  .ss-phone[data-frame="photo"] {
+    position: relative;
+    background: none;
+  }
+
+  .ss-phone__photo {
+    position: absolute;
+    z-index: 4;
+    background: var(--ss-phone-photo-light, none) center / 100% 100% no-repeat;
+    pointer-events: none;
+  }
+
+  .ss-stage[data-theme="dark"] .ss-phone__photo,
+  .ss-phone[data-dark] .ss-phone__photo {
+    background-image: var(--ss-phone-photo-dark, var(--ss-phone-photo-light, none));
+  }
+
+  /* Android: an even dark frame, a punch-hole camera instead of an island */
+  .ss-phone[data-frame="android"] {
+    background: linear-gradient(150deg, #3a3b3f, #1d1e21 40%, #2f3034 70%, #1a1b1e);
+  }
+
+  .ss-phone[data-frame="android"] .ss-phone__glass {
+    background: #050505;
+  }
+
+  .ss-phone[data-frame="android"] .ss-phone__island {
+    top: 14px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+  }
+
+  .ss-phone[data-frame="android"] .ss-phone__status {
+    height: 48px;
+    padding: 0 26px;
+  }
+
+  .ss-phone[data-frame="android"] .ss-phone__time {
+    font-family: system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .ss-phone[data-frame="android"] .ss-phone__content[data-status] {
+    padding-top: 48px;
+  }
+
+  .ss-phone[data-frame="android"] .ss-phone__home {
+    width: 108px;
+    height: 4px;
+  }
+
+  /* Soft: a frosted white frame with a hairline edge. */
+  /* Soft: the illustrative phone of a product marketing page. One pale,
+     even band with a hairline ring, a soft shade along its inner bottom edge
+     (lit from above), a light lifted shadow; no island, no status bar */
+  .ss-phone[data-frame="soft"] {
+    box-shadow:
+      0 0 0 calc(var(--ps) * 1.5) rgba(10, 37, 64, 0.05),
+      0 calc(var(--ps) * 30) calc(var(--ps) * 60) calc(var(--ps) * -12) rgba(50, 50, 93, 0.18),
+      0 calc(var(--ps) * 18) calc(var(--ps) * 36) calc(var(--ps) * -18) rgba(0, 0, 0, 0.12);
+  }
+
+  .ss-phone[data-frame="soft"] .ss-phone__glass {
+    background: #f6f9fc;
+    box-shadow: inset 0 calc(var(--ps) * -2.9) calc(var(--ps) * 7.2) rgba(10, 37, 64, 0.22);
+  }
+
+  .ss-stage[data-theme="dark"] .ss-phone[data-frame="soft"] .ss-phone__glass {
+    background: #1c2433;
+    box-shadow: inset 0 calc(var(--ps) * -2.9) calc(var(--ps) * 7.2) rgba(0, 0, 0, 0.45);
+  }
+
+  .ss-phone__screen {
+    --pt: 1px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Most iOS screens are white; a grouped list (Settings) sets #f2f2f7 itself */
+    background: #fff;
+    color: #000;
+    font-family: -apple-system, system-ui, sans-serif;
+    font-size: 15px;
+    letter-spacing: -0.015em;
+    transform-origin: 0 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .ss-phone[data-dark] .ss-phone__screen {
+    background: #000;
+    color: #fff;
+  }
+
+  .ss-phone__status {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 54px;
+    padding: 0 34px 0 52px;
+    /* Light to dark content fades, never cuts, when an app opens over a dark
+       screen or closes back to it */
+    transition: color 0.3s ease;
+    /* A layer of its own for good: when an app launches under it, it would
+       otherwise be lifted onto one mid-open and its text would shift */
+    will-change: transform;
+  }
+
+  /* iOS sets the time in SF Pro Text. At this size a browser's system font
+     switches to the Display cut, whose 9 has a straighter tail; name Text
+     first, and ask the variable system font for text optics */
+  .ss-phone__time {
+    font-family: "SF Pro Text", -apple-system, system-ui, sans-serif;
+    font-variation-settings: "opsz" 17;
+    font-size: 17.67px;
+    font-weight: 590;
+    letter-spacing: 0;
+  }
+
+  .ss-phone__island {
+    position: absolute;
+    top: var(--ss-island-top, 14px);
+    left: 50%;
+    z-index: 3;
+    width: var(--ss-island-w, 95px);
+    height: 37px;
+    border-radius: 18.5px;
+    background: #000;
+    transform: translateX(-50%);
+  }
+
+  .ss-phone__glyphs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+
+  .ss-phone__glyph {
+    display: block;
+  }
+
+  .ss-phone__content {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .ss-phone__content[data-status] {
+    padding-top: 62px;
+  }
+
+  /* Frames without a status bar keep its safe area: content starts below the
+     corner's curve, never tucked into it */
+  .ss-phone__content:not([data-status]) {
+    padding-top: 44px;
+  }
+
+  /* With no frame, the screen's edge is the object's edge, and iOS's 20pt
+     margins read as cramped against it. Bare screens get a wider margin */
+  .ss-phone[data-frame="bare"] .ss-phone__content {
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+
+  .ss-phone__home {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    z-index: 2;
+    width: 144px;
+    height: 5px;
+    border-radius: 2.5px;
+    background: currentColor;
+    transform: translateX(-50%);
+    /* The color fades, not the fill: currentColor is a keyword, so a
+       background-color transition never sees it change and the bar snaps */
+    transition: color 0.3s ease;
+    /* Its own layer for good, as the status bar: lifted onto one mid-open,
+       the thin bar would jump half a pixel and thin out */
+    will-change: transform;
+  }
+
+  .ss-lock {
+    position: absolute;
+    inset: 0;
+    color: #fff;
+    text-align: center;
+  }
+
+  .ss-lock__date {
+    margin-top: 66px;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    opacity: 0.85;
+  }
+
+  .ss-lock__clock {
+    margin-top: -4px;
+    font-size: 112px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.92;
+  }
+
+  .ss-lock__stack {
+    position: absolute;
+    right: 0;
+    bottom: 118px;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+  }
+
+  /* Under the clock instead, for a phone cropped by the stage's bottom edge */
+  .ss-lock__stack[data-at='top'] {
+    top: 290px;
+    bottom: auto;
+  }
+
+  .ss-lock__controls {
+    position: absolute;
+    right: 46px;
+    bottom: 48px;
+    left: 46px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .ss-lock__control {
+    display: grid;
+    place-items: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    /* The lock screen's frosted buttons: a dim, blurred disc with a white glyph */
+    background: rgba(10, 12, 24, 0.26);
+    backdrop-filter: blur(24px) saturate(1.3);
+    color: #fff;
+  }
+
+  /* iOS notification banner, in points, measured from Apple's own iOS 26
+     screenshots: 38pt icon 14pt from the edges, 13pt to the text, 17pt on the
+     right, 15pt type on 18pt lines. The radius is the icon's 9 plus 14. On a
+     wallpaper it is frosted glass, so the wallpaper tints it. */
+  .ss-notification {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    /* Inset well inside the screen's corners, as iOS sets lock screen banners.
+       Where the stage (or a clipping tile) cuts the screen's sides, the
+       banner measures the cut and insets from the visible edge instead, so
+       a phone drawn past the sides at true size keeps its banner whole */
+    margin: 0 18px;
+    padding: 14px 17px 14px 14px;
+    border-radius: 23px;
+    background: rgba(252, 252, 253, 0.76);
+    backdrop-filter: blur(30px) saturate(1.25);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    color: #000;
+    text-align: left;
+  }
+
+  /* Unlocked: the banner drops in at the top, just under the island, over
+     the app. Mount and unmount it with the story; it eases down from above */
+  .ss-notification[data-banner] {
+    position: absolute;
+    top: 56px;
+    right: 0;
+    left: 0;
+    /* Over the status bar (the same layer, later in the page) and under the
+       island, which is the hardware cutout: a banner slides in beneath it */
+    z-index: 2;
+    animation: ss-banner-in 520ms cubic-bezier(0.2, 0.9, 0.25, 1) both;
+  }
+
+  @keyframes ss-banner-in {
+    from { transform: translateY(-110px); }
+  }
+
+  .ss-notification__icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    overflow: hidden;
+    border-radius: 9px;
+    background: var(--ss-accent);
+    color: #fff;
+  }
+
+  /* A real app icon: the image is the whole tile, its own corners included */
+  .ss-notification__icon:has(> img) {
+    background: none;
+  }
+
+  .ss-notification__icon > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .ss-notification__text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    font-size: 15px;
+    line-height: 18px;
+    letter-spacing: -0.016em;
+  }
+
+  .ss-notification__head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .ss-notification__title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .ss-notification__time {
+    flex-shrink: 0;
+    font-size: 12px;
+    letter-spacing: -0.005em;
+    color: rgba(60, 60, 67, 0.6);
+  }
+
+  /* Wraps to three lines, as iOS shows a banner's body */
+  .ss-notification__body {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  /* Satellite: a phone beside a window. No controls, and notifications stack
+     under the clock so a cropped phone still shows them. Everything stays at
+     true iOS proportion: a notification is never scaled up to read. */
+  .ss-lock[data-size='satellite'] .ss-lock__stack {
+    top: 232px;
+    bottom: auto;
+  }
+
+  /* No clock: the stack takes its place, just under the status bar, as
+     Notification Center sits, rather than floating where the clock was */
+  .ss-lock[data-size='satellite'][data-clock='off'] .ss-lock__stack {
+    top: 74px;
+  }
+
+  /* Small boxes with text keep a layer of their own. Pushed by a row opening
+     above them, or carried along by anything that moves by layout, their text
+     would step whole pixels while the fill glides, and hop about inside it */
+  .ss-notification {
+    will-change: transform;
+  }
+
+  /* A banner on a light screen needs its own edge: frosted white on white vanishes */
+  .ss-phone:not([data-dark]) .ss-notification {
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Minimal fidelity: the status bar time is a placeholder like any other word */
+  .ss-phone__time-bar {
+    display: inline-block;
+    width: 30px;
+    height: 7px;
+    border-radius: 4px;
+    background: currentColor;
+    opacity: 0.5;
+  }
+}

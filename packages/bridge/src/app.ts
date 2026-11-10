@@ -12,8 +12,8 @@
  *   and reads are decided under its profile; its id is in `hello.hosts[].profile` and every policy record.
  * - {@link HerdrSource} feeds the {@link ViewManager}, which owns the device sessions and runs mod copies through the
  *   {@link HostSupervisor} (Seatbelt; unconfined only in `insecure-no-sandbox`). What the view manager does not handle
- *   goes on: `term.open`/`term.close` and binary input to the {@link TerminalRelay}, `visible`/`push.sub` to the
- *   {@link PushService}; a closed socket is dropped from both.
+ *   goes on: `term.open`/`term.close` and binary input to the {@link TerminalRelay}, `visible`/`push.sub`/`push.test`
+ *   to the {@link PushService}; a closed socket is dropped from both.
  * - The devices' layout profiles ({@link LayoutProfileStore}, `<state>/layout-profiles/`, D12): loaded once; the
  *   profiles of devices no longer paired are removed at start (when the device list is readable; `local` stays) and
  *   after every device-list sweep of the server (`ViewManager.retainDevices`); pending writes are flushed at stop.
@@ -34,19 +34,16 @@ import { HerdrSource } from "./herdr/mod.ts";
 import { HostSupervisor } from "./hosts/mod.ts";
 import { fileLog, ProfileSet } from "./policy/mod.ts";
 import { MirrorEndpoint } from "./mirror.ts";
-import { PushService } from "./push/mod.ts";
+import { PushService, subjectOverride, vapidSubject } from "./push/mod.ts";
 import type { Route, SessionConnection, SessionHandler } from "./server/mod.ts";
 import { LayoutProfileStore } from "./session/profiles.ts";
 import { assetRoute } from "./static.ts";
 import { TerminalRelay } from "./terminal/mod.ts";
 import { type PathRoot, ViewManager } from "./views/mod.ts";
 
-/** The VAPID `sub` claim while the Tailscale name is unknown (else `https://<MagicDNS name>`). */
-export const PUSH_SUBJECT_FALLBACK = "https://localhost";
-
 export interface SessionLayerOptions {
   cfg: BridgeConfig;
-  /** Its device list decides which push subscriptions stay; its tailnet name is the VAPID subject. */
+  /** Its device list decides which push subscriptions stay; its tailnet name is the VAPID subject (unless overridden). */
   auth: Auth;
   /** Teardown failures. */
   log: (line: string) => void;
@@ -137,9 +134,11 @@ export async function startSessionLayer(o: SessionLayerOptions): Promise<Session
 
     const relay = new TerminalRelay(core);
     teardown.push(() => relay.dispose());
+    const subject = subjectOverride((line) => log(`push: ${line}`));
     const push = new PushService({
       stateDir: cfg.stateDir,
-      subject: () => (auth.tailnet ? `https://${auth.tailnet.dns}` : PUSH_SUBJECT_FALLBACK),
+      subject: () => vapidSubject(subject, auth.tailnet?.dns ?? null),
+      machineName: () => core.session?.hello.core.name || auth.tailnet?.dns.split(".")[0] || "the Mac",
       devicePaired: (id) => id === LOCAL_DEVICE.id || auth.devices.has(id),
     });
     teardown.push(push.watch(core));
@@ -158,6 +157,7 @@ export async function startSessionLayer(o: SessionLayerOptions): Promise<Session
             return relay.message(conn, msg);
           case "visible":
           case "push.sub":
+          case "push.test":
             return push.message(conn, msg);
           default:
             // `nav`, `event`, `command` and `layout` are the view manager's own.

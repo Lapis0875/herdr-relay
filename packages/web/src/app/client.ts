@@ -222,6 +222,14 @@ export class BridgeClient {
   }
 
   /**
+   * One test notification to this device's subscriptions (`push.test`), also while a device looks; `read` devices
+   * may send it. The ack's `message` says what the push service answered (the bridge waits up to ~10 s for it).
+   */
+  async pushTest(): Promise<Ack> {
+    return await this.request({ t: "push.test" }, null);
+  }
+
+  /**
    * Sets nodes of this device's layout profile in one `layout set` (a divider between two weighted siblings: both).
    * The changes are drawn at once (`sizing`) and kept until the bridge's `patch.screens` carries them; the bridge
    * applies all or none, so a refusal or a lost connection undoes them all and says why.

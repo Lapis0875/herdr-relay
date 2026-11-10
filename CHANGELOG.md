@@ -19,6 +19,12 @@ The first public version.
   without a profile reads its own files and runs nothing ([docs/PROFILES.md](docs/PROFILES.md)).
 - The device app (PWA) for phones and tablets: layouts recomposed per device class, terminals at the Mac's size, a
   stale view while offline, and Web Push when an agent finishes or needs you.
+- Notifications you can check: "Send Test Notification" in the device panel sends one to that device and shows what
+  the push service answered; the notifications switch says what is missing (Home Screen app, permission in Settings,
+  service worker) and lists the service worker, permission and push service; the Mac logs every send.
+- `HERDR_RELAY_PUSH_SUBJECT` (`mailto:` address or `https:` URL) sets the contact in Web Push tokens. Without it the
+  bridge uses its Tailscale name, else the project page; Apple refuses a `localhost` contact with `403 BadJwtToken`
+  ([docs/INSTALL.md](docs/INSTALL.md) §7).
 - Device layout profiles: on tablets and desktops, drag the sidebar and panel edges (or use the keyboard) to resize them for that device only; the Mac's Herdr layout never changes. Kept per paired device, layout and device class, with "Reset layout for this device". Mods' `layout.resize` calls apply to the device that triggered them, and splits inside mods are draggable on touch screens.
 - Pairing with one-time codes, per-device `read` / `act` scope, and revocation.
 - The `herdr-relay` launcher (`start`, `serve`, `pair`, `devices`, `revoke`, `install-mod`, `doctor`) and a launchd

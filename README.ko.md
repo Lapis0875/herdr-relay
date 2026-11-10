@@ -2,6 +2,10 @@
 
 [English](README.md)
 
+[![herdr-relay intro](docs/media/intro.gif)](docs/media/intro.mp4)
+
+*18초, 소리 없음. Herdr 옆에서 브리지를 띄우면 같은 레이아웃이 iPad와 휴대폰에 열리고 iPad에서 사이드바 폭을 바꿔도 Mac의 레이아웃은 그대로입니다. 합성 데이터로 띄운 실제 렌더입니다. 누르면 MP4가 열립니다.*
+
 herdr-relay는 Mac에서 쓰는 [Herdr](https://herdr.dev) 화면을 휴대폰과 태블릿으로 옮겨 줍니다. Herdr와 같은 Mac에서 돌면서
 같은 레이아웃과 모드를 그리고, 그 결과를 Tailscale 네트워크 너머의 웹 앱으로 보냅니다. 웹 앱은 홈 화면에 추가해 두고 쓰면
 됩니다. 스페이스, 탭, 에이전트, 터미널이 작은 화면에 맞게 다시 배치되고, 기기에서 보기를 바꾸거나 모드 명령을 실행하거나

@@ -9,10 +9,14 @@ import { base64url } from "../auth/secret.ts";
 /** The Web Push services the bridge sends to (Safari/iOS, Chrome/Android, Firefox). */
 export const PUSH_SERVICE_HOSTS = ["web.push.apple.com", "fcm.googleapis.com", "updates.push.services.mozilla.com"];
 
+/** Largest message body push services must accept (RFC 8291 §4: 3993 bytes of plaintext); Apple's and FCM's limit. */
+export const MAX_BODY_BYTES = 4096;
 /** `rs` of the one record each message is. */
 export const RECORD_SIZE = 4096;
-/** Largest plaintext that fits that record: minus the padding delimiter and the 16-byte GCM tag. */
-export const MAX_PAYLOAD_BYTES = RECORD_SIZE - 1 - 16;
+/** The `aes128gcm` header before the record: salt (16), `rs` (4), `idlen` (1) and the 65-byte sender key. */
+const HEADER_BYTES = 16 + 4 + 1 + 65;
+/** Largest plaintext whose body fits {@link MAX_BODY_BYTES}: minus the header, padding delimiter and GCM tag (3993). */
+export const MAX_PAYLOAD_BYTES = MAX_BODY_BYTES - HEADER_BYTES - 1 - 16;
 /** Lifetime of a VAPID token (RFC 8292 allows at most 24 h). */
 export const VAPID_TOKEN_TTL_S = 12 * 3600;
 

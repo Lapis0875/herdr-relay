@@ -480,6 +480,9 @@
           "$ref": "#/$defs/PushSub"
         },
         {
+          "$ref": "#/$defs/PushTest"
+        },
+        {
           "$ref": "#/$defs/LayoutMessage"
         }
       ],
@@ -966,6 +969,24 @@
       "required": [
         "endpoint",
         "keys"
+      ],
+      "additionalProperties": false
+    },
+    "PushTest": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "push.test"
+        },
+        "id": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "client-chosen; echoed by ack"
+        }
+      },
+      "required": [
+        "t",
+        "id"
       ],
       "additionalProperties": false
     },

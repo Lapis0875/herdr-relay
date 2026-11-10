@@ -108,6 +108,7 @@ Settings, all optional:
 | `HERDR_RELAY_PORT` | `7781` | loopback port |
 | `HERDR_APP_HOME` | `~/.config/herdr-app` | Herdr's app home |
 | `HERDR_RELAY_TAILSCALE_BIN` | found as above | absolute path of the Tailscale CLI |
+| `HERDR_RELAY_PUSH_SUBJECT` | unset | contact the Web Push token names (VAPID `sub`): `mailto:you@example.com` or an `https:` URL of a public host; read at start, an invalid value is logged and ignored (§7 "Notifications") |
 | `HERDR_RELAY_DEV` | unset | `1`: also answer the Android emulator's `10.0.2.2`; `insecure-no-sandbox`: mod hosts unconfined, pairing and tailnet off (development only) |
 
 Each start compares this Mac with the last one (`~/.herdr/herdr-relay/environment.json`: macOS version, `deno` path and
@@ -165,6 +166,28 @@ One line per check, `ok`, `info`, `warn` or `FAIL`, then a count; exit 1 when an
 Tailscale login and `tailscale serve status`, Herdr compatibility (`herdr-app --version`, `herdr-app commands`, the app
 home's contract files), the lock cache, the paired devices file, the mirror mod (installed against bundled version) and
 the running bridge with its mirror status.
+
+### Notifications
+
+- **iPhone and iPad:** notifications work only in the Home Screen app (iOS or iPadOS 16.4 or later), not in a Safari
+  tab. Open herdr from the Home Screen, then the device panel → Notifications, and turn the switch on there: iOS asks
+  for permission only from that tap.
+- **Blocked:** on iPhone and iPad, Settings → Notifications → herdr (the app's Home Screen name) → Allow Notifications,
+  then go back to the app; elsewhere, the browser's site settings. The panel reads the state again when the app comes
+  back into view, and lists the service worker, the permission and the push service it uses.
+- **Send Test Notification** (under the switch while it is on) sends one notification to this device only, also while
+  the app is open (alerts are never sent while any device has the app on screen); at most one every 5 s. The line
+  under the button is what the push service answered: `sent to 1 subscription (201)` means it took the message;
+  `no subscription for this device` or `410`: turn the switch off and on again.
+- **The Mac's log** has one line per send, `herdr-relay: push: <service host> <status> [<apns-id or reason>]`, in the
+  terminal running `herdr-relay start` or in `~/Library/Logs/herdr-relay.log` under launchd (§9).
+- **`403: BadJwtToken`** (from `web.push.apple.com`): Apple refused the token the Mac signs each notification with.
+  Its contact field must be a `mailto:` address or an `https:` URL Apple accepts, and the Mac's clock must be right.
+  herdr-relay uses `HERDR_RELAY_PUSH_SUBJECT` when it is valid, else `https://<mac>.<tailnet>.ts.net` once the bridge
+  knows its Tailscale name, else the project page. Set `HERDR_RELAY_PUSH_SUBJECT=mailto:you@example.com` where
+  `herdr-relay start` runs (for the launchd agent, in the `EnvironmentVariables` of its copied plist), restart the
+  bridge and send a test again. The start log says `VAPID subject from HERDR_RELAY_PUSH_SUBJECT: …`, or why the value
+  was ignored.
 
 ## 8. Upgrade
 

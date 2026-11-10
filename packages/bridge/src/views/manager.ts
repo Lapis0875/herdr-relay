@@ -139,7 +139,8 @@ export interface ViewManagerOptions {
   roots: readonly PathRoot[];
   /**
    * Gets every socket's `open`/`close` after the view manager, the messages it does not handle (`term.open`,
-   * `term.close`, `visible`, `push.sub`) and binary frames (T11). Without it those requests are acked `refused`.
+   * `term.close`, `visible`, `push.sub`, `push.test`) and binary frames (T11). Without it those requests are acked
+   * `refused`.
    */
   next?: SessionHandler;
   log?: (line: string) => void;

@@ -1,0 +1,73 @@
+<!doctype html>
+<html
+  lang="en"
+  data-composition-variables='[
+    {"id":"name","type":"string","label":"Name","default":"herdr-relay"},
+    {"id":"cta","type":"string","label":"Call to action","default":"github.com/Lapis0875/herdr-relay"},
+    {"id":"color-ink","type":"color","label":"Text","default":"#16181d"},
+    {"id":"color-ink-quiet","type":"color","label":"Quiet text","default":"#4a505c"},
+    {"id":"color-ink-faint","type":"color","label":"Faint text","default":"#6a717d"},
+    {"id":"color-accent","type":"color","label":"Accent","default":"#2a6bcc"}
+  ]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <!-- The stageshow kit's frames (phone, terminal, window lights), used inside the film scene -->
+    <link rel="stylesheet" href="assets/kit/stageshow-kit.css" />
+    <style>
+      :root {
+        --color-ink: #16181d;
+        --color-ink-quiet: #4a505c;
+        --color-ink-faint: #6a717d;
+        --color-accent: #2a6bcc;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #eaecef;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="18" data-width="1920" data-height="1080" data-fps="30" data-motion-blur="on">
+      <div
+        id="film"
+        data-composition-id="film"
+        data-composition-src="compositions/film.html"
+        data-start="0"
+        data-duration="18"
+        data-track-index="1"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+        style="z-index: 1"
+      ></div>
+      <div
+        id="lines"
+        data-composition-id="lines"
+        data-composition-src="compositions/lines.html"
+        data-start="0"
+        data-duration="18"
+        data-track-index="2"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+        style="z-index: 2"
+      ></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

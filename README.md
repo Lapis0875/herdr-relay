@@ -2,6 +2,10 @@
 
 [한국어](README.ko.md)
 
+[![herdr-relay intro](docs/media/intro.gif)](docs/media/intro.mp4)
+
+*18 seconds, no sound: the bridge starts beside Herdr, the same layout opens on an iPad and a phone, and resizing the iPad's sidebar leaves the Mac's layout as it was. Real renders of synthetic content; click for the MP4.*
+
 herdr-relay puts your [Herdr](https://herdr.dev) window on your phone and tablet. It runs on the Mac next to Herdr,
 renders the same layouts and mods there, and serves them over your Tailscale network to a web app you add to the home
 screen. You see your spaces, tabs, agents and terminals, rearranged for a small screen, and you can act on them: switch

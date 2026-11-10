@@ -1,0 +1,125 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("assets/fonts/Geist-Variable.woff2") format("woff2");
+      font-weight: 100 900;
+      font-display: block;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      font-family: "Geist", sans-serif;
+      color: var(--color-ink);
+      -webkit-font-smoothing: antialiased;
+      pointer-events: none;
+    }
+    .rl-line {
+      position: absolute;
+      left: 192px;
+      top: 104px;
+      margin: 0;
+      font-size: 56px;
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.022em;
+      white-space: nowrap;
+    }
+    .rl-line .w {
+      display: inline-block;
+    }
+    .rl-name {
+      color: var(--color-accent);
+    }
+    #end {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 150px;
+      text-align: center;
+    }
+    #end-mark {
+      display: inline-block;
+      font-size: 132px;
+      font-weight: 640;
+      line-height: 1;
+      letter-spacing: -0.045em;
+      padding: 0 0.06em 0.12em;
+    }
+    #end-tag {
+      margin-top: 18px;
+      font-size: 46px;
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: -0.018em;
+      color: var(--color-ink-quiet);
+    }
+    #end-tag .w {
+      display: inline-block;
+    }
+    #end-cta {
+      margin-top: 22px;
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: -0.005em;
+      color: var(--color-ink-faint);
+    }
+  </style>
+
+  <div id="root" data-composition-id="lines" data-width="1920" data-height="1080">
+    <div id="l1" class="rl-line clip" data-start="0.2" data-duration="2.4" data-track-index="1" data-beat="mac">
+      <span class="w">Your</span> <span class="w">Herdr</span> <span class="w">runs</span> <span class="w">on</span> <span class="w">your</span> <span class="w">Mac</span>
+    </div>
+    <div id="l2" class="rl-line clip" data-start="2.9" data-duration="3.25" data-track-index="2" data-beat="bridge">
+      <span class="rl-name" translate="no">herdr-relay</span> runs every mod sandboxed
+    </div>
+    <div id="l3" class="rl-line clip" data-start="6.7" data-duration="2.7" data-track-index="1" data-beat="devices">
+      <span class="w">Same</span> <span class="w">layout,</span> <span class="w">rearranged</span> <span class="w">for</span> <span class="w">each</span> <span class="w">screen</span>
+    </div>
+    <div id="l4" class="rl-line clip" data-start="9.65" data-duration="2.8" data-track-index="2" data-beat="resize">
+      <span class="w">Resize</span> <span class="w">it</span> <span class="w">on</span> <span class="w">the</span> <span class="w">iPad</span>
+    </div>
+    <div id="l5" class="rl-line clip" data-start="13.0" data-duration="1.95" data-track-index="1" data-beat="mac-unchanged">
+      The Mac’s layout never changes
+    </div>
+    <div id="end" class="clip" data-start="15.1" data-duration="2.9" data-track-index="3" data-beat="end-card">
+      <div id="end-mark" translate="no" data-var-text="name">herdr-relay</div>
+      <div id="end-tag"><span class="w">Your</span> <span class="w">Herdr,</span> <span class="w">on</span> <span class="w rl-name">every</span> <span class="w rl-name">screen.</span></div>
+      <div id="end-cta" translate="no" data-var-text="cta">github.com/Lapis0875/herdr-relay</div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const tl = gsap.timeline({ paused: true });
+      const words = (sel) => gsap.utils.toArray(`${sel} .w`);
+
+      // L1: per word, blur to sharp, no travel
+      tl.fromTo(words("#l1"), { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.13, ease: "power2.out", stagger: 0.067 }, 0.25);
+      tl.to("#l1 .w", { opacity: 0, filter: "blur(6px)", duration: 0.18, ease: "power2.in" }, 2.38);
+
+      // L2: the whole line blurs in; the name carries the accent
+      tl.fromTo("#l2", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, 2.95);
+      tl.to("#l2", { opacity: 0, filter: "blur(6px)", duration: 0.18, ease: "power2.in" }, 5.92);
+
+      // L3: per word from light grey to ink, no position change
+      tl.fromTo(words("#l3"), { opacity: 0.0, color: "#b9bec7" }, { opacity: 1, color: "#16181d", duration: 0.16, ease: "power1.out", stagger: 0.085 }, 6.75);
+      tl.to("#l3 .w", { opacity: 0, filter: "blur(6px)", duration: 0.18, ease: "power2.in" }, 9.18);
+
+      // L4: per word, blur to sharp
+      tl.fromTo(words("#l4"), { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.13, ease: "power2.out", stagger: 0.067 }, 9.7);
+      tl.to("#l4 .w", { opacity: 0, filter: "blur(6px)", duration: 0.18, ease: "power2.in" }, 12.22);
+
+      // L5: the whole line, then out with the move into the end card
+      tl.fromTo("#l5", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, 13.05);
+      tl.to("#l5", { opacity: 0, filter: "blur(6px)", duration: 0.18, ease: "power2.in" }, 14.72);
+
+      // End card: the name wipes in left to right, the line follows word by word, the address last
+      tl.fromTo("#end-mark", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.55, ease: "power3.out" }, 15.25);
+      tl.fromTo(words("#end-tag"), { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.14, ease: "power2.out", stagger: 0.075 }, 15.65);
+      tl.fromTo("#end-cta", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, 16.15);
+
+      window.__timelines["lines"] = tl;
+    })();
+  </script>
+</template>

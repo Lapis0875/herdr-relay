@@ -173,6 +173,27 @@ name and device class); it is never written to the Mac.
 8. **Mods' `run("layout.resize", {id, px|weight})`** writes the profile of the device whose event led to the call (origin token, item 8 of wave 4); origin-less or downgraded → no device; phone → `ok` and nothing changes. A target that is not overridable here (or the wrong size kind) changes only that session's size click (item 3) and is not saved (the shipped win98 kit resizes its bars this way). Mods cannot set `collapsed`.
 9. **Mod-internal splits** (`h_resizable`/`v_resizable` inside a mod) are not part of the profile: the client draws touch dividers and keeps sizes in the browser's `localStorage` per device (`herdr-relay:split:<layout>:<view>#<group>`, ≤ 200 entries), re-clamped to the mod's bounds; the mod receives `on_resize` as on desktop.
 
+## Push test (2026-11-11)
+
+The package stays authoritative: `PushTestSchema` (`messages.ts`); the bridge side is
+`packages/bridge/src/push/service.ts` (`PushService.test`).
+
+1. **Client `push.test {t:"push.test", id}`** sends one test notification (title `herdr-relay`, body
+   `Test notification from <Mac name>`, tag `herdr-relay:test`, url `./`) to the push subscriptions **this device**
+   registered with `push.sub` (the socket's paired device id; loopback-token clients are `local`) — never to another
+   device's — at once, even while a device is visible (alerts stay muted then). Allowed on `scope:"read"` devices.
+2. **Ack** `{t:"ack", id, ok, message}`: `ok` is true when at least one push service accepted the message (2xx). The
+   `message` sums up every subscription's result, joined by `; `: `sent to 1 subscription (201)`,
+   `sent to 1 of 2 subscriptions (201)`, `push service answered 403: BadJwtToken` (the service's own `reason`/`message`
+   or body text, one line, at most 120 characters), `push service answered 410: Unregistered (subscription removed)`,
+   `push service unreachable: <error>`. Refusals are `ok:false, error:"refused"` with `no subscription for this device`
+   or `wait <n> s before another test notification` (at most one `push.test` per device per 5 s).
+3. **Same delivery as alerts**: VAPID (RFC 8292; `aud` = the endpoint's origin, `exp` = now + 12 h, `sub` =
+   `HERDR_RELAY_PUSH_SUBJECT` when it is a valid `mailto:` address or `https:` URL, else `https://<MagicDNS name>`, else
+   the project page), `aes128gcm` (RFC 8291, body ≤ 4096 bytes), `TTL: 86400`, `Urgency: high`. 404/410 drop the
+   subscription; every other answer keeps it. Every send is logged on the Mac as
+   `herdr-relay: push: <service host> <status> [<apns-id or reason>]` — never an endpoint path, key or token.
+
 ## 4. Mirror endpoint (loopback HTTP, T12) — `packages/bridge/src/mirror.ts`
 
 The `herdr-relay-mirror` mod (repo-root `mods/herdr-relay-mirror/`, [RECIPE.md](../RECIPE.md)) reports what the Herdr window shows.

@@ -6,8 +6,9 @@
  *   kept as the page only when it is one: 200, same-origin, not redirected, `text/html`; any other answer (a script,
  *   an error page, a redirect) passes through uncached, so it can never replace the offline page.
  * - Never touched: `api/`, `ws`, `push/`, `assets/` (authenticated, live) and anything outside the scope.
- * - Web Push (D11): the bridge's payload `{title, body, tag, url, terminal, kind}` becomes a notification; tapping it
- *   focuses an open app (which focuses the terminal) or opens `url` (`./?terminal=<address>`).
+ * - Web Push (D11): the bridge's payload `{title, body, tag, url, terminal, kind}` becomes a notification (a payload
+ *   that is not JSON still shows one, with its text as the body: iOS and Chrome expect one for every push); tapping it
+ *   focuses an open app page (which focuses the terminal) or opens `url` (`./?terminal=<address>`) in the scope.
  */
 
 const VERSION = "2";
@@ -86,40 +87,52 @@ self.addEventListener("fetch", (event) => {
   if (SHELL_FILES.includes(path)) event.respondWith(networkFirst(req, new URL(path, scope).href));
 });
 
+const text = (v) => (typeof v === "string" ? v : "");
+
 self.addEventListener("push", (event) => {
   let data = {};
-  try {
-    data = event.data ? event.data.json() : {};
-  } catch {
-    data = {};
+  if (event.data) {
+    try {
+      const parsed = event.data.json();
+      if (parsed && typeof parsed === "object") data = parsed;
+    } catch {
+      data = { body: event.data.text() };
+    }
   }
-  const title = typeof data.title === "string" && data.title ? data.title : "herdr-relay";
+  // `renotify` needs a non-empty tag.
+  const tag = text(data.tag) || undefined;
   const options = {
-    body: typeof data.body === "string" ? data.body : "",
-    tag: typeof data.tag === "string" ? data.tag : undefined,
-    renotify: typeof data.tag === "string",
+    body: text(data.body),
+    tag,
+    renotify: tag !== undefined,
     icon: new URL("icons/icon-192.png", scope).href,
     badge: new URL("icons/badge-96.png", scope).href,
-    data: {
-      url: typeof data.url === "string" ? data.url : "./",
-      terminal: typeof data.terminal === "string" ? data.terminal : null,
-    },
+    data: { url: text(data.url) || "./", terminal: text(data.terminal) || null },
   };
-  event.waitUntil(self.registration.showNotification(title, options));
+  event.waitUntil(self.registration.showNotification(text(data.title) || "herdr-relay", options));
 });
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   const data = event.notification.data || {};
-  let target = new URL(data.url || "./", scope);
-  if (target.origin !== scope.origin || !target.pathname.startsWith(scope.pathname)) target = new URL("./", scope);
+  let target = new URL(text(data.url) || "./", scope);
+  if (rel(target) === null) target = new URL("./", scope);
+  const terminal = text(data.terminal) || null;
   event.waitUntil((async () => {
     const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
-    const open = windows.find((c) => rel(new URL(c.url)) !== null);
+    // The app's own page, not a dev page under the scope.
+    const open = windows.find((c) => {
+      const path = rel(new URL(c.url));
+      return path !== null && !path.startsWith("dev/");
+    });
     if (open) {
-      await open.focus();
-      open.postMessage({ type: "open", url: target.href, terminal: data.terminal });
-      return;
+      try {
+        await open.focus();
+        open.postMessage({ type: "open", url: target.href, terminal });
+        return;
+      } catch {
+        // The window could not be brought forward: open the app instead.
+      }
     }
     await self.clients.openWindow(target.href);
   })());

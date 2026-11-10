@@ -1,4 +1,4 @@
-# Implementation amendments — candidate herdr-relay-c1, wave 4 (T08b, T53, T07b, T05d, T08c, T15c, T41, T36, T12, T34, T35, T06c, T24/T37, T38, T46, T08d, T44, S32, T16, T17, T18, T29, T09s, T43; review fixes; iPad real-device fixes)
+# Implementation amendments — candidate herdr-relay-c1, wave 4 (T08b, T53, T07b, T05d, T08c, T15c, T41, T36, T12, T34, T35, T06c, T24/T37, T38, T46, T08d, T44, S32, T16, T17, T18, T29, T09s, T43; review fixes; iPad real-device fixes; push end to end)
 
 Main-owned. Where these differ from DESIGN-v2, POLICY.md, PROTOCOL.md and earlier amendments, these and the code win.
 
@@ -6,8 +6,8 @@ Commits: `c603eb5` (T08b), `438be9e` (T53, T07b, T05d, T15c web side), `c75eb7f`
 (contract capture), `c756e05` (T36, T12), `a697cdd` (T34, harness), `e3b03aa` (T35, T06c, harness golden mode).
 Every `path:line` is at `e3b03aa` (`git show e3b03aa:<path>`), except: the T38, T46, T08d, T44 and S32 sections and
 places marked "(working tree)" cite `2e1f01a`; the T16, T17, T18, T29, T09s and T43 sections cite `1b0745c`; the "Review
-fixes" section cites the working tree at `bb9d83d`; the "iPad real-device fixes" section cites the working tree on top
-of `9e14b9d` (its intro names what is not committed yet). Short paths: `bridge/X` = `packages/bridge/src/X`,
+fixes" section cites the working tree at `bb9d83d`; the "iPad real-device fixes" section cites `8a6778f`; the "Push end
+to end" section cites `bab8964`. Short paths: `bridge/X` = `packages/bridge/src/X`,
 `protocol/X` = `packages/protocol/src/X`, `web/X` = `packages/web/src/app/X`, `modhost/X` = `packages/modhost/src/X`;
 other paths are repo-relative. POLICY.md §2.1, §2.3 (E4, E6, E7, E11, E12, E14), §2.6, §2.7 and §2.8 and PROTOCOL.md
 "Contract additions, wave 4" and §4 carry the same facts in spec form.
@@ -20,10 +20,14 @@ other paths are repo-relative. POLICY.md §2.1, §2.3 (E4, E6, E7, E11, E12, E14
 - Routes: mod assets, VAPID key, mirror (`bridge/app.ts:202`). The `bridge/main.ts:10` header listed only the first
   two; fixed in the working tree (`bridge/main.ts:9-12`).
 - VAPID `sub`: `https://<MagicDNS name>` while the Tailscale identity is known, else
-  `PUSH_SUBJECT_FALLBACK = "https://localhost"` (`bridge/app.ts:40-41,128-132`).
+  `PUSH_SUBJECT_FALLBACK = "https://localhost"` (`bridge/app.ts:40-41,128-132`). Replaced in `bab8964`, because Apple's
+  push service refuses a `localhost` subject: a valid `HERDR_RELAY_PUSH_SUBJECT` (`mailto:` at a public domain or an
+  `https:` URL of a public host), else `https://<MagicDNS name>`, else `https://github.com/Lapis0875/herdr-relay`
+  (`bab8964`: `bridge/push/subject.ts:1-69`; `bridge/app.ts:137-143`; "Push end to end" §1).
 - Mod hosts run under Seatbelt unless `HERDR_RELAY_DEV=insecure-no-sandbox` (`bridge/app.ts:186`).
 - Device messages the view manager does not take: `term.open`/`term.close`/binary → terminal relay, `visible`/`push.sub`
-  → push, anything else `ack {ok:false, error:"refused", message:"not available"}` (`bridge/app.ts:142-157`). Toasts a
+  → push (`push.test` too since `bab8964`, "Push end to end" §2), anything else
+  `ack {ok:false, error:"refused", message:"not available"}` (`bridge/app.ts:142-157`). Toasts a
   mod call raises (E11 links, named refusals) go to the socket of the origin session (`bridge/app.ts:88-90,113,136-141,158-164`).
 
 ## `<run>` path (T07b)
@@ -703,13 +707,14 @@ Every `path:line` in this section is the working tree at `bb9d83d`, except `<com
   §8.2. The T41 section above now names `sessionStorage` for the loopback token. Comment-only: the `intercept` decision
   names the hub's `open_url` (`protocol/policy-log.ts:62-65`); the hub gate cites S37 (`bridge/policy/hub.ts:2`).
 
-## iPad real-device fixes (`7bf41ef`, `e6aa387`, `8470d00`, `9e14b9d`)
+## iPad real-device fixes (`7bf41ef`, `e6aa387`, `8470d00`, `9e14b9d`, `8a6778f`)
 Fixes from running the Home Screen app on an iPad with a hardware keyboard. Commits: `7bf41ef` (part 1), `e6aa387`
 (part 2 and the first keyboard fix in part 3), `8470d00` (parts 3–5), `9e14b9d` (keyboard review fixes: the Hide
-keyboard commit in part 3, the redacted, page-only diagnostics in part 4; the two-device test in part 2). Not yet
-committed: "Nothing kept while the view cannot type" in part 3. Every `path:line` in this section is the working tree
-on top of `9e14b9d`, except `<commit>:<path>:<line>` for the code before a fix. Short paths as above, plus `render/X` =
-`packages/web/src/render/X` and `widgets/X` = `packages/web/src/widgets/X`.
+keyboard commit in part 3, the redacted, page-only diagnostics in part 4; the two-device test in part 2), `8a6778f`
+("Nothing kept while the view cannot type" in part 3). Every `path:line` in this section is at `8a6778f`
+(`bab8964` later moved `web/ui/DevicePanel.tsx` and `bridge/views/manager.ts`), except `<commit>:<path>:<line>` for
+the code before a fix. Short paths as above, plus `render/X` = `packages/web/src/render/X` and `widgets/X` =
+`packages/web/src/widgets/X`.
 
 ### 1. Opaque status bar (iPadOS 26.1+ blur) (`7bf41ef`)
 - Gap: the app asked for `apple-mobile-web-app-status-bar-style` `black-translucent`, which draws the page under the
@@ -754,7 +759,7 @@ on top of `9e14b9d`, except `<commit>:<path>:<line>` for the code before a fix. 
   desktops and a phone: host state follows whichever device acted, each device's snapshot keeps its own tab, the phone
   never shows zoom, nothing is passed through and the Mac's state is unchanged).
 
-### 3. Hardware-keyboard input-language switching (`e6aa387`, `8470d00`, `9e14b9d`, working tree)
+### 3. Hardware-keyboard input-language switching (`e6aa387`, `8470d00`, `9e14b9d`, `8a6778f`)
 - First fix (`e6aa387`): keys the operating system keeps (`systemKey`: Caps Lock, Globe/fn, the input-language keys,
   modifiers on their own, Ctrl+Space on an iPad or iPhone) and keys an input method takes (`imeKey`) are neither sent
   nor cancelled: not as GPUI keys, not by xterm, not as an element's Enter/Space activation, a list row's or a split
@@ -785,7 +790,7 @@ on top of `9e14b9d`, except `<commit>:<path>:<line>` for the code before a fix. 
   would come when nothing is sent any more. `attachTerminalInput` returns a `TerminalInput` (`commit`, `setEnabled`,
   `dispose`) (`widgets/terminal/TerminalView.tsx:349-363`; `widgets/terminal/ime.ts:12-18,35-49,180-197`). Test:
   `packages/web/test/terminal_ime_test.tsx:206-235`.
-- Nothing kept while the view cannot type (working tree): until now the input layer held a syllable, and took input,
+- Nothing kept while the view cannot type (`8a6778f`): until then the input layer held a syllable, and took input,
   whatever the view's state (`9e14b9d:packages/web/src/widgets/terminal/ime.ts:87,115-157`), so what was typed or
   still open while the view could not type could go out with the next key once it could. Now the view tells the layer
   whether it can type, at mount and on every change (`widgets/terminal/TerminalView.tsx:208-210,291-293`). Turned off
@@ -869,6 +874,127 @@ on top of `9e14b9d`, except `<commit>:<path>:<line>` for the code before a fix. 
   superseding note (part 2). Comment-only: `HostStateSchema` (`protocol/control.ts:117-124`). Also in the commits:
   INSTALL.md (part 1), COMPATIBILITY.md §5 and THIRD_PARTY_NOTICES §4 (part 5), CHANGELOG.md 0.1.0 "Added" (parts 2, 3
   and 5 in `e6aa387`/`8470d00`, parts 1 and 4 in `9e14b9d`).
+
+## Push end to end (`bab8964`) → PROTOCOL.md "Push test"
+What notifications need end to end: a VAPID subject Apple accepts, a test notification from the device panel, a log
+line for every send, the payload limit push services must accept, and notification states that say what to do. Every
+`path:line` in this section is at `bab8964`, except `bab8964^:<path>:<line>` for the code before it.
+Short paths as above; the service worker is `packages/web/sw.js`.
+
+### 1. VAPID subject
+- Gap: without the Tailscale identity the token's `sub` was `https://localhost`
+  (`bab8964^:packages/bridge/src/app.ts:45,142`). Apple's push service answers a token whose subject is not a
+  `mailto:` address or an `https:` URL it accepts with `403 {"reason":"BadJwtToken"}`, and refuses `localhost`
+  (`bridge/push/subject.ts:1-5`).
+- Now, in order: `HERDR_RELAY_PUSH_SUBJECT` when valid, else `https://<MagicDNS name>` while the Tailscale identity is
+  known, else `PUSH_SUBJECT_FALLBACK = "https://github.com/Lapis0875/herdr-relay"` (`bridge/push/subject.ts:9-11,60-64`;
+  `bridge/app.ts:137,140`). The MagicDNS form is not run through the check below.
+- Valid (`subjectProblem`): no spaces; `mailto:<address>` at a dotted public domain, without a query; or an `https:` URL
+  without credentials whose host is a dotted DNS name, neither `localhost` nor an IP address
+  (`bridge/push/subject.ts:13-39`).
+- Read once at start, and only when the bridge's `--allow-env` grants it, so it never prompts. An invalid value is
+  logged as `push: HERDR_RELAY_PUSH_SUBJECT <problem>; ignored`, a valid one as
+  `push: VAPID subject from HERDR_RELAY_PUSH_SUBJECT: <value>` (`bridge/push/subject.ts:41-58,66-69`;
+  `bridge/app.ts:137`). `deno task start` and `start:dev` grant it (`deno.json:65-66`), and `herdr-relay start` adds
+  it to the variables it computes `--allow-env` from (`packages/bridge/bin/start.ts:31,49-58`).
+- The token is otherwise unchanged: `aud` the endpoint's origin, `exp` now + 12 h (`bridge/push/webpush.ts:21,125-136`);
+  one subject is read per batch of sends (`bridge/push/service.ts:280`).
+
+### 2. Test notification (`push.test`)
+- Client message `push.test {t, id}` (`protocol/messages.ts:282-288,335,347,359`;
+  `packages/protocol/schema/client-message.schema.json:975`; samples `packages/protocol/samples/client/push.test.json`,
+  `packages/protocol/samples/invalid/client/push.test.missing-id.json`). The session layer passes it to the
+  `PushService` with `visible` and `push.sub` (`bridge/app.ts:14-16,158-161`; `bridge/views/manager.ts:141-143`).
+- Own device only: it goes to the subscriptions the asking socket's paired device registered (the loopback identity
+  is `local`), never another device's. `read` devices may send it (`bridge/push/service.ts:161-165,241-245`;
+  `protocol/messages.ts:283-286`).
+- Sent while a device is visible: `test` does not check `muted`, which keeps every alert unsent while any device has
+  the app on screen (`bridge/push/service.ts:192-198,220-253`).
+- At most one per `TEST_INTERVAL_MS = 5_000` ms per device, counted from each accepted request, even one that then
+  finds no subscription; within it, `wait <n> s before another test notification`
+  (`bridge/push/service.ts:31-32,224-232`).
+- Message: title `herdr-relay`, body `Test notification from <name>` — the core's machine name, else the first label
+  of the MagicDNS name, else `the Mac` — tag `herdr-relay:test` (a newer test replaces the earlier one), url `./`
+  (`bridge/push/service.ts:33-36,246-251`; `bridge/app.ts:141`).
+- Ack: `ok` when at least one push service answered 2xx, `{ok:true, message}`; otherwise
+  `{ok:false, error:"refused", message}` (`bridge/push/service.ts:161-165`). The message joins every subscription's
+  result with `; `: `sent to 1 subscription (201)` or `sent to 1 of 2 subscriptions (201)`,
+  `push service answered <status>[: <reason>]` (with ` (subscription removed)` on 404/410),
+  `push service unreachable: <error>`, `subscription dropped` (`bridge/push/service.ts:355-374`). Before sending: the
+  wait above, `no subscription for this device`,
+  `the Mac cannot read its push keys or subscriptions (see the bridge log)` (`bridge/push/service.ts:230,233-245`).
+  A 2xx means the push service took the message, not that the device showed it.
+- Device side: `BridgeClient.pushTest` (`web/client.ts:224-230`); `sendTestPush` shows the ack's message as it is, and
+  its own text for `offline` and `timed out` (`web/push.ts:203-209`).
+
+### 3. Delivery and log lines
+- Alerts and the test share one delivery: per subscription, `aes128gcm` body, `TTL: 86400`, `Urgency: high`, 10 s
+  deadline, no redirects (`bridge/push/service.ts:28-30,275-332`). A subscription outside the allowlist or of a device
+  no longer paired is dropped unsent; a 404 or 410 removes it; every other answer keeps it (`:284-288,297,301-303`).
+- One log line per answer, `herdr-relay: push: <service host> <status> [<reason or apns-id>]`, then what a refusal
+  means: on 404/410 `— subscription removed`; on 403 `BadJwtToken`,
+  `— Apple refused the VAPID token: check the subject <subject> (HERDR_RELAY_PUSH_SUBJECT overrides it) and the Mac's clock`;
+  on any other 403, `— the VAPID token or key was refused` (`bridge/push/service.ts:133,298,343-353`). No answer:
+  `<host> failed: <error>`, with URL paths cut from the error (`:292-295,417-420`). Never an endpoint path, key or
+  token (`:9-13`).
+- The reason: the first 2048 bytes of a refusal's body, then Apple's `reason`, Mozilla's `message` or FCM's `error`
+  when the body is JSON, else the text without markup; one line of at most `REASON_MAX = 120` characters. An
+  `apns-id` is kept up to 64 characters (`bridge/push/service.ts:37-40,322-330,376-415`).
+- Also logged: `device <id> subscribed (<host>)`; an alert not sent because `a device is on screen` (each time) or
+  because `no device has turned notifications on` (once, until a device subscribes); a test for a device without a
+  subscription (`bridge/push/service.ts:187-188,193-211,243`).
+
+### 4. Payload limit
+- RFC 8291 §4: a push service need not accept a body over 4096 bytes; less the 86-byte `aes128gcm` header (salt 16,
+  `rs` 4, `idlen` 1, sender key 65), the padding delimiter and the 16-byte tag, that leaves 3993 bytes of plaintext:
+  `MAX_BODY_BYTES = 4096`, `MAX_PAYLOAD_BYTES` = 3993 (`bridge/push/webpush.ts:12-19`). Before, the limit filled the
+  4096-byte record instead, `RECORD_SIZE - 1 - 16` = 4079 bytes (`bab8964^:packages/bridge/src/push/webpush.ts:13-15`),
+  so a body could reach 4182 bytes (86 + 4096).
+- An alert over the limit is logged and not sent; `encryptPayload` throws `RangeError` over it
+  (`bridge/push/service.ts:212-216`; `bridge/push/webpush.ts:96-98`).
+
+### 5. Device panel: notification states, test button, service worker facts
+- States (`pushStatus`, `web/push.ts:14-20,98-122`) and their text (`web/ui/DevicePanel.tsx:208-226`):
+  - `unsupported`: not HTTPS ("open the app through its Tailscale address"); no Web Push in the browser; a Home Screen
+    app on iPhone or iPad without it ("Notifications need iOS or iPadOS 16.4 or later"); the service worker is not
+    registered yet ("Reload the app once").
+  - `needs-install`: Safari on iPhone or iPad: Share → Add to Home Screen, then turn it on in the Home Screen app.
+  - `denied`: on iPhone and iPad, Settings → Notifications → herdr (its Home Screen name) → Allow Notifications; else
+    the browser's site settings.
+  - `off`, with a reason when the permission prompt closed without an answer; `on`; `error` with what failed.
+- Enabling (`enablePush`, `web/push.ts:142-181`): `Notification.requestPermission()` runs before the first `await`, and
+  the switch calls it in the tap itself, because iOS and iPadOS show the prompt only during a tap
+  (`web/ui/DevicePanel.tsx:283-295`). It waits up to 10 s for a first service-worker install to activate
+  (`web/push.ts:42-43,77-97`). A failure names its stage (`Asking for permission`, `Starting the service worker`,
+  `Getting the Mac’s push key`, `Subscribing with the push service`, `Registering with the Mac`) and the browser's
+  error name. A registration the Mac never answered (`offline`, `timed out`) keeps the subscription, which is sent again
+  after the next `hello`; one the Mac refused is unsubscribed and its reason shown.
+- The registration is looked up by the app's scope, not the page's URL (`web/push.ts:71-75`). The panel reads the
+  state again when the page becomes visible (back from Settings), when a service worker takes over, and once it is
+  ready; a read begun before a toggle cannot overwrite the toggle's outcome (`web/ui/DevicePanel.tsx:242-280`).
+- "Send Test Notification" shows while the switch is on and not busy; the answer goes in a status line under it, in
+  the error tone when not `ok` (`web/ui/DevicePanel.tsx:296-300,327-341`).
+- Facts list: Service worker (`Not available here`, `Not registered`, `Installing…`, `Waiting to start`, `Active`, with
+  `Not serving this page yet` while an active worker does not control the page), Scope, Permission (`Allowed`,
+  `Blocked`, `Not asked yet`) and the push service's host (`web/push.ts:22-34,124-140`;
+  `web/ui/DevicePanel.tsx:228-240,342-374`).
+
+### 6. Service worker
+- Every push shows a notification: a payload that is not JSON shows its text as the body (iOS and Chrome expect a
+  notification for every push); the title defaults to `herdr-relay`; `renotify` only with a non-empty tag
+  (`packages/web/sw.js:9-11,90-113`).
+- A tap opens `url` only inside the scope, else `./`; it focuses an open page of the app (never a `dev/` page) and
+  posts it `{type: "open", url, terminal}`; when focusing fails it opens a new window (`packages/web/sw.js:115-139`).
+
+### Not covered by tests at `bab8964`
+- No test exercises `push.test`, the subject order and validation, the log lines or the device panel's states; the
+  push unit tests are unchanged and check the payload limit through `MAX_PAYLOAD_BYTES`
+  (`packages/bridge/test/unit/push/push_test.ts:115`). The two new samples are validated with every other one, by
+  the TypeScript validators and the JSON Schema (`packages/protocol/test/samples_test.ts:1-2,120-141`).
+
+### Docs
+- INSTALL.md: `HERDR_RELAY_PUSH_SUBJECT` in §4's settings, and §7 "Notifications" (troubleshooting). DESIGN.md §4
+  "Push": the test button. CHANGELOG.md 0.1.0 "Added". PROTOCOL.md "Push test" carries §2 and §3 in spec form.
 
 ## Open
 - No device banner for a profile's `requires.herdr` mismatch or a stale mirror: both are in the bridge log only

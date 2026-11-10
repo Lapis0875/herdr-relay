@@ -173,6 +173,8 @@ Golden-test fixture: `lstack-herdr.json` + the `.state` file above → the Scree
 
 **Push (agent done/blocked).** Web Push (VAPID ES256, RFC 8291 aes128gcm) with WebCrypto, modelled on Shepherdr `push.ts` **[V]**; subscriptions in `~/.herdr/herdr-relay/push.json`. Triggers from `events.subscribe`: `status.state` transitions `working→blocked` (title "Needs you") and `working→idle` (title "Finished") per terminal/turn, deduped by `(address, turn)`; muted while any device socket reports `visible:true`; tap opens the pane route. iPad: PWA must be installed to Home Screen; the Android PWA works in Chrome. No APNs/FCM in v1.
 
+**Test notification.** The device panel's "Send Test Notification" (`push.test`) sends one notification to that device's own subscriptions, also while a device is visible, at most one per 5 s per device, and shows what the push service answered (AMENDMENTS-c1-wave4 "Push end to end").
+
 **Offline/reconnect.** Client keeps the last ScreenGraph + trees + snapshot in IndexedDB and renders them greyed with a "stale since HH:MM" banner. WebSocket reconnect with backoff 1→2→5→10→30 s; `hello {since: seq}` resumes from the bridge's patch ring (last 512 patches, else full snapshot). Terminals re-attach observe-only; typed input never replayed; pending `run` acks time out at 15 s (core default) and surface as toasts. Bridge ↔ core: on `disconnected` from `hc connect`, re-negotiate and emit `reset` (Shepherdr `live.ts` pattern).
 
 ---

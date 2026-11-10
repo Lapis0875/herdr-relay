@@ -1,0 +1,296 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Geist";
+      src: url("assets/fonts/Geist-Variable.woff2") format("woff2");
+      font-weight: 100 900;
+      font-display: block;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("assets/fonts/JetBrainsMono-Regular.woff2") format("woff2");
+      font-weight: 400;
+      font-display: block;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      /* The README preview's studio sweep: a cool light gray, lighter where the devices sit */
+      background: radial-gradient(1500px 940px at 50% 46%, #f5f6f8 0%, #eaecef 58%, #dfe2e6 100%);
+    }
+    #world {
+      width: 1920px;
+      height: 1080px;
+    }
+    .rl-dev {
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform-origin: 0 0;
+    }
+
+    /* The Mac: Herdr's own window, content to the edges, the lights over its sidebar header */
+    #mac { z-index: 1; }
+    .rl-mac.ss-window {
+      width: 1440px;
+      height: 900px;
+      border-radius: 14px;
+      background: #19191b;
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.32),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+        0 40px 80px -24px rgba(24, 27, 33, 0.42),
+        0 16px 32px -16px rgba(24, 27, 33, 0.28);
+    }
+    .rl-mac__shot {
+      display: block;
+      width: 1440px;
+      height: 900px;
+    }
+    .rl-mac .rl-mac__lights {
+      position: absolute;
+      left: 16.5px;
+      top: 16.5px;
+    }
+
+    /* The terminal: the kit's terminal chrome at its own design size, scaled as a stage would be */
+    #term { z-index: 5; }
+    .rl-term.ss-window {
+      width: 480px;
+      --ss-term-path: #7aa2e8;
+    }
+    .rl-term .ss-term {
+      font: 12px/1.65 "JetBrains Mono", monospace;
+      gap: 2px;
+      padding: 4px 18px 16px;
+    }
+    .rl-term .ss-term__title {
+      font-family: "Geist", sans-serif;
+    }
+    .rl-term .ss-term__prompt {
+      position: relative;
+    }
+    #term-cmd {
+      display: inline-block;
+    }
+    #term-caret-a {
+      position: absolute;
+      left: calc(2ch + 14px);
+      top: 50%;
+      margin: -0.6em 0 0 0;
+    }
+    .rl-term .ss-term__caret {
+      height: 1.25em;
+    }
+
+    /* The iPad: 1180 x 820 pt landscape, black glass, its own status bar */
+    #ipad { z-index: 3; }
+    .rl-ipad {
+      width: 1216px;
+      height: 856px;
+      padding: 18px;
+      border-radius: 38px;
+      background: #0d0d0f;
+      box-shadow:
+        0 0 0 1.5px #3b3c40,
+        inset 0 0 0 1px #202124,
+        0 40px 80px -24px rgba(24, 27, 33, 0.42),
+        0 16px 32px -16px rgba(24, 27, 33, 0.28);
+    }
+    .rl-ipad__screen {
+      position: relative;
+      width: 1180px;
+      height: 820px;
+      overflow: hidden;
+      border-radius: 20px;
+      background: #1c1c1f;
+    }
+    .rl-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1180px;
+      height: 820px;
+      display: block;
+    }
+    .rl-ipad__status {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 24px;
+      padding: 0 20px 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+      font: 600 13px/1 -apple-system, "SF Pro Text", system-ui, sans-serif;
+      letter-spacing: 0.1px;
+    }
+    .rl-ipad__status .rl-day { font-weight: 500; margin-left: 7px; }
+    .rl-ipad__glyphs { display: flex; align-items: center; gap: 6px; font-weight: 500; font-size: 12px; }
+    .rl-ipad__glyphs svg { display: block; fill: currentColor; height: 11px; width: auto; }
+
+    /* A finger on glass: a soft dot only while it touches (the kit's touch cursor, lightened for a dark screen) */
+    #touch {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 0;
+      height: 0;
+      z-index: 4;
+    }
+    #touch-dot {
+      position: absolute;
+      left: -24px;
+      top: -24px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(240, 242, 248, 0.36);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.24), 0 2px 10px rgba(0, 0, 0, 0.25);
+      opacity: 0;
+    }
+
+    /* The phone: the kit's iPhone (402 x 874 pt), the device app's own screen under its status bar */
+    #phone { z-index: 4; }
+    #phone .ss-phone {
+      filter: drop-shadow(0 30px 40px rgba(24, 27, 33, 0.30)) drop-shadow(0 10px 16px rgba(24, 27, 33, 0.20));
+    }
+    #phone .ss-phone__screen {
+      background: #1e1e21;
+    }
+    .rl-phone-shot {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 402px;
+      height: 874px;
+      display: block;
+    }
+
+    /* The kit's own CSS transitions (window recede, status bar color) never fire here; hold them off so every
+       frame is a function of the timeline alone */
+    #world,
+    #world * {
+      transition: none !important;
+    }
+  </style>
+
+  <div id="root" data-composition-id="film" data-width="1920" data-height="1080">
+    <div id="world" class="ss-stage rl-dev" data-theme="light" data-layout-allow-overflow data-layout-allow-overlap>
+      <div id="mac" class="rl-dev">
+        <div class="ss-window rl-mac" data-lights-size="large">
+          <img class="rl-mac__shot" src="assets/screens/mac.png" width="1440" height="900" alt="Herdr's main layout on the Mac" />
+          <span class="ss-window__lights rl-mac__lights" aria-hidden="true"><span class="ss-window__dot"></span><span class="ss-window__dot"></span><span class="ss-window__dot"></span></span>
+        </div>
+      </div>
+
+      <div id="term" class="rl-dev">
+        <div class="ss-window ss-recede rl-term" data-chrome="terminal" data-lights="grey">
+          <div class="ss-window__bar">
+            <span class="ss-window__lights"><span class="ss-window__dot"></span><span class="ss-window__dot"></span><span class="ss-window__dot"></span></span>
+            <span class="ss-term__title" data-layout-ignore>~ — zsh</span>
+          </div>
+          <div class="ss-window__body ss-term">
+            <div class="ss-term__line ss-term__prompt"><span class="ss-term__path">~</span><span class="ss-term__sigil">❯</span><span class="ss-term__cmd" id="term-cmd">herdr-relay start</span><span id="term-caret-a" class="ss-term__caret" data-still="true" aria-hidden="true"></span></div>
+            <div id="term-o1">herdr-relay herdr: Herdr 0.1.14 (herdr-app --version)</div>
+            <div id="term-o2">herdr-relay: listening on http://127.0.0.1:7781/herdr-relay/</div>
+            <div id="term-o3">herdr-relay hosts: pane: spawned pid 25804 (generation 1)</div>
+            <div id="term-o4">herdr-relay hosts: agents: spawned pid 25807 (generation 1)</div>
+            <div id="term-o5">herdr-relay hosts: spaces: spawned pid 25808 (generation 1)</div>
+            <div id="term-o6">herdr-relay hosts: tabs: spawned pid 25809 (generation 1)</div>
+            <div id="term-o7"><span id="term-caret-b" class="ss-term__caret" data-still="true" aria-hidden="true"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="ipad" class="rl-dev">
+        <div class="rl-ipad">
+          <div class="rl-ipad__screen">
+            <img class="rl-fill" src="assets/screens/tablet-before.png" width="1180" height="820" alt="The same layout on an iPad" />
+            <video id="ipad-drag" class="clip rl-fill" src="assets/screens/tablet-drag.mp4" data-start="10.4" data-duration="1.7" data-track-index="3" muted playsinline></video>
+            <img id="ipad-after" class="clip rl-fill" src="assets/screens/tablet-after.png" data-start="12.1" data-duration="5.9" data-track-index="4" width="1180" height="820" alt="" />
+            <div class="rl-ipad__status" data-layout-allow-occlusion data-layout-ignore>
+              <span>9:41<span class="rl-day">Tue Jan 9</span></span>
+              <span class="rl-ipad__glyphs"><svg viewBox="0 0 19.33 14.33" width="19.33" height="14.33"><path fill-rule="evenodd" fill="currentColor" d="M0.415933 5.54283C0.902185 6.04412 1.66017 5.95818 2.27513 5.41393C4.30595 3.58064 6.83731 2.63535 9.66901 2.63535C12.5007 2.63535 15.0464 3.60928 17.0629 5.41393C17.6636 5.97251 18.4215 6.0298 18.9221 5.54283C19.4226 5.02722 19.4942 4.2538 18.9793 3.70954C16.8341 1.51819 13.3302 0 9.66901 0C6.00783 0 2.48965 1.53251 0.358727 3.72387C-0.156127 4.2538 -0.0989213 5.02722 0.415933 5.55715L0.415933 5.54283ZM3.94841 9.13779C4.50617 9.68205 5.22124 9.62476 5.85051 9.10915C6.88022 8.29276 8.25316 7.73418 9.66901 7.7485C11.0706 7.7485 12.4435 8.29276 13.4875 9.12347C14.1168 9.63908 14.8605 9.66773 15.4039 9.12347C15.9331 8.57921 16.0189 7.7485 15.4611 7.23289C14.0739 5.98683 11.9859 5.11315 9.68332 5.11315C7.38077 5.11315 5.27845 5.98683 3.9055 7.23289C3.41925 7.69121 3.31914 8.47896 3.96271 9.13779L3.94841 9.13779ZM8.72511 13.8929C9.34008 14.4801 9.98365 14.4801 10.5986 13.8929L11.757 12.7757C12.372 12.1742 12.5007 11.4151 11.7999 10.8995C11.2136 10.4841 10.4699 10.212 9.66901 10.212C8.86813 10.212 8.11015 10.4841 7.53809 10.9138C6.83731 11.4151 6.98033 12.1885 7.59529 12.7757L8.73942 13.8929L8.72511 13.8929Z"></path></svg><span>100%</span><svg viewBox="0 0 29.33 13.67" width="29.33" height="13.67"><path fill="currentColor" d="M0 6.4C0 4.15979 0 3.03969 0.435974 2.18404C0.819467 1.43139 1.43139 0.819467 2.18404 0.435974C3.03969 0 4.15979 0 6.4 0L19.933 0C22.1732 0 23.2933 0 24.149 0.435974C24.9016 0.819467 25.5135 1.43139 25.897 2.18404C26.333 3.03969 26.333 4.15979 26.333 6.4L26.333 7.26666C26.333 9.50687 26.333 10.627 25.897 11.4826C25.5135 12.2353 24.9016 12.8472 24.149 13.2307C23.2933 13.6667 22.1732 13.6667 19.933 13.6667L6.4 13.6667C4.15979 13.6667 3.03969 13.6667 2.18404 13.2307C1.43139 12.8472 0.819467 12.2353 0.435974 11.4826C0 10.627 0 9.50687 0 7.26666L0 6.4Z"></path><path fill-rule="evenodd" fill="currentColor" transform="translate(27.33 4.33)" d="M0 0L0 5C0.601505 4.8625 2 3.75 2 2.5C2 1.25 0.601505 0.1375 0 0Z"></path></svg></span>
+            </div>
+            <div id="touch"><span id="touch-dot"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="phone" class="rl-dev">
+        <div class="ss-phone rl-phone-frame" data-frame="pro" data-dark="true" style="width:428px;height:900px;padding:3px;border-radius:77px;--ps:1px"><svg class="ss-phone__bands" width="100%" height="100%" aria-hidden="true"><defs><linearGradient id="R0-band" x1="0.2" y1="0" x2="0.8" y2="1"><stop offset="0" style="stop-color:var(--ss-phone-band-1)"></stop><stop offset="0.22" style="stop-color:var(--ss-phone-band-2)"></stop><stop offset="0.48" style="stop-color:var(--ss-phone-band-3)"></stop><stop offset="0.74" style="stop-color:var(--ss-phone-band-4)"></stop><stop offset="1" style="stop-color:var(--ss-phone-band-5)"></stop></linearGradient><linearGradient id="R0-clay" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--ss-phone-clay-top)"></stop><stop offset="1" style="stop-color:var(--ss-phone-clay-bottom)"></stop></linearGradient></defs><g transform="translate(13 13)" stroke-linejoin="round"><path d="M331.00 0.00L336.22 0.07L340.50 0.30L344.48 0.67L348.25 1.18L351.86 1.85L355.33 2.65L358.68 3.61L361.91 4.70L365.02 5.94L368.02 7.32L370.91 8.83L373.68 10.49L376.34 12.27L378.88 14.19L381.30 16.23L383.59 18.41L385.77 20.70L387.81 23.12L389.73 25.66L391.51 28.32L393.17 31.09L394.68 33.98L396.06 36.98L397.30 40.09L398.39 43.32L399.35 46.67L400.15 50.14L400.82 53.75L401.33 57.52L401.70 61.50L401.93 65.78L402.00 71.00L402.00 803.00L401.93 808.22L401.70 812.50L401.33 816.48L400.82 820.25L400.15 823.86L399.35 827.33L398.39 830.68L397.30 833.91L396.06 837.02L394.68 840.02L393.17 842.91L391.51 845.68L389.73 848.34L387.81 850.88L385.77 853.30L383.59 855.59L381.30 857.77L378.88 859.81L376.34 861.73L373.68 863.51L370.91 865.17L368.02 866.68L365.02 868.06L361.91 869.30L358.68 870.39L355.33 871.35L351.86 872.15L348.25 872.82L344.48 873.33L340.50 873.70L336.22 873.93L331.00 874.00L71.00 874.00L65.78 873.93L61.50 873.70L57.52 873.33L53.75 872.82L50.14 872.15L46.67 871.35L43.32 870.39L40.09 869.30L36.98 868.06L33.98 866.68L31.09 865.17L28.32 863.51L25.66 861.73L23.12 859.81L20.70 857.77L18.41 855.59L16.23 853.30L14.19 850.88L12.27 848.34L10.49 845.68L8.83 842.91L7.32 840.02L5.94 837.02L4.70 833.91L3.61 830.68L2.65 827.33L1.85 823.86L1.18 820.25L0.67 816.48L0.30 812.50L0.07 808.22L0.00 803.00L0.00 71.00L0.07 65.78L0.30 61.50L0.67 57.52L1.18 53.75L1.85 50.14L2.65 46.67L3.61 43.32L4.70 40.09L5.94 36.98L7.32 33.98L8.83 31.09L10.49 28.32L12.27 25.66L14.19 23.12L16.23 20.70L18.41 18.41L20.70 16.23L23.12 14.19L25.66 12.27L28.32 10.49L31.09 8.83L33.98 7.32L36.98 5.94L40.09 4.70L43.32 3.61L46.67 2.65L50.14 1.85L53.75 1.18L57.52 0.67L61.50 0.30L65.78 0.07L71.00 0.00Z" fill="none" stroke-width="26" stroke="url(#R0-band)"></path><path d="M331.00 0.00L336.22 0.07L340.50 0.30L344.48 0.67L348.25 1.18L351.86 1.85L355.33 2.65L358.68 3.61L361.91 4.70L365.02 5.94L368.02 7.32L370.91 8.83L373.68 10.49L376.34 12.27L378.88 14.19L381.30 16.23L383.59 18.41L385.77 20.70L387.81 23.12L389.73 25.66L391.51 28.32L393.17 31.09L394.68 33.98L396.06 36.98L397.30 40.09L398.39 43.32L399.35 46.67L400.15 50.14L400.82 53.75L401.33 57.52L401.70 61.50L401.93 65.78L402.00 71.00L402.00 803.00L401.93 808.22L401.70 812.50L401.33 816.48L400.82 820.25L400.15 823.86L399.35 827.33L398.39 830.68L397.30 833.91L396.06 837.02L394.68 840.02L393.17 842.91L391.51 845.68L389.73 848.34L387.81 850.88L385.77 853.30L383.59 855.59L381.30 857.77L378.88 859.81L376.34 861.73L373.68 863.51L370.91 865.17L368.02 866.68L365.02 868.06L361.91 869.30L358.68 870.39L355.33 871.35L351.86 872.15L348.25 872.82L344.48 873.33L340.50 873.70L336.22 873.93L331.00 874.00L71.00 874.00L65.78 873.93L61.50 873.70L57.52 873.33L53.75 872.82L50.14 872.15L46.67 871.35L43.32 870.39L40.09 869.30L36.98 868.06L33.98 866.68L31.09 865.17L28.32 863.51L25.66 861.73L23.12 859.81L20.70 857.77L18.41 855.59L16.23 853.30L14.19 850.88L12.27 848.34L10.49 845.68L8.83 842.91L7.32 840.02L5.94 837.02L4.70 833.91L3.61 830.68L2.65 827.33L1.85 823.86L1.18 820.25L0.67 816.48L0.30 812.50L0.07 808.22L0.00 803.00L0.00 71.00L0.07 65.78L0.30 61.50L0.67 57.52L1.18 53.75L1.85 50.14L2.65 46.67L3.61 43.32L4.70 40.09L5.94 36.98L7.32 33.98L8.83 31.09L10.49 28.32L12.27 25.66L14.19 23.12L16.23 20.70L18.41 18.41L20.70 16.23L23.12 14.19L25.66 12.27L28.32 10.49L31.09 8.83L33.98 7.32L36.98 5.94L40.09 4.70L43.32 3.61L46.67 2.65L50.14 1.85L53.75 1.18L57.52 0.67L61.50 0.30L65.78 0.07L71.00 0.00Z" fill="none" stroke-width="20" style="stroke:var(--ss-phone-rim)"></path><path d="M331.00 0.00L336.22 0.07L340.50 0.30L344.48 0.67L348.25 1.18L351.86 1.85L355.33 2.65L358.68 3.61L361.91 4.70L365.02 5.94L368.02 7.32L370.91 8.83L373.68 10.49L376.34 12.27L378.88 14.19L381.30 16.23L383.59 18.41L385.77 20.70L387.81 23.12L389.73 25.66L391.51 28.32L393.17 31.09L394.68 33.98L396.06 36.98L397.30 40.09L398.39 43.32L399.35 46.67L400.15 50.14L400.82 53.75L401.33 57.52L401.70 61.50L401.93 65.78L402.00 71.00L402.00 803.00L401.93 808.22L401.70 812.50L401.33 816.48L400.82 820.25L400.15 823.86L399.35 827.33L398.39 830.68L397.30 833.91L396.06 837.02L394.68 840.02L393.17 842.91L391.51 845.68L389.73 848.34L387.81 850.88L385.77 853.30L383.59 855.59L381.30 857.77L378.88 859.81L376.34 861.73L373.68 863.51L370.91 865.17L368.02 866.68L365.02 868.06L361.91 869.30L358.68 870.39L355.33 871.35L351.86 872.15L348.25 872.82L344.48 873.33L340.50 873.70L336.22 873.93L331.00 874.00L71.00 874.00L65.78 873.93L61.50 873.70L57.52 873.33L53.75 872.82L50.14 872.15L46.67 871.35L43.32 870.39L40.09 869.30L36.98 868.06L33.98 866.68L31.09 865.17L28.32 863.51L25.66 861.73L23.12 859.81L20.70 857.77L18.41 855.59L16.23 853.30L14.19 850.88L12.27 848.34L10.49 845.68L8.83 842.91L7.32 840.02L5.94 837.02L4.70 833.91L3.61 830.68L2.65 827.33L1.85 823.86L1.18 820.25L0.67 816.48L0.30 812.50L0.07 808.22L0.00 803.00L0.00 71.00L0.07 65.78L0.30 61.50L0.67 57.52L1.18 53.75L1.85 50.14L2.65 46.67L3.61 43.32L4.70 40.09L5.94 36.98L7.32 33.98L8.83 31.09L10.49 28.32L12.27 25.66L14.19 23.12L16.23 20.70L18.41 18.41L20.70 16.23L23.12 14.19L25.66 12.27L28.32 10.49L31.09 8.83L33.98 7.32L36.98 5.94L40.09 4.70L43.32 3.61L46.67 2.65L50.14 1.85L53.75 1.18L57.52 0.67L61.50 0.30L65.78 0.07L71.00 0.00Z" fill="none" stroke-width="18.5" style="stroke:var(--ss-phone-glass)"></path></g></svg><div class="ss-phone__glass" style="padding:10px;border-radius:74px"><div class="ss-phone__window" style="width:402px;height:874px;clip-path:path(&#x27;M331.00 0.00L336.22 0.07L340.50 0.30L344.48 0.67L348.25 1.18L351.86 1.85L355.33 2.65L358.68 3.61L361.91 4.70L365.02 5.94L368.02 7.32L370.91 8.83L373.68 10.49L376.34 12.27L378.88 14.19L381.30 16.23L383.59 18.41L385.77 20.70L387.81 23.12L389.73 25.66L391.51 28.32L393.17 31.09L394.68 33.98L396.06 36.98L397.30 40.09L398.39 43.32L399.35 46.67L400.15 50.14L400.82 53.75L401.33 57.52L401.70 61.50L401.93 65.78L402.00 71.00L402.00 803.00L401.93 808.22L401.70 812.50L401.33 816.48L400.82 820.25L400.15 823.86L399.35 827.33L398.39 830.68L397.30 833.91L396.06 837.02L394.68 840.02L393.17 842.91L391.51 845.68L389.73 848.34L387.81 850.88L385.77 853.30L383.59 855.59L381.30 857.77L378.88 859.81L376.34 861.73L373.68 863.51L370.91 865.17L368.02 866.68L365.02 868.06L361.91 869.30L358.68 870.39L355.33 871.35L351.86 872.15L348.25 872.82L344.48 873.33L340.50 873.70L336.22 873.93L331.00 874.00L71.00 874.00L65.78 873.93L61.50 873.70L57.52 873.33L53.75 872.82L50.14 872.15L46.67 871.35L43.32 870.39L40.09 869.30L36.98 868.06L33.98 866.68L31.09 865.17L28.32 863.51L25.66 861.73L23.12 859.81L20.70 857.77L18.41 855.59L16.23 853.30L14.19 850.88L12.27 848.34L10.49 845.68L8.83 842.91L7.32 840.02L5.94 837.02L4.70 833.91L3.61 830.68L2.65 827.33L1.85 823.86L1.18 820.25L0.67 816.48L0.30 812.50L0.07 808.22L0.00 803.00L0.00 71.00L0.07 65.78L0.30 61.50L0.67 57.52L1.18 53.75L1.85 50.14L2.65 46.67L3.61 43.32L4.70 40.09L5.94 36.98L7.32 33.98L8.83 31.09L10.49 28.32L12.27 25.66L14.19 23.12L16.23 20.70L18.41 18.41L20.70 16.23L23.12 14.19L25.66 12.27L28.32 10.49L31.09 8.83L33.98 7.32L36.98 5.94L40.09 4.70L43.32 3.61L46.67 2.65L50.14 1.85L53.75 1.18L57.52 0.67L61.50 0.30L65.78 0.07L71.00 0.00Z&#x27;)"><div class="ss-phone__screen" style="width:402px;height:874px;transform:scale(1);--ss-screen-r:64px"><div class="ss-phone__status"><span class="ss-phone__time">9:41</span><span class="ss-phone__glyphs"><svg viewBox="0 0 20.33 13.67" width="20.33" height="13.67" class="ss-phone__glyph ss-phone__signal"><rect x="0" y="7.34" width="3.333" height="6.33" rx="1.667" fill="currentColor"></rect><rect x="5.667" y="5" width="3.333" height="8.67" rx="1.667" fill="currentColor"></rect><rect x="11.334" y="2.67" width="3.333" height="11" rx="1.667" fill="currentColor"></rect><rect x="17.000999999999998" y="0" width="3.333" height="13.67" rx="1.667" fill="currentColor"></rect></svg><svg viewBox="0 0 19.33 14.33" width="19.33" height="14.33" class="ss-phone__glyph ss-phone__wifi"><path fill-rule="evenodd" fill="currentColor" d="M0.415933 5.54283C0.902185 6.04412 1.66017 5.95818 2.27513 5.41393C4.30595 3.58064 6.83731 2.63535 9.66901 2.63535C12.5007 2.63535 15.0464 3.60928 17.0629 5.41393C17.6636 5.97251 18.4215 6.0298 18.9221 5.54283C19.4226 5.02722 19.4942 4.2538 18.9793 3.70954C16.8341 1.51819 13.3302 0 9.66901 0C6.00783 0 2.48965 1.53251 0.358727 3.72387C-0.156127 4.2538 -0.0989213 5.02722 0.415933 5.55715L0.415933 5.54283ZM3.94841 9.13779C4.50617 9.68205 5.22124 9.62476 5.85051 9.10915C6.88022 8.29276 8.25316 7.73418 9.66901 7.7485C11.0706 7.7485 12.4435 8.29276 13.4875 9.12347C14.1168 9.63908 14.8605 9.66773 15.4039 9.12347C15.9331 8.57921 16.0189 7.7485 15.4611 7.23289C14.0739 5.98683 11.9859 5.11315 9.68332 5.11315C7.38077 5.11315 5.27845 5.98683 3.9055 7.23289C3.41925 7.69121 3.31914 8.47896 3.96271 9.13779L3.94841 9.13779ZM8.72511 13.8929C9.34008 14.4801 9.98365 14.4801 10.5986 13.8929L11.757 12.7757C12.372 12.1742 12.5007 11.4151 11.7999 10.8995C11.2136 10.4841 10.4699 10.212 9.66901 10.212C8.86813 10.212 8.11015 10.4841 7.53809 10.9138C6.83731 11.4151 6.98033 12.1885 7.59529 12.7757L8.73942 13.8929L8.72511 13.8929Z"></path></svg><svg viewBox="0 0 29.33 13.67" width="29.33" height="13.67" class="ss-phone__glyph ss-phone__battery"><path fill="currentColor" d="M0 6.4C0 4.15979 0 3.03969 0.435974 2.18404C0.819467 1.43139 1.43139 0.819467 2.18404 0.435974C3.03969 0 4.15979 0 6.4 0L19.933 0C22.1732 0 23.2933 0 24.149 0.435974C24.9016 0.819467 25.5135 1.43139 25.897 2.18404C26.333 3.03969 26.333 4.15979 26.333 6.4L26.333 7.26666C26.333 9.50687 26.333 10.627 25.897 11.4826C25.5135 12.2353 24.9016 12.8472 24.149 13.2307C23.2933 13.6667 22.1732 13.6667 19.933 13.6667L6.4 13.6667C4.15979 13.6667 3.03969 13.6667 2.18404 13.2307C1.43139 12.8472 0.819467 12.2353 0.435974 11.4826C0 10.627 0 9.50687 0 7.26666L0 6.4Z"></path><path fill-rule="evenodd" fill="currentColor" transform="translate(27.33 4.33)" d="M0 0L0 5C0.601505 4.8625 2 3.75 2 2.5C2 1.25 0.601505 0.1375 0 0Z"></path></svg></span></div><span class="ss-phone__island"></span><div class="ss-phone__content" data-status="true"><img class="rl-phone-shot" src="assets/screens/phone.png" width="402" height="874" alt="The same layout on a phone" /></div><span class="ss-phone__home"></span></div></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const tl = gsap.timeline({ paused: true });
+
+      // Poses (film px; each device is placed by its top-left corner). The group keeps 192 px gutters at the
+      // sides, the titles' left edge.
+      const MAC_S1 = { x: 192, y: 264, scale: 1.0667 };
+      const MAC = { x: 192, y: 214, scale: 0.75 };
+      const TERM = { x: 600, y: 430, scale: 2.35 };
+      const IPAD = { x: 974, y: 590, scale: 0.62 };
+      const IPAD_FWD = { x: 192, y: 214, scale: 1.2632 };
+      const PHONE = { x: 1463, y: 214, scale: 0.62 };
+      const END = { x: 288, y: 370, scale: 0.7 };
+      const OFF_RIGHT = 2000;
+      const OFF_BOTTOM = 1180;
+      // The real drag clip: frame 1 is the press, frames 2-28 the eased drag (268 -> 380 px), frame 33 the release
+      const CLIP = 10.4;
+      const FRAME = 1 / 30;
+
+      // Opening states, set at once (a zero-length set at 0 on the paused timeline would not draw frame 0)
+      gsap.set(".rl-dev", { transformOrigin: "0 0" });
+      gsap.set("#world", { x: 0, y: 0, scale: 1 });
+      gsap.set("#mac", MAC_S1);
+      gsap.set("#term", { x: TERM.x, y: OFF_BOTTOM, scale: TERM.scale });
+      gsap.set("#ipad", { x: OFF_RIGHT, y: IPAD.y, scale: IPAD.scale });
+      gsap.set("#phone", { x: OFF_RIGHT + 120, y: PHONE.y, scale: PHONE.scale });
+      gsap.set("#term-cmd", { clipPath: "inset(0 100% 0 0)" });
+      gsap.set("#term-caret-a", { x: 0, opacity: 1 });
+      gsap.set("#term-caret-b", { opacity: 0 });
+      gsap.set(["#term-o1", "#term-o2", "#term-o3", "#term-o4", "#term-o5", "#term-o6"], { opacity: 0 });
+      gsap.set("#touch", { x: 268, y: 350 });
+      gsap.set("#touch-dot", { opacity: 0, scale: 0.7 });
+
+      // S2: the Mac steps back, the bridge starts beside it
+      tl.to("#mac", { ...MAC, duration: 0.8, ease: "power2.inOut" }, 2.45);
+      tl.to("#term", { y: TERM.y, duration: 0.9, ease: "expo.out" }, 2.75);
+      tl.to("#term-cmd", { clipPath: "inset(0 0% 0 0)", duration: 0.42, ease: "steps(17)" }, 3.35);
+      tl.to("#term-caret-a", { x: 17 * 7.2, duration: 0.42, ease: "steps(17)" }, 3.35);
+      tl.set("#term-caret-a", { opacity: 0 }, 3.85);
+      tl.to(["#term-o1", "#term-o2", "#term-o3", "#term-o4", "#term-o5", "#term-o6"], { opacity: 1, duration: 0.05, ease: "none", stagger: 0.09 }, 3.88);
+      tl.set("#term-caret-b", { opacity: 1 }, 4.4);
+
+      // S3: the terminal leaves, the iPad and the phone arrive with the same layout
+      tl.to("#term", { y: OFF_BOTTOM, duration: 0.45, ease: "power3.in" }, 6.1);
+      tl.to("#ipad", { x: IPAD.x, duration: 0.9, ease: "expo.out" }, 6.3);
+      tl.to("#phone", { x: PHONE.x, duration: 0.9, ease: "expo.out" }, 6.45);
+
+      // S4a: the iPad comes forward over the Mac; a finger drags its sidebar edge (the real frames play in the screen)
+      tl.to("#phone", { x: OFF_RIGHT + 120, duration: 0.35, ease: "power3.in" }, 9.25);
+      tl.to("#ipad", { ...IPAD_FWD, duration: 0.7, ease: "power2.inOut" }, 9.45);
+      tl.to("#touch-dot", { opacity: 1, scale: 1, duration: 0.15, ease: "power2.out" }, CLIP + FRAME - 0.15);
+      tl.to("#touch-dot", { scale: 0.82, duration: 0.1, ease: "power1.out" }, CLIP + FRAME);
+      tl.to("#touch", { x: 380, duration: 27 * FRAME, ease: "power2.inOut" }, CLIP + FRAME);
+      tl.to("#touch-dot", { scale: 1, duration: 0.12, ease: "power1.out" }, CLIP + 33 * FRAME);
+      tl.to("#touch-dot", { opacity: 0, duration: 0.4, ease: "power1.out" }, CLIP + 33 * FRAME + 0.02);
+
+      // S4b: the iPad steps back beside the Mac, which never changed
+      tl.to("#ipad", { ...IPAD, duration: 0.7, ease: "power2.inOut" }, 12.5);
+      tl.to("#phone", { x: PHONE.x, duration: 0.85, ease: "expo.out" }, 12.7);
+
+      // S5: the three screens settle under the name
+      tl.to("#world", { ...END, duration: 0.8, ease: "power2.inOut" }, 14.8);
+
+      window.__timelines["film"] = tl;
+    })();
+  </script>
+</template>

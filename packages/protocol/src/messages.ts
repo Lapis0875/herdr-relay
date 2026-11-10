@@ -14,7 +14,9 @@
  *   it did; `look` (theme/settings/fonts changed after `hello`), `clipboard` (a mod's `write_to_clipboard`) and `sound`
  *   (a mod's `playSound`, played on the device its call came from);
  * - bridge `hello.compat` (OSS-PLAN §2.3, T46): the running Herdr against the contract herdr-relay pins per version;
- * - client `layout` (set/reset this device's layout profile) and `ScreenGraph.overridden` (the nodes it resizes).
+ * - client `layout` (set/reset this device's layout profile) and `ScreenGraph.overridden` (the nodes it resizes);
+ * - client `push.test` (one test notification to this device's own push subscriptions, acked with what the push
+ *   services answered).
  *
  * Invariants (checked by the bridge, not expressible in a schema): `seq` strictly increases across `hello`,
  * `snapshot` and `patch` (a resumed `hello` repeats the client's `since`); a `patch` only names views the client has
@@ -277,6 +279,14 @@ export const PushSubSchema = define(
   () => object({ t: literal("push.sub"), id: requestId(), subscription: PushSubscriptionSchema }),
 );
 
+/**
+ * One test notification to this device's own push subscriptions, sent at once even while a device is visible; the ack's
+ * `message` says what each push service answered (`sent to 1 subscription (201)`, `no subscription for this device`,
+ * `push service answered 403: BadJwtToken`), `ok` = at least one accepted it. At most one per 5 s per device (else
+ * `ok:false, error:"refused"`). Allowed on `scope:"read"` devices: it reaches only this device.
+ */
+export const PushTestSchema = define("PushTest", () => object({ t: literal("push.test"), id: requestId() }));
+
 const layoutBase = { t: literal("layout"), id: requestId() };
 
 /** Most entries one layout `set` changes (a divider drag sets two: a weight pair). */
@@ -322,6 +332,7 @@ export const ClientMessageSchema = define("ClientMessage", () =>
     TermCloseSchema,
     VisibleSchema,
     PushSubSchema,
+    PushTestSchema,
     LayoutMessageSchema,
   ]));
 export type ClientMessage = Static<typeof ClientMessageSchema>;
@@ -333,6 +344,7 @@ export type TermOpen = Static<typeof TermOpenSchema>;
 export type TermClose = Static<typeof TermCloseSchema>;
 export type Visible = Static<typeof VisibleSchema>;
 export type PushSub = Static<typeof PushSubSchema>;
+export type PushTest = Static<typeof PushTestSchema>;
 export type LayoutMessage = Static<typeof LayoutMessageSchema>;
 
 export const CLIENT_MESSAGE_TYPES = [
@@ -344,6 +356,7 @@ export const CLIENT_MESSAGE_TYPES = [
   "term.close",
   "visible",
   "push.sub",
+  "push.test",
   "layout",
 ] as const;
 const _clientTypesComplete: Same<(typeof CLIENT_MESSAGE_TYPES)[number], ClientMessage["t"]> = true;

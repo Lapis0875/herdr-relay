@@ -1,15 +1,25 @@
 /**
  * "Device & Notifications": the connection (state, layout and how many of its sizes this device overrides, session,
  * this device's scope), resetting this device's layout profile (where the graph lets it resize something), the Web Push
- * switch (D11; "Needs you" / "Finished" from the bridge), the mod hosts the bridge reported, installing the app
- * (Android's install prompt; Home Screen on iPhone/iPad, which Web Push requires there) and the keyboard diagnostics.
+ * switch (D11; "Needs you" / "Finished" from the bridge) with a test notification and the service worker's state, the
+ * mod hosts the bridge reported, installing the app (Android's install prompt; Home Screen on iPhone/iPad, which Web
+ * Push requires there) and the keyboard diagnostics.
  */
 
-import { type ReactElement, useEffect, useMemo, useState } from "react";
+import { type ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import { type ScreenGraph, screenNodes } from "@herdr-relay/protocol";
 import { bridge } from "../client.ts";
 import { isAppleMobile, isStandalone } from "../env.ts";
-import { disablePush, enablePush, type PushStatus, pushStatus } from "../push.ts";
+import {
+  disablePush,
+  enablePush,
+  type PushDetails,
+  pushDetails,
+  type PushStatus,
+  pushStatus,
+  type PushTestResult,
+  sendTestPush,
+} from "../push.ts";
 import { setSoundMuted, useSoundMuted } from "../sound.ts";
 import { setState, useApp } from "../store.ts";
 import { Icon } from "./icons.tsx";
@@ -195,38 +205,99 @@ function LayoutSection(): ReactElement | null {
   );
 }
 
-const PUSH_TEXT: Record<PushStatus["kind"], string> = {
-  unsupported: "",
-  "needs-install":
-    "On iPhone and iPad, notifications work once the app is on the Home Screen: Share → Add to Home Screen.",
-  denied: "Notifications are blocked for this site. Allow them in the browser's site settings, then come back.",
-  off: "Get a notification when an agent needs you or finishes, while this device is not looking.",
-  on: "You get a notification when an agent needs you or finishes.",
-  error: "",
+function pushText(status: PushStatus): string {
+  switch (status.kind) {
+    case "unsupported":
+    case "error":
+      return status.why;
+    case "needs-install":
+      return "On iPad and iPhone, notifications work only in the Home Screen app. In Safari, tap Share → Add to Home " +
+        "Screen, then open herdr from the Home Screen and turn this on there.";
+    case "denied":
+      return isAppleMobile()
+        ? "Notifications are turned off for this app. Turn them on in Settings → Notifications → herdr (its Home " +
+          "Screen name) → Allow Notifications, then come back here."
+        : "Notifications are blocked for this site. Allow them in the browser’s site settings, then come back here.";
+    case "off":
+      return status.why ?? "Get a notification when an agent needs you or finishes, while this device is not looking.";
+    case "on":
+      return "You get a notification when an agent needs you or finishes.";
+  }
+}
+
+const WORKER_TEXT: Record<PushDetails["worker"], string> = {
+  unavailable: "Not available here",
+  none: "Not registered",
+  installing: "Installing…",
+  waiting: "Waiting to start",
+  active: "Active",
 };
 
+const PERMISSION_TEXT: Record<NotificationPermission, string> = {
+  granted: "Allowed",
+  denied: "Blocked",
+  default: "Not asked yet",
+};
+
+/**
+ * The Web Push switch, a test notification once it is on, and what the browser reports (service worker, permission,
+ * push service) for debugging. Re-read when the page comes back into view (after Settings) or a worker takes over.
+ */
 function PushSection(): ReactElement {
   const [status, setStatus] = useState<PushStatus | null>(null);
+  const [details, setDetails] = useState<PushDetails | null>(null);
   const [busy, setBusy] = useState(false);
+  const [test, setTest] = useState<PushTestResult | "sending" | null>(null);
+  const mounted = useRef(false);
+  /** Bumped when a toggle starts and ends: a read begun before that cannot overwrite the toggle's outcome. */
+  const turn = useRef(0);
+  const apply = (mine: number, s: PushStatus, d: PushDetails) => {
+    if (!mounted.current || mine !== turn.current) return;
+    setStatus(s);
+    setDetails(d);
+  };
+  const read = async () => {
+    const mine = turn.current;
+    const s = await pushStatus();
+    apply(mine, s, await pushDetails());
+  };
   useEffect(() => {
-    let live = true;
-    void pushStatus().then((s) => live && setStatus(s));
+    mounted.current = true;
+    const refresh = () => void read();
+    const onVisible = () => {
+      if (document.visibilityState === "visible") refresh();
+    };
+    refresh();
+    document.addEventListener("visibilitychange", onVisible);
+    const sw = isSecureContext && "serviceWorker" in navigator ? navigator.serviceWorker : null;
+    sw?.addEventListener("controllerchange", refresh);
+    void sw?.ready.then(refresh);
     return () => {
-      live = false;
+      mounted.current = false;
+      document.removeEventListener("visibilitychange", onVisible);
+      sw?.removeEventListener("controllerchange", refresh);
     };
   }, []);
   const on = status?.kind === "on";
   const usable = status !== null && (status.kind === "on" || status.kind === "off" || status.kind === "error");
-  const toggle = async () => {
+  const toggle = () => {
+    // First, in the tap itself: `enablePush` asks for permission before it awaits anything (iOS prompts only then).
+    const next = on ? disablePush() : enablePush();
+    turn.current++;
     setBusy(true);
-    setStatus(on ? await disablePush() : await enablePush());
-    setBusy(false);
+    setTest(null);
+    void next.then(async (s) => {
+      const d = await pushDetails();
+      if (!mounted.current) return;
+      setBusy(false);
+      apply(++turn.current, s, d);
+    });
   };
-  const text = status === null
-    ? "Checking…"
-    : status.kind === "unsupported" || status.kind === "error"
-    ? status.why
-    : PUSH_TEXT[status.kind];
+  const sendTest = async () => {
+    setTest("sending");
+    const result = await sendTestPush();
+    if (mounted.current) setTest(result);
+  };
   return (
     <section className="panel__section" aria-labelledby="panel-push">
       <h3 id="panel-push" className="panel__heading">Notifications</h3>
@@ -240,7 +311,7 @@ function PushSection(): ReactElement {
           aria-labelledby="push-label"
           aria-describedby="push-text"
           disabled={!usable || busy}
-          onClick={() => void toggle()}
+          onClick={toggle}
         >
           <span className="switch__thumb" aria-hidden="true" />
         </button>
@@ -251,8 +322,56 @@ function PushSection(): ReactElement {
         data-tone={status?.kind === "error" ? "error" : undefined}
         aria-live="polite"
       >
-        {busy ? "Working…" : text}
+        {busy ? "Working…" : status === null ? "Checking…" : pushText(status)}
       </p>
+      {on && !busy
+        ? (
+          <button type="button" className="button" disabled={test === "sending"} onClick={() => void sendTest()}>
+            <Icon name="bell" size={18} />
+            Send Test Notification
+          </button>
+        )
+        : null}
+      <p
+        className="panel__text"
+        role="status"
+        data-tone={test !== null && test !== "sending" && !test.ok ? "error" : undefined}
+      >
+        {test === "sending" ? "Sending…" : test?.text ?? ""}
+      </p>
+      {details
+        ? (
+          <dl className="facts">
+            <div className="facts__row">
+              <dt>Service worker</dt>
+              <dd>
+                {WORKER_TEXT[details.worker]}
+                {details.worker === "active" && !details.controlled
+                  ? <span className="facts__note">Not serving this page yet</span>
+                  : null}
+              </dd>
+            </div>
+            {details.scope
+              ? (
+                <div className="facts__row">
+                  <dt>Scope</dt>
+                  <dd className="facts__mono" translate="no">{details.scope}</dd>
+                </div>
+              )
+              : null}
+            <div className="facts__row">
+              <dt>Permission</dt>
+              <dd>{details.permission ? PERMISSION_TEXT[details.permission] : "Not available here"}</dd>
+            </div>
+            <div className="facts__row">
+              <dt>Push service</dt>
+              <dd>
+                {details.service ? <span className="facts__mono" translate="no">{details.service}</span> : "None"}
+              </dd>
+            </div>
+          </dl>
+        )
+        : null}
     </section>
   );
 }
