@@ -53,7 +53,8 @@
     "node_modules",
     "mods/*/gpui-kit.d.ts",
     "packages/web/test/__snapshots__",
-    "tools/device-tests"
+    "tools/device-tests",
+    "docs/media/intro-src"
   ],
   "tasks": {
     "check": "deno fmt --check && deno lint && deno check packages/protocol packages/bridge packages/web tools/release tools/scrub tools/fixtures tools/contract tools/sync-config",

@@ -22,3 +22,6 @@ mods/*/gpui-kit.d.ts
 # Playwright output
 tools/device-tests/test-results/
 tools/device-tests/playwright-report/
+
+# HyperFrames preview cache
+docs/media/intro-src/.thumbnails/

@@ -77,6 +77,9 @@ const BUILT: readonly string[] = ["packages/web/dist/", "packages/web/public/"];
 /** Under {@link BUILT} but not shipped: the widget stories (`bundle:dev`, served only with HERDR_RELAY_DEV). */
 const NOT_BUILT: readonly string[] = ["packages/web/dist/dev/"];
 
+/** Under {@link SHIPPED} but not shipped: the README's intro video and its HyperFrames source (web-only media). */
+const NOT_SHIPPED: readonly string[] = ["docs/media/"];
+
 /** Without these the release cannot run. */
 const REQUIRED: readonly string[] = [
   "LICENSE",
@@ -165,7 +168,7 @@ async function walk(dir: string): Promise<string[]> {
 
 async function collect(): Promise<Member[]> {
   const listed = (await git(["ls-files", "-z", "--cached", "--others", "--exclude-standard"])).split("\0");
-  const paths = new Set(listed.filter((p) => p && under(p, SHIPPED) && !under(p, BUILT)));
+  const paths = new Set(listed.filter((p) => p && under(p, SHIPPED) && !under(p, NOT_SHIPPED) && !under(p, BUILT)));
   for (const dir of BUILT) {
     for (const p of await walk(dir)) if (!under(p, NOT_BUILT)) paths.add(p);
   }
