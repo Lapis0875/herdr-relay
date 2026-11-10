@@ -1,0 +1,55 @@
+#!/bin/sh
+# herdr-relay launcher shim (OSS-PLAN §5, T44). Runs packages/bridge/bin/herdr-relay.ts from the repository this file
+# lives in, with the launcher's own permissions. Use it as `deno task herdr-relay …`, as ~/.local/bin/herdr-relay
+# (a symbolic link to this file), or from launchd (tools/launchd/).
+#
+# First it makes sure every module deno.lock pins for the launcher and the bridge is in the Deno cache (both run with
+# --cached-only); after an upgrade changed the lock it fetches them once (deno install --frozen: the lock is never
+# rewritten). Then it runs the launcher with:
+#   read   $HOME (state, Tailscale CLI candidates under it), the repository, the app home, the Tailscale app binary
+#   write  <state>, <appHome>/mods and <appHome>/data/herdr-relay (install-mod), nothing else
+#   net    127.0.0.1 (pair, doctor's bridge status)
+#   run    deno (the bridge, deno --version, the lock check), herdr-app and sandbox-exec (doctor), sw_vers, the
+#          Tailscale CLI (serve, doctor)
+# <appHome> is `install-mod --app-home DIR` when given, else HERDR_APP_HOME, else ~/.config/herdr-app.
+set -eu
+
+self=$0
+while [ -L "$self" ]; do
+  link=$(readlink "$self")
+  case $link in
+    /*) self=$link ;;
+    *) self=$(dirname "$self")/$link ;;
+  esac
+done
+repo=$(cd "$(dirname "$self")/../../.." && pwd -P)
+
+home=${HOME:?herdr-relay: HOME must be set}
+app_home=${HERDR_APP_HOME:-$home/.config/herdr-app}
+prev=
+for arg in "$@"; do
+  case $prev in --app-home) app_home=$arg ;; esac
+  case $arg in --app-home=*) app_home=${arg#--app-home=} ;; esac
+  prev=$arg
+done
+tailscale_app=/Applications/Tailscale.app/Contents/MacOS/Tailscale
+tailscale_set=${HERDR_RELAY_TAILSCALE_BIN:+,$HERDR_RELAY_TAILSCALE_BIN}
+
+cd "$repo"
+entries="packages/bridge/bin/herdr-relay.ts packages/bridge/src/main.ts"
+# shellcheck disable=SC2086 # two relative paths without spaces
+if ! deno install --entrypoint --cached-only --frozen --no-npm --no-check --lock=deno.lock $entries >/dev/null 2>&1; then
+  echo "herdr-relay: fetching the modules deno.lock pins (deno install --frozen)" >&2
+  # shellcheck disable=SC2086
+  deno install --entrypoint --frozen --no-npm --no-check --lock=deno.lock $entries
+fi
+
+exec deno run --no-prompt --cached-only --no-npm --lock=deno.lock --allow-import=jsr.io:443 \
+  --allow-read="$home,$repo,$app_home,$tailscale_app" \
+  --deny-read="$home/.ssh,$home/.gnupg,$home/.aws,$home/.config/gh,$home/Library/Keychains,$home/Library/Cookies" \
+  --allow-write="$home/.herdr/herdr-relay,$app_home/mods,$app_home/data/herdr-relay" \
+  --allow-net=127.0.0.1 \
+  --allow-env=HOME,TMPDIR,PATH,HERDR_APP_HOME,HERDR_RELAY_PORT,HERDR_RELAY_DEV,HERDR_RELAY_TAILSCALE_BIN \
+  --allow-sys=osRelease \
+  --allow-run="deno,herdr-app,sandbox-exec,/usr/bin/sw_vers,tailscale,$tailscale_app,$home$tailscale_app$tailscale_set" \
+  packages/bridge/bin/herdr-relay.ts "$@"

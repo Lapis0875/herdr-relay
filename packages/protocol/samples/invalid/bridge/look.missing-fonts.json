@@ -1,0 +1,5 @@
+{
+  "t": "look",
+  "theme": { "background": "#fafafa", "foreground": "#383a42" },
+  "settings": { "app": { "theme": "atom-one-light" } }
+}

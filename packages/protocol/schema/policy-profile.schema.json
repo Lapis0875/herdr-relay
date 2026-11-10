@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:herdr-relay:schema:policy-profile",
+  "title": "Policy profile file (one profile or a list)",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/PolicyProfile"
+    },
+    {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/PolicyProfile"
+      },
+      "minItems": 1
+    }
+  ],
+  "$defs": {
+    "PolicyProfile": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+        },
+        "folders": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+          },
+          "minItems": 1,
+          "description": "exact mod folder names this profile governs"
+        },
+        "$schema": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1000,
+          "description": "the highest wins for a folder several profiles name; default 0 (built-in) or 10 (user)"
+        },
+        "requires": {
+          "type": "object",
+          "properties": {
+            "herdr": {
+              "type": "string",
+              "pattern": "^(?:>=|<=|>|<|=)?\\d+\\.\\d+\\.\\d+(?: (?:>=|<=|>|<|=)?\\d+\\.\\d+\\.\\d+)*$",
+              "description": "a mismatch is logged; the profile still applies"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "reads": {
+          "type": "object",
+          "properties": {
+            "appHome": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^(?!(?:.*/)?\\.\\.?(?:/|$))(?:(?:[^/*{}\\\\\\x00]|\\{folder\\})+/)*(?:\\*\\*|(?:[^/{}\\\\\\x00]|\\{folder\\})+)$",
+                "maxLength": 512
+              }
+            },
+            "spaces": {
+              "type": "boolean",
+              "description": "the space folders; default true"
+            },
+            "extra": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^(?!(?:.*/)?\\.\\.?(?:/|$))(?:~|\\$cockpit\\.(?:cache|home))?/(?:(?:[^/*{}\\\\\\x00]|\\{folder\\})+/)*(?:\\*\\*|(?:[^/{}\\\\\\x00]|\\{folder\\})+)$",
+                "maxLength": 1024
+              }
+            }
+          },
+          "required": [],
+          "additionalProperties": false,
+          "description": "read roots besides the folder itself and data/<folder>"
+        },
+        "writes": {
+          "type": "object",
+          "properties": {
+            "appHome": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^(?!(?:.*/)?\\.\\.?(?:/|$))(?:(?:[^/*{}\\\\\\x00]|\\{folder\\})+/)*(?:\\*\\*|(?:[^/{}\\\\\\x00]|\\{folder\\})+)$",
+                "maxLength": 512
+              }
+            },
+            "extra": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^(?!(?:.*/)?\\.\\.?(?:/|$))(?:~|\\$cockpit\\.(?:cache|home))?/(?:(?:[^/*{}\\\\\\x00]|\\{folder\\})+/)*(?:\\*\\*|(?:[^/{}\\\\\\x00]|\\{folder\\})+)$",
+                "maxLength": 1024
+              }
+            }
+          },
+          "required": [],
+          "additionalProperties": false,
+          "description": "what this profile's runners write (only code-defined runners write); listed, not granted"
+        },
+        "exec": {
+          "type": "object",
+          "properties": {
+            "rows": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "E1",
+                  "E2",
+                  "E4",
+                  "E5",
+                  "E6",
+                  "E7",
+                  "E10",
+                  "E11",
+                  "E14",
+                  "E15"
+                ]
+              }
+            },
+            "git": {
+              "type": "object",
+              "properties": {
+                "gitDirUnderRoots": {
+                  "type": "boolean",
+                  "description": "E4 `--git-dir <dir>` with a value under the read roots"
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "scripts": {
+          "type": "object",
+          "additionalProperties": {
+            "enum": [
+              "lh-scan",
+              "sync"
+            ]
+          },
+          "propertyNames": {
+            "pattern": "^(?!(?:.*/)?\\.\\.?(?:/|$))mods/[A-Za-z0-9][A-Za-z0-9._-]*/(?:[^/*{}\\\\\\x00]+/)*[^/*{}\\\\\\x00]+$"
+          },
+          "description": "script path relative to <appHome> → runner (E1 lh-scan, E2 sync)"
+        },
+        "shLiterals": {
+          "type": "object",
+          "additionalProperties": {
+            "enum": [
+              "listing",
+              "picture-remote",
+              "picture-local"
+            ]
+          },
+          "propertyNames": {
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "description": "sha256 of an `sh -c` literal → its native replacement (E14 listing, E15 pictures)"
+        },
+        "net": {
+          "type": "object",
+          "properties": {
+            "hubPortFrom": {
+              "enum": [
+                "cockpit.json"
+              ]
+            },
+            "writes": {
+              "enum": [
+                "act",
+                "cockpit-hub"
+              ],
+              "description": "what net.write admits: act (default; a connected act device only) or cockpit-hub (each request by op)"
+            }
+          },
+          "required": [
+            "hubPortFrom"
+          ],
+          "additionalProperties": false,
+          "description": "net.connect to 127.0.0.1 at the cockpit hub's port"
+        },
+        "overlay": {
+          "enum": [
+            "device",
+            "host-only"
+          ],
+          "description": "default device"
+        }
+      },
+      "required": [
+        "id",
+        "folders"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

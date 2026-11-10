@@ -1,0 +1,17 @@
+{
+  "v": 1,
+  "layout": "main",
+  "class": "desktop",
+  "routes": [
+    {
+      "path": "/",
+      "node": "root",
+      "open": "root",
+      "mounted": true,
+      "screen": { "kind": "split", "id": "root", "axis": "row", "children": [] }
+    }
+  ],
+  "sheets": [],
+  "stack": ["/"],
+  "overridden": [""]
+}

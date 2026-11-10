@@ -1,0 +1,29 @@
+{
+  "t": "hello",
+  "v": 1,
+  "seq": 118,
+  "session": "s-9f2c",
+  "resumed": "yes",
+  "layout": { "name": "main", "tree": { "id": "root", "type": "row", "children": [] } },
+  "screens": {
+    "v": 1,
+    "layout": "main",
+    "class": "desktop",
+    "routes": [
+      {
+        "path": "/",
+        "node": "root",
+        "open": "root",
+        "mounted": true,
+        "screen": { "kind": "split", "id": "root", "axis": "row", "children": [] }
+      }
+    ],
+    "sheets": [],
+    "stack": ["/"]
+  },
+  "theme": {},
+  "settings": {},
+  "fonts": { "ui": "Geist", "mono": "JetBrains Mono", "terminal": "D2Coding" },
+  "scope": "act",
+  "hosts": []
+}

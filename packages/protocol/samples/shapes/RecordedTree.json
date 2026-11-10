@@ -1,0 +1,101 @@
+{
+  "tag": "v_flex",
+  "id": null,
+  "style": [
+    ["size_full"],
+    ["bg", "#1e2227"],
+    ["border_t", 1],
+    ["border_color", "#3a3f4b"],
+    ["px", 8],
+    ["pt", 4],
+    ["pb", 8],
+    ["text_size", 13]
+  ],
+  "handlers": [],
+  "children": [
+    {
+      "tag": "h_flex",
+      "id": "settings",
+      "style": [
+        ["h", 28],
+        ["px", 8],
+        ["gap", 9],
+        ["rounded", 8],
+        ["text_color", "#7f848e"],
+        ["cursor_pointer"],
+        ["truncate"],
+        ["tooltip", "Settings  cmd-,"]
+      ],
+      "states": {
+        "hover": [["bg", "#2f343e"], ["text_color", "#abb2bf"]]
+      },
+      "handlers": [
+        { "event": "on_click", "id": 1, "args": [] },
+        { "event": "on_mouse_down", "id": 2, "args": ["right"] }
+      ],
+      "children": [
+        {
+          "tag": "svg",
+          "id": null,
+          "style": [["size", 14], ["flex_none"]],
+          "handlers": [],
+          "children": [],
+          "props": { "src": "mods/workspace-chrome/settings.svg" }
+        },
+        { "text": "Settings" }
+      ]
+    },
+    {
+      "tag": "div",
+      "id": "live-dot",
+      "style": [
+        ["size", 6],
+        ["rounded_full"],
+        ["bg", "#98c379"],
+        ["loop", "opacity", { "from": 0.35, "to": 1, "period": 1200 }]
+      ],
+      "handlers": [],
+      "children": []
+    },
+    {
+      "tag": "div",
+      "id": "progress",
+      "style": [
+        ["relative"],
+        ["h", 4],
+        ["w", "62%"],
+        ["transition", "width", { "duration": 400, "easing": "ease-out" }]
+      ],
+      "handlers": [],
+      "children": [
+        {
+          "tag": "paint_path",
+          "style": [["absolute"], ["inset_0"]],
+          "handlers": [],
+          "children": [],
+          "props": {
+            "path": { "kind": "stroke", "width": 2, "ops": [["move_to", 0, "50%"], ["line_to", "100%", "50%"]] },
+            "paint": "#61afef"
+          }
+        }
+      ]
+    },
+    {
+      "tag": "Input",
+      "id": "search",
+      "style": [["w_full"], ["overflow_y_scrollbar"]],
+      "handlers": [{ "event": "on_key_down", "id": 3 }],
+      "children": [],
+      "props": { "state": "InputState:4", "placeholder": "Search" }
+    },
+    {
+      "tag": "TextView",
+      "id": "notes",
+      "style": [],
+      "handlers": [{ "event": "on_link_click", "id": 5 }],
+      "children": [],
+      "props": { "format": "markdown", "source": "See [the queue](https://github.com/example/example)" }
+    },
+    { "entity": "lstack-herdr-cockpit:queue#2" }
+  ]
+}

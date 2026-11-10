@@ -1,0 +1,5 @@
+{
+  "t": "patch",
+  "seq": 3,
+  "views": [{ "view": "tabs:tabs", "ops": [{ "op": "remove", "path": "children/1" }] }]
+}

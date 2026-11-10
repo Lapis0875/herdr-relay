@@ -1,0 +1,10 @@
+{
+  "ts": 1762650000123,
+  "folder": "files",
+  "method": "exec",
+  "argv": ["git", "-C", "/Users/sam/work/example", "status", "--porcelain"],
+  "decision": "allow",
+  "rule": "E4",
+  "session": "s-9f2c",
+  "profile": "herdr-shipped"
+}

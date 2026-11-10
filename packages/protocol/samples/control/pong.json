@@ -1,0 +1,6 @@
+{
+  "t": "pong",
+  "n": 17,
+  "copies": ["lstack-herdr-cockpit:sidebar", "lstack-herdr-cockpit:activity", "lstack-herdr-cockpit:pane:p1"],
+  "heap": 18874368
+}

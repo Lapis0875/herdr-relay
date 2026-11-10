@@ -1,0 +1,465 @@
+{
+  "k": "el",
+  "tag": "v_flex",
+  "id": "desktop",
+  "style": {
+    "display": "flex",
+    "flexDirection": "column",
+    "width": "100%",
+    "height": "100%",
+    "paddingTop": 6,
+    "alignItems": "center",
+    "overflowY": "auto",
+    "fontFamily": "Pixelated MS Sans Serif",
+    "fontSize": 11,
+    "lineHeight": "13px",
+    "color": "#000000"
+  },
+  "on": {
+    "mousedown": {
+      "left": 19,
+      "right": 20
+    }
+  },
+  "children": [
+    {
+      "k": "el",
+      "tag": "v_flex",
+      "id": "dk-computer",
+      "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "width": 76,
+        "paddingTop": 4,
+        "paddingBottom": 6,
+        "alignItems": "center",
+        "rowGap": 3,
+        "columnGap": 3
+      },
+      "on": {
+        "mousedown": {
+          "left": 1,
+          "right": 3
+        },
+        "click": 2
+      },
+      "children": [
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "position": "relative"
+          },
+          "children": [
+            {
+              "k": "image",
+              "src": "mods/win98/icons/computer.svg",
+              "style": {
+                "flexGrow": 0,
+                "flexShrink": 0,
+                "flexBasis": "auto",
+                "width": 32,
+                "height": 32
+              }
+            }
+          ]
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "maxWidth": 74,
+            "paddingLeft": 1,
+            "paddingRight": 1,
+            "textAlign": "center",
+            "color": "#ffffff",
+            "borderTopWidth": 1,
+            "borderRightWidth": 1,
+            "borderBottomWidth": 1,
+            "borderLeftWidth": 1,
+            "borderColor": "#00000000",
+            "borderStyle": "solid"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "My Computer"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "v_flex",
+      "id": "dk-bin",
+      "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "width": 76,
+        "paddingTop": 4,
+        "paddingBottom": 6,
+        "alignItems": "center",
+        "rowGap": 3,
+        "columnGap": 3
+      },
+      "on": {
+        "mousedown": {
+          "left": 4,
+          "right": 6
+        },
+        "click": 5
+      },
+      "children": [
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "position": "relative"
+          },
+          "children": [
+            {
+              "k": "image",
+              "src": "mods/win98/icons/bin.svg",
+              "style": {
+                "flexGrow": 0,
+                "flexShrink": 0,
+                "flexBasis": "auto",
+                "width": 32,
+                "height": 32
+              }
+            }
+          ]
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "maxWidth": 74,
+            "paddingLeft": 1,
+            "paddingRight": 1,
+            "textAlign": "center",
+            "color": "#ffffff",
+            "borderTopWidth": 1,
+            "borderRightWidth": 1,
+            "borderBottomWidth": 1,
+            "borderLeftWidth": 1,
+            "borderColor": "#00000000",
+            "borderStyle": "solid"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "Recycle Bin"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "v_flex",
+      "id": "dk-s1",
+      "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "width": 76,
+        "paddingTop": 4,
+        "paddingBottom": 6,
+        "alignItems": "center",
+        "rowGap": 3,
+        "columnGap": 3
+      },
+      "on": {
+        "mousedown": {
+          "left": 7,
+          "right": 9
+        },
+        "click": 8
+      },
+      "children": [
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "position": "relative"
+          },
+          "children": [
+            {
+              "k": "image",
+              "src": "mods/win98/icons/folder-open.svg",
+              "style": {
+                "flexGrow": 0,
+                "flexShrink": 0,
+                "flexBasis": "auto",
+                "width": 32,
+                "height": 32
+              }
+            },
+            {
+              "k": "el",
+              "tag": "div",
+              "style": {
+                "position": "absolute",
+                "top": 0,
+                "left": 0,
+                "width": "100%",
+                "height": "100%",
+                "backgroundColor": "#00008060"
+              }
+            }
+          ]
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "maxWidth": 74,
+            "paddingLeft": 1,
+            "paddingRight": 1,
+            "textAlign": "center",
+            "color": "#ffffff",
+            "borderTopWidth": 1,
+            "borderRightWidth": 1,
+            "borderBottomWidth": 1,
+            "borderLeftWidth": 1,
+            "borderColor": "#ffff00",
+            "backgroundColor": "#000080",
+            "borderStyle": "solid"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "Project"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "v_flex",
+      "id": "dk-mines",
+      "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "width": 76,
+        "paddingTop": 4,
+        "paddingBottom": 6,
+        "alignItems": "center",
+        "rowGap": 3,
+        "columnGap": 3
+      },
+      "on": {
+        "mousedown": {
+          "left": 10,
+          "right": 12
+        },
+        "click": 11
+      },
+      "children": [
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "position": "relative"
+          },
+          "children": [
+            {
+              "k": "image",
+              "src": "mods/win98/icons/mines.svg",
+              "style": {
+                "flexGrow": 0,
+                "flexShrink": 0,
+                "flexBasis": "auto",
+                "width": 32,
+                "height": 32
+              }
+            }
+          ]
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "maxWidth": 74,
+            "paddingLeft": 1,
+            "paddingRight": 1,
+            "textAlign": "center",
+            "color": "#ffffff",
+            "borderTopWidth": 1,
+            "borderRightWidth": 1,
+            "borderBottomWidth": 1,
+            "borderLeftWidth": 1,
+            "borderColor": "#00000000",
+            "borderStyle": "solid"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "Mines"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "v_flex",
+      "id": "dk-sol",
+      "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "width": 76,
+        "paddingTop": 4,
+        "paddingBottom": 6,
+        "alignItems": "center",
+        "rowGap": 3,
+        "columnGap": 3
+      },
+      "on": {
+        "mousedown": {
+          "left": 13,
+          "right": 15
+        },
+        "click": 14
+      },
+      "children": [
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "position": "relative"
+          },
+          "children": [
+            {
+              "k": "image",
+              "src": "mods/win98/icons/sol.svg",
+              "style": {
+                "flexGrow": 0,
+                "flexShrink": 0,
+                "flexBasis": "auto",
+                "width": 32,
+                "height": 32
+              }
+            }
+          ]
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "maxWidth": 74,
+            "paddingLeft": 1,
+            "paddingRight": 1,
+            "textAlign": "center",
+            "color": "#ffffff",
+            "borderTopWidth": 1,
+            "borderRightWidth": 1,
+            "borderBottomWidth": 1,
+            "borderLeftWidth": 1,
+            "borderColor": "#00000000",
+            "borderStyle": "solid"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "Solitaire"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "v_flex",
+      "id": "dk-net",
+      "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "width": 76,
+        "paddingTop": 4,
+        "paddingBottom": 6,
+        "alignItems": "center",
+        "rowGap": 3,
+        "columnGap": 3
+      },
+      "on": {
+        "mousedown": {
+          "left": 16,
+          "right": 18
+        },
+        "click": 17
+      },
+      "children": [
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "position": "relative"
+          },
+          "children": [
+            {
+              "k": "image",
+              "src": "mods/win98/icons/network.svg",
+              "style": {
+                "flexGrow": 0,
+                "flexShrink": 0,
+                "flexBasis": "auto",
+                "width": 32,
+                "height": 32
+              }
+            }
+          ]
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "maxWidth": 74,
+            "paddingLeft": 1,
+            "paddingRight": 1,
+            "textAlign": "center",
+            "color": "#ffffff",
+            "borderTopWidth": 1,
+            "borderRightWidth": 1,
+            "borderBottomWidth": 1,
+            "borderLeftWidth": 1,
+            "borderColor": "#00000000",
+            "borderStyle": "solid"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "Network Neighborhood"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

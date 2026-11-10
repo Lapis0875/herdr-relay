@@ -1,0 +1,13 @@
+{
+  "workspace": [],
+  "imports": {
+    "gpui-kit": "./src/shims/gpui-kit.js",
+    "gpui": "./src/shims/gpui-kit.js",
+    "gpui-base": "./src/shims/gpui-base.js",
+    "herdr": "./src/shims/herdr.js",
+    "net": "./src/shims/net.js",
+    "buffer": "./src/shims/buffer.js"
+  },
+  "lock": false,
+  "fmt": { "lineWidth": 120 }
+}

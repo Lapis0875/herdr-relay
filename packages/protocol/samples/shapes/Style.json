@@ -1,0 +1,14 @@
+{
+  "display": "flex",
+  "flexDirection": "row",
+  "alignItems": "center",
+  "paddingLeft": 8,
+  "paddingRight": 8,
+  "rowGap": 9,
+  "columnGap": 9,
+  "width": "33.3333%",
+  "lineHeight": 1.45,
+  "backgroundColor": "#2f343e",
+  "textOverflow": "ellipsis",
+  "--herdr-ellipsis": "middle"
+}

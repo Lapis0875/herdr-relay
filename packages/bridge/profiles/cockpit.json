@@ -1,0 +1,25 @@
+{
+  "$schema": "../../protocol/schema/policy-profile.schema.json",
+  "id": "cockpit",
+  "description": "The cockpit mod: its hub (E10 `cockpit hub start`, net to hub.json's port, each hub request decided by its op: reads for anyone, actions for act devices, Herdr-window changes for no one), pictures (E15 into data/cockpit/show), links on the device, git reads, hc reads; reads cockpit.json, cockpit's config and cache.",
+  "folders": ["cockpit"],
+  "reads": {
+    "appHome": ["cockpit.json", "data/cockpit/**"],
+    "spaces": true,
+    "extra": [
+      "~/.config/cockpit/config.json",
+      "$cockpit.home/.config/cockpit/config.json",
+      "$cockpit.cache/**"
+    ]
+  },
+  "writes": { "appHome": ["data/cockpit/show/**"] },
+  "exec": { "rows": ["E4", "E6", "E7", "E10", "E11", "E15"] },
+  "shLiterals": {
+    "36d9dd22119b98c3137469d3a81cb794dddef92e72b28b4927a743832c5f3077": "picture-remote",
+    "8ccdbeba4e41c336970ebe67520434e3d3f04864fb2a8d97e8fbec96d15dd0c4": "picture-remote",
+    "74851efd9c03019f3b5f242f13e1e192a4962adbd8ffcd621eca9a282156aecc": "picture-local",
+    "14b0ce7719094c3578c5ba7a24960b9c1b28c8e8ab17f10587c1ca7066fae43c": "picture-local"
+  },
+  "net": { "hubPortFrom": "cockpit.json", "writes": "cockpit-hub" },
+  "overlay": "device"
+}

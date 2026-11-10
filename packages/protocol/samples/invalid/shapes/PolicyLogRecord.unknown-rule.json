@@ -1,0 +1,8 @@
+{
+  "ts": 1762650000123,
+  "folder": "files",
+  "method": "exec",
+  "argv": ["curl", "https://example.com"],
+  "decision": "refuse",
+  "rule": "E17"
+}

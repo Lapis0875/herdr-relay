@@ -1,0 +1,10 @@
+{
+  "t": "look",
+  "theme": { "background": "#fafafa", "foreground": "#383a42", "chrome": "#eaeaeb", "border": "#d3d3d4" },
+  "settings": { "app": { "theme": "atom-one-light" }, "font": { "family": "D2Coding ligature", "size": 13 } },
+  "fonts": {
+    "ui": "Geist, Pretendard, sans-serif",
+    "mono": "JetBrains Mono, monospace",
+    "terminal": "D2Coding, monospace"
+  }
+}

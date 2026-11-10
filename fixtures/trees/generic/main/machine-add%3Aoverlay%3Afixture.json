@@ -1,0 +1,221 @@
+{
+  "k": "el",
+  "tag": "v_flex",
+  "id": "machine-add",
+  "style": {
+    "display": "flex",
+    "flexDirection": "column",
+    "width": "100%",
+    "minHeight": 0,
+    "paddingTop": 18,
+    "paddingRight": 18,
+    "paddingBottom": 18,
+    "paddingLeft": 18,
+    "backgroundColor": "#2c313a",
+    "color": "#abb2bf"
+  },
+  "on": {
+    "keydown": 1
+  },
+  "attrs": {
+    "track_focus": {
+      "focus_handle": 1
+    }
+  },
+  "children": [
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center"
+      },
+      "children": [
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "flexGrow": 1,
+            "flexShrink": 1,
+            "flexBasis": "0%",
+            "fontSize": 15,
+            "fontWeight": 600
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "Add a machine"
+            }
+          ]
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "fontSize": 11,
+            "color": "#5c6370"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "Esc"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "div",
+      "style": {
+        "paddingTop": 6,
+        "fontSize": 12.8,
+        "lineHeight": "19px",
+        "color": "#7f848e"
+      },
+      "children": [
+        {
+          "k": "text",
+          "style": {},
+          "text": "A VPS, a Mac mini, a box at home: Herdr reaches it over ssh, and agents there keep running while your laptop sleeps."
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "div",
+      "style": {
+        "paddingTop": 16,
+        "paddingBottom": 6,
+        "fontSize": 11.5,
+        "fontWeight": 500,
+        "color": "#5c6370"
+      },
+      "children": [
+        {
+          "k": "text",
+          "style": {},
+          "text": "Your ssh config lists no hosts"
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "v_flex",
+      "id": "ma-hosts",
+      "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "maxHeight": 280,
+        "minHeight": 0,
+        "flexShrink": 1,
+        "overflowY": "auto"
+      }
+    },
+    {
+      "k": "el",
+      "tag": "div",
+      "style": {
+        "paddingTop": 14,
+        "paddingBottom": 6,
+        "fontSize": 11.5,
+        "fontWeight": 500,
+        "color": "#5c6370"
+      },
+      "children": [
+        {
+          "k": "text",
+          "style": {},
+          "text": "Or type how ssh reaches it"
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "rowGap": 8,
+        "columnGap": 8
+      },
+      "children": [
+        {
+          "k": "el",
+          "tag": "Input",
+          "style": {
+            "flexGrow": 1,
+            "flexShrink": 1,
+            "flexBasis": "0%",
+            "height": 34,
+            "paddingLeft": 10,
+            "paddingRight": 10,
+            "rowGap": 6,
+            "columnGap": 6,
+            "alignItems": "center",
+            "borderTopLeftRadius": 8,
+            "borderTopRightRadius": 8,
+            "borderBottomRightRadius": 8,
+            "borderBottomLeftRadius": 8,
+            "borderTopWidth": 1,
+            "borderRightWidth": 1,
+            "borderBottomWidth": 1,
+            "borderLeftWidth": 1,
+            "borderColor": "#61afef",
+            "backgroundColor": "#21252b",
+            "fontSize": 13,
+            "color": "#abb2bf",
+            "borderStyle": "solid"
+          },
+          "on": {
+            "change": 2
+          },
+          "widget": {
+            "type": "input",
+            "state": "InputState:1",
+            "props": {
+              "placeholder": "user@host",
+              "value": ""
+            }
+          }
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "id": "ma-add-typed",
+          "style": {
+            "height": 34,
+            "paddingLeft": 14,
+            "paddingRight": 14,
+            "display": "flex",
+            "alignItems": "center",
+            "borderTopLeftRadius": 8,
+            "borderTopRightRadius": 8,
+            "borderBottomRightRadius": 8,
+            "borderBottomLeftRadius": 8,
+            "backgroundColor": "#abb2bf",
+            "color": "#21252b",
+            "fontSize": 12.5,
+            "fontWeight": 500,
+            "opacity": 0.4,
+            "cursor": "pointer"
+          },
+          "on": {
+            "click": 3
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "Add"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

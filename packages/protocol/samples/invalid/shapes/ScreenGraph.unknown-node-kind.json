@@ -1,0 +1,10 @@
+{
+  "v": 1,
+  "layout": "main",
+  "class": "phone",
+  "routes": [
+    { "path": "/", "node": "root", "open": "root", "mounted": true, "screen": { "kind": "carousel", "id": "root" } }
+  ],
+  "sheets": [],
+  "stack": ["/"]
+}

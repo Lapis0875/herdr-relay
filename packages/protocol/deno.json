@@ -1,0 +1,8 @@
+{
+  "name": "@herdr-relay/protocol",
+  "version": "0.0.0",
+  "exports": "./mod.ts",
+  "tasks": {
+    "schema": "deno run --allow-read=schema --allow-write=schema scripts/gen-schema.ts && deno fmt schema"
+  }
+}

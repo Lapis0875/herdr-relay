@@ -1,0 +1,53 @@
+# Release (docs/OSS-PLAN.md §7.4 `release`, T43; decision O4). On a `v<version>` tag: fonts, device app bundle, the
+# tarball and its sha256 (tools/release/build.ts; the tag must name CHANGELOG.md's version), then a GitHub release
+# with both files and the version's CHANGELOG section as its text. `deno task release:dry` runs the same build
+# locally without a tag and uploads nothing.
+#
+# Not run here: `herdr-app check mods/herdr-relay-mirror` (needs the Herdr app; Main-side before tagging).
+
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
+        with:
+          deno-version: 2.9.8
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/Library/Caches/deno
+          key: deno-${{ runner.os }}-${{ hashFiles('deno.lock') }}
+          restore-keys: deno-${{ runner.os }}-
+      - run: deno install --frozen
+      - id: fonts
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: packages/web/public/fonts
+          key: fonts-${{ hashFiles('packages/web/**/fonts.manifest.json') }}
+      - if: steps.fonts.outputs.cache-hit != 'true'
+        run: deno task --cwd packages/web fonts
+      - name: Build the tarball
+        run: deno task bundle:release --tag "$GITHUB_REF_NAME"
+      - name: Publish the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=${GITHUB_REF_NAME#v}
+          gh release create "$GITHUB_REF_NAME" --verify-tag --title "herdr-relay $version" \
+            --notes-file ".tmp/release/herdr-relay-$version.notes.md" \
+            ".tmp/release/herdr-relay-$version.tar.gz" \
+            ".tmp/release/herdr-relay-$version.tar.gz.sha256"

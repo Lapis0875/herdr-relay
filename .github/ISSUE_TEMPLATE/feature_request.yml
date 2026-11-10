@@ -1,0 +1,26 @@
+name: Feature or mod support request
+description: Ask for a feature, or for a mod that does not work through herdr-relay yet.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What you want to do
+      description: The task on your phone or tablet, and what stops you today.
+    validations:
+      required: true
+  - type: input
+    id: mod
+    attributes:
+      label: Mod involved (if any)
+      description: Name and link. If it needs exec, hc, more reads or network, say which calls it makes.
+  - type: textarea
+    id: idea
+    attributes:
+      label: How it could work
+  - type: checkboxes
+    id: profile
+    attributes:
+      label: Profiles
+      options:
+        - label: I read docs/PROFILES.md, and a policy profile cannot do this.

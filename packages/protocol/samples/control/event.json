@@ -1,0 +1,13 @@
+{
+  "t": "event",
+  "copy": "lstack-herdr-cockpit:activity",
+  "handler": 7,
+  "n": 12,
+  "args": [
+    {
+      "click_count": 1,
+      "modifiers": { "shift": false, "control": false, "alt": false, "platform": false, "function": false }
+    }
+  ],
+  "origin": { "session": "s-9f2c" }
+}

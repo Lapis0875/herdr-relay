@@ -1,0 +1,24 @@
+# npm packages materialised by "nodeModulesDir": "auto" (root and tools/device-tests)
+node_modules/
+
+# test scratch (deno task test --allow-write=./.tmp) and device screenshots (.tmp/devices/)
+.tmp/
+
+# web build output, served by the bridge
+packages/web/dist/
+
+# font binaries are fetched by `deno task fonts` (packages/web/fonts.manifest.json); licenses are committed
+packages/web/public/fonts/*/*
+!packages/web/public/fonts/*/OFL.txt
+
+.DS_Store
+
+# Personal fixture copies must never be published.
+fixtures/private/
+
+# herdr-app check writes this into every checked mod folder
+mods/*/gpui-kit.d.ts
+
+# Playwright output
+tools/device-tests/test-results/
+tools/device-tests/playwright-report/

@@ -1,0 +1,48 @@
+{
+  "t": "view.tree",
+  "view": "workspace-chrome:sidebar-footer",
+  "tree": {
+    "k": "el",
+    "tag": "v_flex",
+    "style": { "display": "flex", "flexDirection": "column", "width": "100%", "height": "100%", "paddingLeft": 8 },
+    "children": [
+      {
+        "k": "el",
+        "tag": "h_flex",
+        "id": "settings",
+        "style": {
+          "display": "flex",
+          "flexDirection": "row",
+          "alignItems": "center",
+          "height": 28,
+          "cursor": "pointer"
+        },
+        "states": { "hover": { "backgroundColor": "#2f343e" } },
+        "on": { "click": 1, "mousedown": { "right": 2 } },
+        "attrs": { "tooltip": "Settings  cmd-," },
+        "children": [
+          {
+            "k": "svg",
+            "src": "mods/workspace-chrome/settings.svg",
+            "style": { "width": 14, "height": 14 },
+            "anim": { "spin": 900 }
+          },
+          { "k": "text", "style": {}, "text": "Settings" }
+        ]
+      },
+      {
+        "k": "el",
+        "tag": "TextView",
+        "id": "notes",
+        "style": {},
+        "on": { "link": 3 },
+        "widget": {
+          "type": "markdown",
+          "state": "notes",
+          "props": { "source": "**2** agents need you — [queue](https://github.com/example/example)" }
+        }
+      },
+      { "k": "error", "style": {}, "reason": "host exited 5 times in 10 minutes", "folder": "changes" }
+    ]
+  }
+}

@@ -1,0 +1,1 @@
+{ "t": "layout", "id": 7, "action": "set", "changes": [{ "node": "sidebar", "size": { "px": 320, "weight": 1 } }] }

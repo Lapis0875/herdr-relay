@@ -1,0 +1,41 @@
+{
+  "$schema": "../../protocol/schema/policy-profile.schema.json",
+  "id": "lstack-herdr",
+  "description": "lstack-herdr (source) and lstack-herdr-cockpit (its generated cockpit fork): everything the cockpit profile allows plus the lh-scan and sync scripts (E1, E2 per U2) and the files listing; reads all of appHome, the spaces, cockpit's config and cache and ~/.cache/lstack-herdr — the read roots and rows before profiles.",
+  "folders": ["lstack-herdr", "lstack-herdr-cockpit"],
+  "reads": {
+    "appHome": ["**"],
+    "spaces": true,
+    "extra": [
+      "~/.config/cockpit/config.json",
+      "$cockpit.home/.config/cockpit/config.json",
+      "$cockpit.cache/**",
+      "~/.cache/lstack-herdr/**"
+    ]
+  },
+  "writes": {
+    "appHome": [
+      "data/cockpit/show/**",
+      "mods/lstack-herdr-cockpit/**",
+      "layouts/lstack-herdr.json",
+      "layouts/lstack-herdr.svg",
+      "keys.json"
+    ],
+    "extra": ["~/.cache/lstack-herdr/**"]
+  },
+  "exec": { "rows": ["E1", "E2", "E4", "E6", "E7", "E10", "E11", "E14", "E15"] },
+  "scripts": {
+    "mods/lstack-herdr-cockpit/lh-scan.mjs": "lh-scan",
+    "mods/lstack-herdr/components/lh-scan.mjs": "lh-scan",
+    "mods/lstack-herdr/sync.mjs": "sync"
+  },
+  "shLiterals": {
+    "a3163594cfb779a6a5beefd7c0aeb4a6838b8fce63061c24c245bbb6513d4231": "listing",
+    "36d9dd22119b98c3137469d3a81cb794dddef92e72b28b4927a743832c5f3077": "picture-remote",
+    "8ccdbeba4e41c336970ebe67520434e3d3f04864fb2a8d97e8fbec96d15dd0c4": "picture-remote",
+    "74851efd9c03019f3b5f242f13e1e192a4962adbd8ffcd621eca9a282156aecc": "picture-local",
+    "14b0ce7719094c3578c5ba7a24960b9c1b28c8e8ab17f10587c1ca7066fae43c": "picture-local"
+  },
+  "net": { "hubPortFrom": "cockpit.json", "writes": "cockpit-hub" },
+  "overlay": "device"
+}

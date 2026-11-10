@@ -1,0 +1,2920 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:herdr-relay:schema:bridge-message",
+  "title": "Bridge → client WebSocket text message",
+  "$ref": "#/$defs/BridgeMessage",
+  "$defs": {
+    "Ack": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "ack"
+        },
+        "id": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "client-chosen; echoed by ack"
+        },
+        "ok": {
+          "type": "boolean"
+        },
+        "error": {
+          "enum": [
+            "read-only-device",
+            "structural",
+            "refused",
+            "stale-handler",
+            "host-down"
+          ]
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "t",
+        "id",
+        "ok"
+      ],
+      "additionalProperties": false
+    },
+    "AgentInfo": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "pane": {
+          "type": "string"
+        },
+        "space": {
+          "type": "string"
+        },
+        "space_name": {
+          "type": "string"
+        },
+        "tab": {
+          "type": "string"
+        },
+        "tab_index": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "tab_name": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/Status"
+        },
+        "app": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "program": {
+          "$ref": "#/$defs/Program"
+        },
+        "title": {
+          "type": "string"
+        },
+        "seq": {
+          "type": "number"
+        },
+        "pinned": {
+          "type": "boolean"
+        },
+        "focused": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "address",
+        "pane",
+        "space",
+        "space_name",
+        "tab",
+        "tab_index",
+        "tab_name",
+        "status",
+        "app",
+        "program",
+        "title",
+        "seq",
+        "pinned",
+        "focused"
+      ],
+      "additionalProperties": false
+    },
+    "Anim": {
+      "type": "object",
+      "properties": {
+        "spin": {
+          "type": "number",
+          "minimum": 100,
+          "description": "ms per turn"
+        },
+        "loop": {
+          "$ref": "#/$defs/LoopAnimation"
+        },
+        "transition": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "$ref": "#/$defs/MotionProperty"
+              },
+              {
+                "$ref": "#/$defs/TransitionPolicy"
+              }
+            ],
+            "items": false,
+            "minItems": 2
+          }
+        },
+        "frames": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "number",
+              "minimum": 16,
+              "description": "ms per frame"
+            }
+          ],
+          "items": false,
+          "minItems": 2
+        },
+        "spring": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "$ref": "#/$defs/MotionProperty"
+              },
+              {
+                "$ref": "#/$defs/SpringPolicy"
+              }
+            ],
+            "items": false,
+            "minItems": 2
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "Background": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "solid"
+            },
+            "color": {
+              "$ref": "#/$defs/Color"
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "color_space": {
+              "enum": [
+                "srgb",
+                "oklab"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "color"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "linear_gradient"
+            },
+            "angle": {
+              "type": "number"
+            },
+            "from": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Color"
+                },
+                {
+                  "$ref": "#/$defs/BackgroundStop"
+                }
+              ]
+            },
+            "to": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Color"
+                },
+                {
+                  "$ref": "#/$defs/BackgroundStop"
+                }
+              ]
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "color_space": {
+              "enum": [
+                "srgb",
+                "oklab"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "angle",
+            "from",
+            "to"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "pattern_slash"
+            },
+            "color": {
+              "$ref": "#/$defs/Color"
+            },
+            "width": {
+              "type": "number"
+            },
+            "interval": {
+              "type": "number"
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "color_space": {
+              "enum": [
+                "srgb",
+                "oklab"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "color",
+            "width",
+            "interval"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "checkerboard"
+            },
+            "color": {
+              "$ref": "#/$defs/Color"
+            },
+            "size": {
+              "type": "number"
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "color_space": {
+              "enum": [
+                "srgb",
+                "oklab"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "color",
+            "size"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "discriminator": {
+        "propertyName": "kind"
+      }
+    },
+    "BackgroundStop": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "$ref": "#/$defs/Color"
+        },
+        "percentage": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "color",
+        "percentage"
+      ],
+      "additionalProperties": false
+    },
+    "BridgeHello": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "hello"
+        },
+        "v": {
+          "const": 1
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "layout": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "tree": {
+              "$ref": "#/$defs/LayoutNode"
+            }
+          },
+          "required": [
+            "name",
+            "tree"
+          ],
+          "additionalProperties": false
+        },
+        "screens": {
+          "$ref": "#/$defs/ScreenGraph"
+        },
+        "theme": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "theme colour name → #rrggbb[aa]"
+        },
+        "settings": {
+          "$ref": "#/$defs/JsonObject"
+        },
+        "fonts": {
+          "$ref": "#/$defs/Fonts"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "hosts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HostStatus"
+          }
+        },
+        "resumed": {
+          "type": "boolean"
+        },
+        "compat": {
+          "$ref": "#/$defs/HelloCompat"
+        }
+      },
+      "required": [
+        "t",
+        "v",
+        "seq",
+        "session",
+        "layout",
+        "screens",
+        "theme",
+        "settings",
+        "fonts",
+        "scope",
+        "hosts"
+      ],
+      "additionalProperties": false
+    },
+    "BridgeMessage": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/BridgeHello"
+        },
+        {
+          "$ref": "#/$defs/Snapshot"
+        },
+        {
+          "$ref": "#/$defs/Patch"
+        },
+        {
+          "$ref": "#/$defs/ViewTree"
+        },
+        {
+          "$ref": "#/$defs/Overlay"
+        },
+        {
+          "$ref": "#/$defs/OverlayClose"
+        },
+        {
+          "$ref": "#/$defs/Ack"
+        },
+        {
+          "$ref": "#/$defs/Toast"
+        },
+        {
+          "$ref": "#/$defs/TermSize"
+        },
+        {
+          "$ref": "#/$defs/Reset"
+        },
+        {
+          "$ref": "#/$defs/Look"
+        },
+        {
+          "$ref": "#/$defs/ClipboardText"
+        },
+        {
+          "$ref": "#/$defs/Sound"
+        }
+      ],
+      "discriminator": {
+        "propertyName": "t"
+      }
+    },
+    "ButtonHandlers": {
+      "type": "object",
+      "properties": {
+        "left": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "right": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "middle": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "ClipboardText": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "clipboard"
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "t",
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "Color": {
+      "type": "string",
+      "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+    },
+    "CompatDrift": {
+      "type": "object",
+      "properties": {
+        "surface": {
+          "enum": [
+            "herdr.d.ts",
+            "gpui-kit.d.ts",
+            "installed.json",
+            "commands"
+          ]
+        },
+        "detail": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      },
+      "required": [
+        "surface",
+        "detail"
+      ],
+      "additionalProperties": false
+    },
+    "DeviceClass": {
+      "enum": [
+        "phone",
+        "tablet-portrait",
+        "tablet-landscape",
+        "desktop"
+      ]
+    },
+    "ElementNode": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "k": {
+              "const": "el"
+            },
+            "style": {
+              "$ref": "#/$defs/Style"
+            },
+            "id": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            },
+            "states": {
+              "$ref": "#/$defs/States"
+            },
+            "anim": {
+              "$ref": "#/$defs/Anim"
+            },
+            "on": {
+              "$ref": "#/$defs/Handlers"
+            },
+            "widget": {
+              "$ref": "#/$defs/Widget"
+            },
+            "attrs": {
+              "$ref": "#/$defs/JsonObject"
+            },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            }
+          },
+          "required": [
+            "k",
+            "style"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "k": {
+              "const": "text"
+            },
+            "style": {
+              "$ref": "#/$defs/Style"
+            },
+            "text": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            },
+            "states": {
+              "$ref": "#/$defs/States"
+            },
+            "anim": {
+              "$ref": "#/$defs/Anim"
+            },
+            "on": {
+              "$ref": "#/$defs/Handlers"
+            },
+            "widget": {
+              "$ref": "#/$defs/Widget"
+            },
+            "attrs": {
+              "$ref": "#/$defs/JsonObject"
+            },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            }
+          },
+          "required": [
+            "k",
+            "style",
+            "text"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "k": {
+              "const": "svg"
+            },
+            "style": {
+              "$ref": "#/$defs/Style"
+            },
+            "src": {
+              "type": "string",
+              "minLength": 1
+            },
+            "id": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            },
+            "states": {
+              "$ref": "#/$defs/States"
+            },
+            "anim": {
+              "$ref": "#/$defs/Anim"
+            },
+            "on": {
+              "$ref": "#/$defs/Handlers"
+            },
+            "widget": {
+              "$ref": "#/$defs/Widget"
+            },
+            "attrs": {
+              "$ref": "#/$defs/JsonObject"
+            },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            }
+          },
+          "required": [
+            "k",
+            "style",
+            "src"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "k": {
+              "const": "image"
+            },
+            "style": {
+              "$ref": "#/$defs/Style"
+            },
+            "src": {
+              "type": "string",
+              "minLength": 1
+            },
+            "id": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            },
+            "states": {
+              "$ref": "#/$defs/States"
+            },
+            "anim": {
+              "$ref": "#/$defs/Anim"
+            },
+            "on": {
+              "$ref": "#/$defs/Handlers"
+            },
+            "widget": {
+              "$ref": "#/$defs/Widget"
+            },
+            "attrs": {
+              "$ref": "#/$defs/JsonObject"
+            },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            }
+          },
+          "required": [
+            "k",
+            "style",
+            "src"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "k": {
+              "const": "path"
+            },
+            "style": {
+              "$ref": "#/$defs/Style"
+            },
+            "path": {
+              "$ref": "#/$defs/PathSpec"
+            },
+            "paint": {
+              "$ref": "#/$defs/Paint"
+            },
+            "id": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            },
+            "states": {
+              "$ref": "#/$defs/States"
+            },
+            "anim": {
+              "$ref": "#/$defs/Anim"
+            },
+            "on": {
+              "$ref": "#/$defs/Handlers"
+            },
+            "widget": {
+              "$ref": "#/$defs/Widget"
+            },
+            "attrs": {
+              "$ref": "#/$defs/JsonObject"
+            },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            }
+          },
+          "required": [
+            "k",
+            "style",
+            "path",
+            "paint"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "k": {
+              "const": "terminal"
+            },
+            "style": {
+              "$ref": "#/$defs/Style"
+            },
+            "terminal": {
+              "type": "string",
+              "minLength": 1
+            },
+            "id": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            },
+            "states": {
+              "$ref": "#/$defs/States"
+            },
+            "anim": {
+              "$ref": "#/$defs/Anim"
+            },
+            "on": {
+              "$ref": "#/$defs/Handlers"
+            },
+            "widget": {
+              "$ref": "#/$defs/Widget"
+            },
+            "attrs": {
+              "$ref": "#/$defs/JsonObject"
+            },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            }
+          },
+          "required": [
+            "k",
+            "style",
+            "terminal"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "k": {
+              "const": "view"
+            },
+            "style": {
+              "$ref": "#/$defs/Style"
+            },
+            "view": {
+              "type": "string",
+              "minLength": 1
+            },
+            "id": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            },
+            "states": {
+              "$ref": "#/$defs/States"
+            },
+            "anim": {
+              "$ref": "#/$defs/Anim"
+            },
+            "on": {
+              "$ref": "#/$defs/Handlers"
+            },
+            "widget": {
+              "$ref": "#/$defs/Widget"
+            },
+            "attrs": {
+              "$ref": "#/$defs/JsonObject"
+            },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            }
+          },
+          "required": [
+            "k",
+            "style",
+            "view"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "k": {
+              "const": "error"
+            },
+            "style": {
+              "$ref": "#/$defs/Style"
+            },
+            "reason": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            },
+            "states": {
+              "$ref": "#/$defs/States"
+            },
+            "anim": {
+              "$ref": "#/$defs/Anim"
+            },
+            "on": {
+              "$ref": "#/$defs/Handlers"
+            },
+            "widget": {
+              "$ref": "#/$defs/Widget"
+            },
+            "attrs": {
+              "$ref": "#/$defs/JsonObject"
+            },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            },
+            "folder": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "k",
+            "style",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "discriminator": {
+        "propertyName": "k"
+      }
+    },
+    "Focused": {
+      "type": "object",
+      "properties": {
+        "space": {
+          "type": "string"
+        },
+        "tab": {
+          "type": "string"
+        },
+        "pane": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "terminal": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "shown": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "agent": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cwd": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "space",
+        "tab",
+        "pane",
+        "terminal",
+        "shown",
+        "agent",
+        "cwd"
+      ],
+      "additionalProperties": false
+    },
+    "Fonts": {
+      "type": "object",
+      "properties": {
+        "ui": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mono": {
+          "type": "string",
+          "minLength": 1
+        },
+        "terminal": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "ui",
+        "mono",
+        "terminal"
+      ],
+      "additionalProperties": false
+    },
+    "Handlers": {
+      "type": "object",
+      "properties": {
+        "click": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mousedown": {
+          "$ref": "#/$defs/ButtonHandlers"
+        },
+        "mouseup": {
+          "$ref": "#/$defs/ButtonHandlers"
+        },
+        "mousemove": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mousedownout": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hover": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "wheel": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "keydown": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "keyup": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "modifiers": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "item": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "itemsecondary": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "change": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "step": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "openchange": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "confirm": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "dismiss": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "resize": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "drop": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "action": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "tokenclick": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "tokenhover": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "link": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "HelloCompat": {
+      "type": "object",
+      "properties": {
+        "herdrVersion": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tested": {
+          "type": "boolean"
+        },
+        "drift": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CompatDrift"
+          },
+          "maxItems": 8
+        },
+        "banner": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        }
+      },
+      "required": [
+        "herdrVersion",
+        "tested",
+        "drift"
+      ],
+      "additionalProperties": false
+    },
+    "HostStatus": {
+      "type": "object",
+      "properties": {
+        "folder": {
+          "type": "string",
+          "minLength": 1
+        },
+        "state": {
+          "enum": [
+            "starting",
+            "running",
+            "restarting",
+            "failed",
+            "stopped"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "profile": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+        }
+      },
+      "required": [
+        "folder",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "JsonObject": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      }
+    },
+    "JsonPatch": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/JsonPatchOperation"
+      }
+    },
+    "JsonPatchOperation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "const": "add"
+            },
+            "path": {
+              "type": "string",
+              "pattern": "^(?:/(?:[^~/]|~[01])*)*$"
+            },
+            "value": {
+              "$ref": "#/$defs/JsonValue"
+            }
+          },
+          "required": [
+            "op",
+            "path",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "const": "remove"
+            },
+            "path": {
+              "type": "string",
+              "pattern": "^(?:/(?:[^~/]|~[01])*)*$"
+            }
+          },
+          "required": [
+            "op",
+            "path"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "const": "replace"
+            },
+            "path": {
+              "type": "string",
+              "pattern": "^(?:/(?:[^~/]|~[01])*)*$"
+            },
+            "value": {
+              "$ref": "#/$defs/JsonValue"
+            }
+          },
+          "required": [
+            "op",
+            "path",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "const": "move"
+            },
+            "from": {
+              "type": "string",
+              "pattern": "^(?:/(?:[^~/]|~[01])*)*$"
+            },
+            "path": {
+              "type": "string",
+              "pattern": "^(?:/(?:[^~/]|~[01])*)*$"
+            }
+          },
+          "required": [
+            "op",
+            "from",
+            "path"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "const": "copy"
+            },
+            "from": {
+              "type": "string",
+              "pattern": "^(?:/(?:[^~/]|~[01])*)*$"
+            },
+            "path": {
+              "type": "string",
+              "pattern": "^(?:/(?:[^~/]|~[01])*)*$"
+            }
+          },
+          "required": [
+            "op",
+            "from",
+            "path"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "const": "test"
+            },
+            "path": {
+              "type": "string",
+              "pattern": "^(?:/(?:[^~/]|~[01])*)*$"
+            },
+            "value": {
+              "$ref": "#/$defs/JsonValue"
+            }
+          },
+          "required": [
+            "op",
+            "path",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "discriminator": {
+        "propertyName": "op"
+      }
+    },
+    "JsonValue": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        }
+      ]
+    },
+    "LayoutNode": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "description": "row | column | stack | block (floating entries have none)"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/LayoutNode"
+          }
+        },
+        "floating": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/LayoutNode"
+          }
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "active": {
+          "type": "string"
+        },
+        "size": {
+          "type": "object",
+          "properties": {
+            "px": {
+              "type": "number"
+            },
+            "weight": {
+              "type": "number"
+            }
+          },
+          "required": [],
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "content": {
+          "$ref": "#/$defs/JsonObject"
+        }
+      },
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      }
+    },
+    "Look": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "look"
+        },
+        "theme": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "theme colour name → #rrggbb[aa]"
+        },
+        "settings": {
+          "$ref": "#/$defs/JsonObject"
+        },
+        "fonts": {
+          "$ref": "#/$defs/Fonts"
+        }
+      },
+      "required": [
+        "t",
+        "theme",
+        "settings",
+        "fonts"
+      ],
+      "additionalProperties": false
+    },
+    "LoopAnimation": {
+      "type": "object",
+      "properties": {
+        "prop": {
+          "$ref": "#/$defs/MotionProperty"
+        },
+        "from": {
+          "type": "number"
+        },
+        "to": {
+          "type": "number"
+        },
+        "period": {
+          "type": "number",
+          "minimum": 100,
+          "description": "ms"
+        },
+        "easing": {
+          "$ref": "#/$defs/MotionEasing"
+        }
+      },
+      "required": [
+        "prop",
+        "from",
+        "to",
+        "period"
+      ],
+      "additionalProperties": false
+    },
+    "MotionEasing": {
+      "enum": [
+        "linear",
+        "ease-in",
+        "ease-out",
+        "ease-in-out"
+      ]
+    },
+    "MotionProperty": {
+      "enum": [
+        "opacity",
+        "width",
+        "height",
+        "left",
+        "top"
+      ]
+    },
+    "Overlay": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "overlay"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "dialog",
+            "popup",
+            "window"
+          ]
+        },
+        "view": {
+          "type": "string",
+          "minLength": 1
+        },
+        "at": {
+          "anyOf": [
+            {
+              "const": "pointer"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "x",
+                "y"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "width": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "px, or up to 1: a share of the window"
+        },
+        "height": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "px, or up to 1: a share of the window"
+        },
+        "frame": {
+          "const": "none"
+        },
+        "modal": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "t",
+        "id",
+        "kind",
+        "view"
+      ],
+      "additionalProperties": false
+    },
+    "OverlayClose": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "overlay.close"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "t",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "Paint": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Color"
+        },
+        {
+          "$ref": "#/$defs/Background"
+        }
+      ]
+    },
+    "PaneInfo": {
+      "type": "object",
+      "properties": {
+        "pane": {
+          "type": "string"
+        },
+        "terminal": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tab": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "focused": {
+          "type": "boolean"
+        },
+        "zoomed": {
+          "type": "boolean"
+        },
+        "mod": {
+          "type": "string"
+        },
+        "cwd": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "branch": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Status"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "app": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "program": {
+          "$ref": "#/$defs/Program"
+        },
+        "movable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "pane",
+        "terminal",
+        "tab",
+        "title",
+        "focused",
+        "zoomed"
+      ],
+      "additionalProperties": false
+    },
+    "Patch": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "patch"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "views": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "view": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ops": {
+                "$ref": "#/$defs/JsonPatch"
+              }
+            },
+            "required": [
+              "view",
+              "ops"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "state": {
+          "$ref": "#/$defs/JsonPatch"
+        },
+        "screens": {
+          "$ref": "#/$defs/ScreenGraph"
+        }
+      },
+      "required": [
+        "t",
+        "seq",
+        "views"
+      ],
+      "additionalProperties": false
+    },
+    "PathSpec": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "fill",
+            "stroke"
+          ]
+        },
+        "ops": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "enum": [
+                  "move_to",
+                  "line_to",
+                  "curve_to",
+                  "cubic_bezier_to",
+                  "arc_to",
+                  "add_polygon",
+                  "close",
+                  "dash_array"
+                ]
+              }
+            ],
+            "items": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "minItems": 1
+          }
+        },
+        "width": {
+          "type": "number",
+          "minimum": 0,
+          "description": "stroke width, px"
+        }
+      },
+      "required": [
+        "kind",
+        "ops"
+      ],
+      "additionalProperties": false
+    },
+    "Program": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "icon": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tint": {
+          "type": "boolean"
+        },
+        "tile": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "color": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "shell": {
+          "type": "boolean"
+        },
+        "agent": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "key",
+        "name",
+        "icon",
+        "tint",
+        "tile",
+        "color",
+        "shell",
+        "agent"
+      ],
+      "additionalProperties": false
+    },
+    "RecomposeRule": {
+      "enum": [
+        "R1",
+        "R2",
+        "R3",
+        "R4",
+        "R5",
+        "R6",
+        "R7"
+      ]
+    },
+    "Reset": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "reset"
+        }
+      },
+      "required": [
+        "t"
+      ],
+      "additionalProperties": false
+    },
+    "Scope": {
+      "enum": [
+        "read",
+        "act"
+      ]
+    },
+    "ScreenGraph": {
+      "type": "object",
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "layout": {
+          "type": "string",
+          "minLength": 1
+        },
+        "class": {
+          "$ref": "#/$defs/DeviceClass"
+        },
+        "routes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ScreenRoute"
+          },
+          "minItems": 1
+        },
+        "sheets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ScreenSheet"
+          }
+        },
+        "stack": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^/"
+          },
+          "minItems": 1
+        },
+        "overridden": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "v",
+        "layout",
+        "class",
+        "routes",
+        "sheets",
+        "stack"
+      ],
+      "additionalProperties": false
+    },
+    "ScreenNode": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "split"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "axis": {
+              "enum": [
+                "row",
+                "column"
+              ]
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ScreenNode"
+              }
+            },
+            "size": {
+              "$ref": "#/$defs/ScreenSize"
+            },
+            "resize": {
+              "$ref": "#/$defs/ScreenResize"
+            },
+            "collapsed": {
+              "type": "boolean"
+            },
+            "rule": {
+              "$ref": "#/$defs/RecomposeRule"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "axis",
+            "children"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "bar"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "axis": {
+              "enum": [
+                "row",
+                "column"
+              ]
+            },
+            "px": {
+              "type": "number",
+              "minimum": 0
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ScreenNode"
+              }
+            },
+            "rule": {
+              "$ref": "#/$defs/RecomposeRule"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "axis",
+            "px",
+            "children"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "block"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "view": {
+              "type": "string",
+              "minLength": 1
+            },
+            "size": {
+              "$ref": "#/$defs/ScreenSize"
+            },
+            "resize": {
+              "$ref": "#/$defs/ScreenResize"
+            },
+            "collapsed": {
+              "type": "boolean"
+            },
+            "rule": {
+              "$ref": "#/$defs/RecomposeRule"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "view"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "group"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "active": {
+              "type": "string",
+              "minLength": 1
+            },
+            "nav": {
+              "enum": [
+                "segments",
+                "tabs"
+              ]
+            },
+            "shown": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "more": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "destinations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "mounted": {
+                    "type": "boolean"
+                  },
+                  "screen": {
+                    "$ref": "#/$defs/ScreenNode"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "mounted",
+                  "screen"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1
+            },
+            "size": {
+              "$ref": "#/$defs/ScreenSize"
+            },
+            "resize": {
+              "$ref": "#/$defs/ScreenResize"
+            },
+            "collapsed": {
+              "type": "boolean"
+            },
+            "rule": {
+              "$ref": "#/$defs/RecomposeRule"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "active",
+            "nav",
+            "shown",
+            "more",
+            "destinations"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "panes"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "mode": {
+              "enum": [
+                "pager",
+                "split"
+              ]
+            },
+            "header": {
+              "type": "object",
+              "properties": {
+                "folder": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "props": {
+                  "$ref": "#/$defs/JsonObject"
+                },
+                "height": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "position": {
+                  "enum": [
+                    "top",
+                    "bottom"
+                  ]
+                }
+              },
+              "required": [
+                "folder",
+                "props",
+                "height",
+                "position"
+              ],
+              "additionalProperties": false
+            },
+            "size": {
+              "$ref": "#/$defs/ScreenSize"
+            },
+            "resize": {
+              "$ref": "#/$defs/ScreenResize"
+            },
+            "collapsed": {
+              "type": "boolean"
+            },
+            "rule": {
+              "$ref": "#/$defs/RecomposeRule"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "mode"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "terminal"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "agent": {
+              "const": "focused"
+            },
+            "terminal": {
+              "type": "string",
+              "minLength": 1
+            },
+            "size": {
+              "$ref": "#/$defs/ScreenSize"
+            },
+            "resize": {
+              "$ref": "#/$defs/ScreenResize"
+            },
+            "collapsed": {
+              "type": "boolean"
+            },
+            "rule": {
+              "$ref": "#/$defs/RecomposeRule"
+            }
+          },
+          "required": [
+            "kind",
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "link"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "route": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "rule": {
+              "$ref": "#/$defs/RecomposeRule"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "route"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "discriminator": {
+        "propertyName": "kind"
+      }
+    },
+    "ScreenResize": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "px",
+            "weight"
+          ]
+        },
+        "collapsible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "collapsible"
+      ],
+      "additionalProperties": false
+    },
+    "ScreenRoute": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "node": {
+          "type": "string",
+          "minLength": 1
+        },
+        "open": {
+          "enum": [
+            "root",
+            "drawer",
+            "push",
+            "sheet"
+          ]
+        },
+        "mounted": {
+          "type": "boolean"
+        },
+        "screen": {
+          "$ref": "#/$defs/ScreenNode"
+        },
+        "side": {
+          "enum": [
+            "left",
+            "right"
+          ]
+        },
+        "rule": {
+          "$ref": "#/$defs/RecomposeRule"
+        }
+      },
+      "required": [
+        "path",
+        "node",
+        "open",
+        "mounted",
+        "screen"
+      ],
+      "additionalProperties": false
+    },
+    "ScreenSheet": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "edge": {
+          "enum": [
+            "top",
+            "right",
+            "bottom",
+            "left"
+          ]
+        },
+        "align": {
+          "enum": [
+            "start",
+            "center",
+            "end"
+          ]
+        },
+        "screen": {
+          "$ref": "#/$defs/ScreenNode"
+        },
+        "peek": {
+          "type": "number",
+          "minimum": 0
+        },
+        "rule": {
+          "$ref": "#/$defs/RecomposeRule"
+        }
+      },
+      "required": [
+        "id",
+        "edge",
+        "align",
+        "screen"
+      ],
+      "additionalProperties": false
+    },
+    "ScreenSize": {
+      "type": "object",
+      "properties": {
+        "px": {
+          "type": "number",
+          "minimum": 0
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0
+        },
+        "min": {
+          "type": "number",
+          "minimum": 0
+        },
+        "max": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "Shared": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      }
+    },
+    "Snapshot": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "snapshot"
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "spaces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SpaceInfo"
+          }
+        },
+        "agents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AgentInfo"
+          }
+        },
+        "terminals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TerminalInfo"
+          }
+        },
+        "panes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PaneInfo"
+          }
+        },
+        "focused": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Focused"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "shared": {
+          "$ref": "#/$defs/Shared"
+        }
+      },
+      "required": [
+        "t",
+        "seq",
+        "spaces",
+        "agents",
+        "terminals",
+        "panes",
+        "focused",
+        "shared"
+      ],
+      "additionalProperties": false
+    },
+    "Sound": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "sound"
+        },
+        "src": {
+          "type": "string",
+          "pattern": "^assets/mods/(?:(?!\\.\\.?/)[^/?#\\\\]+/)+(?!\\.\\.?$)[^/?#\\\\]+$"
+        }
+      },
+      "required": [
+        "t",
+        "src"
+      ],
+      "additionalProperties": false
+    },
+    "SpaceInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string"
+        },
+        "named": {
+          "type": "boolean"
+        },
+        "folder": {
+          "type": "string"
+        },
+        "machine": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "branch": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Status"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tabs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TabInfo"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "index",
+        "name",
+        "named",
+        "folder",
+        "machine",
+        "branch",
+        "active",
+        "status",
+        "tabs"
+      ],
+      "additionalProperties": false
+    },
+    "SpringPolicy": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "approximate response period, ms"
+        },
+        "damping": {
+          "type": "number",
+          "minimum": 0
+        },
+        "epsilon": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "States": {
+      "type": "object",
+      "properties": {
+        "hover": {
+          "$ref": "#/$defs/Style"
+        },
+        "active": {
+          "$ref": "#/$defs/Style"
+        },
+        "focus": {
+          "$ref": "#/$defs/Style"
+        },
+        "range_style": {
+          "$ref": "#/$defs/Style"
+        },
+        "cell_style": {
+          "$ref": "#/$defs/Style"
+        },
+        "cell_active_style": {
+          "$ref": "#/$defs/Style"
+        },
+        "caret_style": {
+          "$ref": "#/$defs/Style"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "Status": {
+      "enum": [
+        "working",
+        "blocked",
+        "done",
+        "idle"
+      ]
+    },
+    "Style": {
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          }
+        ]
+      },
+      "propertyNames": {
+        "pattern": "^(--[a-z0-9-]+|[a-z][A-Za-z]*)$"
+      },
+      "description": "CSS longhands (camelCase) or --herdr-* custom properties; numbers are px except unitless ones"
+    },
+    "TabInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string"
+        },
+        "named": {
+          "type": "boolean"
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Status"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "panes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "zoomed": {
+          "type": "boolean"
+        },
+        "settled": {
+          "type": "boolean"
+        },
+        "settled_at": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "changed_at": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "working_since": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "index",
+        "name",
+        "named",
+        "active",
+        "status",
+        "panes",
+        "zoomed",
+        "settled",
+        "settled_at",
+        "changed_at",
+        "working_since"
+      ],
+      "additionalProperties": false
+    },
+    "TermSize": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "term.size"
+        },
+        "terminal": {
+          "type": "string",
+          "minLength": 1
+        },
+        "channel": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "cols": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "rows": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "t",
+        "terminal",
+        "channel",
+        "cols",
+        "rows"
+      ],
+      "additionalProperties": false
+    },
+    "TerminalInfo": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "address"
+      ],
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      }
+    },
+    "Toast": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "toast"
+        },
+        "title": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string"
+        },
+        "level": {
+          "enum": [
+            "info",
+            "success",
+            "warning",
+            "error"
+          ]
+        },
+        "action": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "args": {
+                  "$ref": "#/$defs/JsonObject"
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "open": {
+                  "type": "string",
+                  "pattern": "^https?://"
+                }
+              },
+              "required": [
+                "open"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": [
+        "t",
+        "title"
+      ],
+      "additionalProperties": false
+    },
+    "TransitionPolicy": {
+      "type": "object",
+      "properties": {
+        "duration": {
+          "type": "number",
+          "minimum": 0,
+          "description": "ms"
+        },
+        "delay": {
+          "type": "number",
+          "minimum": 0,
+          "description": "ms"
+        },
+        "easing": {
+          "$ref": "#/$defs/MotionEasing"
+        }
+      },
+      "required": [
+        "duration"
+      ],
+      "additionalProperties": false
+    },
+    "ViewTree": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "view.tree"
+        },
+        "view": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tree": {
+          "$ref": "#/$defs/ElementNode"
+        }
+      },
+      "required": [
+        "t",
+        "view",
+        "tree"
+      ],
+      "additionalProperties": false
+    },
+    "Widget": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "input",
+            "textarea",
+            "editor",
+            "markdown",
+            "html",
+            "vlist",
+            "hovercard",
+            "resizable",
+            "scrollbar"
+          ]
+        },
+        "state": {
+          "type": "string"
+        },
+        "props": {
+          "$ref": "#/$defs/JsonObject"
+        }
+      },
+      "required": [
+        "type",
+        "state",
+        "props"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

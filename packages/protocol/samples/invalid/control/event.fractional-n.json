@@ -1,0 +1,8 @@
+{
+  "t": "event",
+  "copy": "lstack-herdr-cockpit:activity",
+  "handler": 7,
+  "n": 1.5,
+  "args": [],
+  "origin": { "session": "s-9f2c" }
+}

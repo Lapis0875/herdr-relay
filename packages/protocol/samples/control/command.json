@@ -1,0 +1,6 @@
+{
+  "t": "command",
+  "copy": "lstack-herdr-cockpit:show",
+  "command": "lstack-herdr-cockpit.show",
+  "origin": { "session": "s-9f2c" }
+}

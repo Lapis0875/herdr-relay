@@ -1,0 +1,7 @@
+{
+  "t": "patch",
+  "seq": 3,
+  "views": [
+    { "view": "tabs:tabs", "ops": [{ "op": "merge", "path": "/style", "value": { "backgroundColor": "#2f343e" } }] }
+  ]
+}

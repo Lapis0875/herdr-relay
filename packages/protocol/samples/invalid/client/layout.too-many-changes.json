@@ -1,0 +1,16 @@
+{
+  "t": "layout",
+  "id": 7,
+  "action": "set",
+  "changes": [
+    { "node": "n1", "size": { "px": 100 } },
+    { "node": "n2", "size": { "px": 100 } },
+    { "node": "n3", "size": { "px": 100 } },
+    { "node": "n4", "size": { "px": 100 } },
+    { "node": "n5", "size": { "px": 100 } },
+    { "node": "n6", "size": { "px": 100 } },
+    { "node": "n7", "size": { "px": 100 } },
+    { "node": "n8", "size": { "px": 100 } },
+    { "node": "n9", "size": { "px": 100 } }
+  ]
+}

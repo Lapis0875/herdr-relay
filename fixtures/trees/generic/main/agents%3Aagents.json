@@ -1,0 +1,121 @@
+{
+  "k": "el",
+  "tag": "v_flex",
+  "style": {
+    "display": "flex",
+    "flexDirection": "column",
+    "width": "100%",
+    "height": "100%",
+    "minHeight": 0,
+    "backgroundColor": "#1e2227",
+    "borderTopWidth": 1,
+    "borderColor": "#3a3f4b",
+    "fontSize": 13,
+    "borderStyle": "solid"
+  },
+  "children": [
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "paddingLeft": 16,
+        "paddingRight": 16,
+        "height": 41,
+        "paddingTop": 14,
+        "paddingBottom": 5,
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "justifyContent": "space-between"
+      },
+      "children": [
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "fontSize": 11.5,
+            "fontWeight": 500,
+            "color": "#5c6370"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "Agents"
+            }
+          ]
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "id": "ag-sort",
+          "style": {
+            "fontSize": 11,
+            "color": "#5c6370"
+          },
+          "states": {
+            "hover": {
+              "color": "#abb2bf"
+            }
+          },
+          "on": {
+            "click": 1
+          },
+          "attrs": {
+            "tooltip": "Sort agents: Priority"
+          },
+          "children": [
+            {
+              "k": "svg",
+              "src": "mods/workspace-chrome/clock.svg",
+              "style": {
+                "width": 14,
+                "height": 14
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "div",
+      "style": {
+        "paddingLeft": 12,
+        "paddingRight": 12,
+        "fontSize": 12,
+        "color": "#5c6370"
+      },
+      "children": [
+        {
+          "k": "text",
+          "style": {},
+          "text": "No agent status yet. Agents show up here when they report their status. Older versions and agents inside tmux may not."
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "v_flex",
+      "id": "ag-list",
+      "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "flexGrow": 1,
+        "flexShrink": 1,
+        "flexBasis": "0%",
+        "minHeight": 0,
+        "paddingLeft": 8,
+        "paddingRight": 8,
+        "overflowY": "auto"
+      },
+      "attrs": {
+        "scrollbar": "y",
+        "mode": "always"
+      }
+    }
+  ]
+}

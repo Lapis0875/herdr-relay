@@ -1,0 +1,322 @@
+{
+  "k": "el",
+  "tag": "h_flex",
+  "style": {
+    "display": "flex",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "width": "100%",
+    "height": "100%",
+    "rowGap": 8,
+    "columnGap": 8,
+    "paddingLeft": 72
+  },
+  "children": [
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "id": "tm-space",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "height": 30,
+        "paddingLeft": 10,
+        "paddingRight": 12,
+        "rowGap": 8,
+        "columnGap": 8,
+        "borderTopLeftRadius": 9999,
+        "borderTopRightRadius": 9999,
+        "borderBottomRightRadius": 9999,
+        "borderBottomLeftRadius": 9999,
+        "backgroundColor": "#252628",
+        "cursor": "pointer",
+        "fontSize": 13,
+        "color": "#8b8f95"
+      },
+      "states": {
+        "hover": {
+          "color": "#e8e9eb"
+        }
+      },
+      "on": {
+        "mousedown": {
+          "left": 1,
+          "right": 2
+        },
+        "click": 3
+      },
+      "children": [
+        {
+          "k": "svg",
+          "src": "mods/terminals-bar/stack.svg",
+          "style": {
+            "width": 15,
+            "height": 15
+          }
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "maxWidth": 160,
+            "overflowX": "hidden",
+            "overflowY": "hidden",
+            "textOverflow": "ellipsis",
+            "whiteSpace": "nowrap",
+            "color": "#e8e9eb"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "Project"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "flexShrink": 1,
+        "minWidth": 0,
+        "height": 36,
+        "paddingTop": 3,
+        "paddingRight": 3,
+        "paddingBottom": 3,
+        "paddingLeft": 3,
+        "rowGap": 3,
+        "columnGap": 3,
+        "borderTopLeftRadius": 16,
+        "borderTopRightRadius": 16,
+        "borderBottomRightRadius": 16,
+        "borderBottomLeftRadius": 16,
+        "backgroundColor": "#1d1f22"
+      },
+      "children": [
+        {
+          "k": "el",
+          "tag": "h_flex",
+          "id": "tm-s1/t1",
+          "style": {
+            "display": "flex",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "flexShrink": 1,
+            "width": 260,
+            "minWidth": 0,
+            "height": "100%",
+            "paddingLeft": 5,
+            "paddingRight": 12,
+            "rowGap": 9,
+            "columnGap": 9,
+            "borderTopLeftRadius": 13,
+            "borderTopRightRadius": 13,
+            "borderBottomRightRadius": 13,
+            "borderBottomLeftRadius": 13,
+            "borderTopWidth": 1,
+            "borderRightWidth": 1,
+            "borderBottomWidth": 1,
+            "borderLeftWidth": 1,
+            "cursor": "pointer",
+            "fontSize": 13,
+            "backgroundColor": "#34373c",
+            "borderColor": "#4a4d53",
+            "borderStyle": "solid"
+          },
+          "on": {
+            "mousedown": {
+              "left": 4,
+              "right": 7
+            },
+            "click": 6
+          },
+          "children": [
+            {
+              "k": "el",
+              "tag": "div",
+              "style": {
+                "position": "relative",
+                "flexGrow": 0,
+                "flexShrink": 0,
+                "flexBasis": "auto",
+                "width": 26,
+                "height": 26,
+                "borderTopLeftRadius": 7,
+                "borderTopRightRadius": 7,
+                "borderBottomRightRadius": 7,
+                "borderBottomLeftRadius": 7,
+                "borderTopWidth": 1,
+                "borderRightWidth": 1,
+                "borderBottomWidth": 1,
+                "borderLeftWidth": 1,
+                "borderColor": "#ffffff14",
+                "backgroundColor": "#252628",
+                "display": "flex",
+                "alignItems": "center",
+                "justifyContent": "center",
+                "borderStyle": "solid"
+              }
+            },
+            {
+              "k": "el",
+              "tag": "h_flex",
+              "style": {
+                "display": "flex",
+                "flexDirection": "row",
+                "alignItems": "center",
+                "minWidth": 0,
+                "rowGap": 6,
+                "columnGap": 6,
+                "overflowX": "hidden",
+                "overflowY": "hidden",
+                "textOverflow": "ellipsis",
+                "whiteSpace": "nowrap"
+              },
+              "children": [
+                {
+                  "k": "el",
+                  "tag": "div",
+                  "style": {
+                    "flexGrow": 0,
+                    "flexShrink": 0,
+                    "flexBasis": "auto",
+                    "color": "#e8e9eb"
+                  },
+                  "children": [
+                    {
+                      "k": "text",
+                      "style": {},
+                      "text": "Terminal"
+                    }
+                  ]
+                },
+                {
+                  "k": "el",
+                  "tag": "div",
+                  "style": {
+                    "overflowX": "hidden",
+                    "overflowY": "hidden",
+                    "textOverflow": "ellipsis",
+                    "whiteSpace": "nowrap",
+                    "color": "#8b8f95"
+                  },
+                  "children": [
+                    {
+                      "k": "text",
+                      "style": {},
+                      "text": "~/project"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "div",
+      "style": {
+        "flexGrow": 1,
+        "flexShrink": 1,
+        "flexBasis": "0%"
+      }
+    },
+    {
+      "k": "el",
+      "tag": "div",
+      "id": "tm-keys",
+      "style": {
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "paddingTop": 7,
+        "paddingRight": 7,
+        "paddingBottom": 7,
+        "paddingLeft": 7,
+        "borderTopLeftRadius": 8,
+        "borderTopRightRadius": 8,
+        "borderBottomRightRadius": 8,
+        "borderBottomLeftRadius": 8,
+        "color": "#8b8f95",
+        "cursor": "pointer"
+      },
+      "states": {
+        "hover": {
+          "backgroundColor": "#252628",
+          "color": "#e8e9eb"
+        }
+      },
+      "on": {
+        "mousedown": {
+          "left": 8,
+          "right": 9
+        },
+        "click": 10
+      },
+      "children": [
+        {
+          "k": "svg",
+          "src": "mods/terminals-bar/command.svg",
+          "style": {
+            "width": 17,
+            "height": 17
+          }
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "div",
+      "id": "tm-new",
+      "style": {
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "paddingTop": 7,
+        "paddingRight": 7,
+        "paddingBottom": 7,
+        "paddingLeft": 7,
+        "borderTopLeftRadius": 8,
+        "borderTopRightRadius": 8,
+        "borderBottomRightRadius": 8,
+        "borderBottomLeftRadius": 8,
+        "color": "#8b8f95",
+        "cursor": "pointer"
+      },
+      "states": {
+        "hover": {
+          "backgroundColor": "#252628",
+          "color": "#e8e9eb"
+        }
+      },
+      "on": {
+        "mousedown": {
+          "left": 11,
+          "right": 12
+        },
+        "click": 13
+      },
+      "children": [
+        {
+          "k": "svg",
+          "src": "mods/terminals-bar/plus.svg",
+          "style": {
+            "width": 17,
+            "height": 17
+          }
+        }
+      ]
+    }
+  ]
+}

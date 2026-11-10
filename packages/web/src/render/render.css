@@ -1,0 +1,320 @@
+/* ---- element trees (T16) ---------------------------------------------------------------------------------------
+   GPUI defaults CSS does not share, the keyframes of native motion, and the frames of nodes that cannot draw yet.
+   A tree's inline styles win over everything here except the `!important` refinement rules (`style.ts`). */
+
+.r-view {
+  position: relative;
+  display: block;
+  min-width: 0;
+  min-height: 0;
+  /* GPUI never collapses whitespace (`whitespace_nowrap` arrives as `pre`). */
+  white-space: pre-wrap;
+}
+
+.r-view--nested,
+.r-contents {
+  display: contents;
+}
+
+/* GPUI lays out border-box, and every element is positioned: an absolute child sits in its own parent. A border is
+   only as wide as the tree says per side: `tree.ts` adds `border-style: solid` when any side has a width, and the
+   sides without one must stay 0, not CSS's `medium`. */
+.r-el {
+  position: relative;
+  box-sizing: border-box;
+  border-width: 0;
+}
+
+/* `text_bg` is a text style in GPUI: it reaches the text of every descendant. */
+.r-text {
+  background-color: var(--herdr-text-bg, transparent);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.r-ellipsis-start {
+  direction: rtl;
+  text-align: left;
+}
+
+.r-ellipsis-start > * {
+  unicode-bidi: plaintext;
+}
+
+.r-focusable:focus-visible {
+  outline: 2px solid var(--shell-accent);
+  outline-offset: -2px;
+}
+
+/* Touch screens: an icon press target (no text inside: a 26 px tab close button) is at least 44×44 px. It keeps its
+   drawn size and grows an invisible hit area around its centre, above its neighbours; larger ones are unchanged
+   (`max`). Text buttons and rows are left alone so dense lists keep their own rows' taps. */
+@media (pointer: coarse) {
+  .r-focusable[role="button"]:not(:has(.r-text))::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Focus targets outside the Tab order (a mod's `track_focus` surface) draw their own `focus` refinement. */
+.r-focusable[tabindex="-1"]:focus-visible {
+  outline: none;
+}
+
+/* Elements with a right-button handler: a long press is the right button, not a callout or a selection. */
+.r-press {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* `svg(path)`: a single-colour icon tinted with the text colour. */
+.r-svg {
+  background-color: currentColor;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.r-image {
+  display: block;
+  max-width: none;
+  object-fit: contain;
+}
+
+.r-image[data-failed] {
+  visibility: hidden;
+}
+
+.r-path__svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.r-terminal {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+}
+
+.r-terminal > * {
+  flex: 1 1 auto;
+}
+
+/* ---- native motion ---------------------------------------------------------------------------------------------- */
+
+@keyframes herdr-r-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes herdr-r-frames {
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes herdr-r-loop-opacity {
+  0%,
+  100% {
+    opacity: var(--herdr-loop-from);
+  }
+  50% {
+    opacity: var(--herdr-loop-to);
+  }
+}
+
+@keyframes herdr-r-loop-width {
+  0%,
+  100% {
+    width: var(--herdr-loop-from);
+  }
+  50% {
+    width: var(--herdr-loop-to);
+  }
+}
+
+@keyframes herdr-r-loop-height {
+  0%,
+  100% {
+    height: var(--herdr-loop-from);
+  }
+  50% {
+    height: var(--herdr-loop-to);
+  }
+}
+
+@keyframes herdr-r-loop-left {
+  0%,
+  100% {
+    left: var(--herdr-loop-from);
+  }
+  50% {
+    left: var(--herdr-loop-to);
+  }
+}
+
+@keyframes herdr-r-loop-top {
+  0%,
+  100% {
+    top: var(--herdr-loop-from);
+  }
+  50% {
+    top: var(--herdr-loop-to);
+  }
+}
+
+/* `frames(list, ms)`: a reel of the strings, one line tall, stepped through. */
+.r-frames {
+  display: inline-block;
+  height: 1lh;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.r-frames__reel {
+  display: flex;
+  flex-direction: column;
+}
+
+.r-frames__frame {
+  display: block;
+  height: 1lh;
+  white-space: pre;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .r-anim-spin,
+  .r-anim-loop {
+    animation: none !important;
+  }
+
+  .r-anim-tr {
+    transition: none !important;
+  }
+}
+
+/* ---- widget fallbacks (until T17 installs the widgets) --------------------------------------------------------- */
+
+.r-widget {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: default;
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0 10px,
+    color-mix(in srgb, var(--shell-fg) 4%, transparent) 10px 20px
+  );
+}
+
+.r-widget__badge {
+  flex: 0 0 auto;
+  padding: 1px 6px;
+  border: 1px dashed color-mix(in srgb, var(--shell-dim) 85%, transparent);
+  border-radius: 4px;
+  color: var(--shell-muted);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.r-widget__detail {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.6;
+}
+
+/* The scroll container draws its own scrollbar; this stand-in must not catch the pointer over the content. */
+.r-scrollbar {
+  pointer-events: none;
+}
+
+/* ---- blocks that cannot render ---------------------------------------------------------------------------------- */
+
+.r-error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  min-height: 0;
+  padding: 6px 10px;
+  overflow: hidden;
+  border-left: 3px solid var(--shell-danger);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--shell-danger) 10%, transparent);
+  color: var(--shell-fg);
+  font-size: var(--text-xs);
+  line-height: 1.3;
+  white-space: normal;
+}
+
+/* A whole view that failed fills its slot. */
+.r-view > .r-error {
+  min-height: 100%;
+}
+
+.r-error__title {
+  overflow: hidden;
+  color: var(--shell-danger);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.r-error__reason {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--shell-muted);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+/* A node kind this renderer does not know. */
+.r-unknown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 18px;
+  padding: 2px 6px;
+  overflow: hidden;
+  border: 1px dashed var(--shell-danger);
+  border-radius: 4px;
+  background: repeating-linear-gradient(
+    135deg,
+    transparent 0 6px,
+    color-mix(in srgb, var(--shell-danger) 14%, transparent) 6px 12px
+  );
+  color: var(--shell-danger);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 11px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.r-unknown__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

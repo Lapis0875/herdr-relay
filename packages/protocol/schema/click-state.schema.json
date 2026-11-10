@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:herdr-relay:schema:click-state",
+  "title": "ClickState (layouts/.state/<name>.json)",
+  "$ref": "#/$defs/ClickState",
+  "$defs": {
+    "ClickState": {
+      "type": "object",
+      "properties": {
+        "nodes": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/NodeClicks"
+          }
+        },
+        "file": {
+          "$ref": "#/$defs/LayoutNode"
+        }
+      },
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      }
+    },
+    "JsonObject": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      }
+    },
+    "JsonValue": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        }
+      ]
+    },
+    "LayoutNode": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "description": "row | column | stack | block (floating entries have none)"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/LayoutNode"
+          }
+        },
+        "floating": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/LayoutNode"
+          }
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "active": {
+          "type": "string"
+        },
+        "size": {
+          "type": "object",
+          "properties": {
+            "px": {
+              "type": "number"
+            },
+            "weight": {
+              "type": "number"
+            }
+          },
+          "required": [],
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "content": {
+          "$ref": "#/$defs/JsonObject"
+        }
+      },
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      }
+    },
+    "NodeClicks": {
+      "type": "object",
+      "properties": {
+        "hidden": {
+          "type": "boolean"
+        },
+        "active": {
+          "type": "string"
+        },
+        "size": {
+          "type": "object",
+          "properties": {
+            "px": {
+              "type": "number"
+            },
+            "weight": {
+              "type": "number"
+            }
+          },
+          "required": [],
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      }
+    }
+  }
+}

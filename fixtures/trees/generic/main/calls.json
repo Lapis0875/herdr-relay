@@ -1,0 +1,35 @@
+{
+  "changes": [
+    "[\"exec\",\"git\",[\"--no-optional-locks\",\"-c\",\"core.fsmonitor=false\",\"-c\",\"diff.autoRefreshIndex=false\",\"diff\",\"HEAD\",\"--numstat\",\"-z\",\"--no-renames\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]",
+    "[\"exec\",\"git\",[\"--no-optional-locks\",\"-c\",\"core.fsmonitor=false\",\"-c\",\"diff.autoRefreshIndex=false\",\"rev-parse\",\"--verify\",\"HEAD\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]",
+    "[\"exec\",\"git\",[\"--no-optional-locks\",\"-c\",\"core.fsmonitor=false\",\"-c\",\"diff.autoRefreshIndex=false\",\"status\",\"--porcelain=v1\",\"-z\",\"--no-renames\",\"--untracked-files=all\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]",
+    "[\"exec\",\"git\",[\"rev-parse\",\"--show-toplevel\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]"
+  ],
+  "files": [
+    "[\"exec\",\"git\",[\"--no-optional-locks\",\"-c\",\"core.fsmonitor=false\",\"status\",\"--porcelain=v1\",\"-z\",\"--no-renames\",\"--untracked-files=all\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]",
+    "[\"exec\",\"git\",[\"rev-parse\",\"--show-toplevel\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]",
+    "[\"exec\",\"sh\",[\"-c\",\"n=0; for p in \\\"$1\\\"/* \\\"$1\\\"/.[!.]* \\\"$1\\\"/..?*; do [ -e \\\"$p\\\" ] || [ -L \\\"$p\\\" ] || continue; name=${p##*/}; [ \\\"$name\\\" = .git ] && continue; if [ -d \\\"$p\\\" ]; then kind=d; else kind=f; fi; printf \\\"%s\\\\0%s\\\\0\\\" \\\"$kind\\\" \\\"$name\\\"; n=$((n+1)); [ \\\"$n\\\" -gt 500 ] && break; done; test -d \\\"$1\\\"\",\"files\",\".tmp/fixture-home/project\"],{\"on\":null}]"
+  ],
+  "machine-add": [
+    "[\"hc\",[\"machine\",\"ls\",\"--json\"]]"
+  ],
+  "menu": [
+    "[\"exec\",\"git\",[\"rev-parse\",\"--path-format=absolute\",\"--git-common-dir\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]",
+    "[\"exec\",\"git\",[\"rev-parse\",\"--show-toplevel\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]"
+  ],
+  "picker": [
+    "[\"hc\",[\"machine\",\"ls\",\"--json\"]]"
+  ],
+  "spaces": [
+    "[\"exec\",\"git\",[\"--no-optional-locks\",\"-c\",\"core.fsmonitor=false\",\"status\",\"--porcelain=v2\",\"--branch\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]",
+    "[\"exec\",\"git\",[\"rev-parse\",\"--path-format=absolute\",\"--git-common-dir\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]",
+    "[\"exec\",\"git\",[\"rev-parse\",\"--show-toplevel\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]",
+    "[\"hc\",[\"machine\",\"ls\",\"--json\"]]"
+  ],
+  "worktree": [
+    "[\"exec\",\"git\",[\"for-each-ref\",\"--format=%(refname:short)%09%(committerdate:unix)\",\"refs/heads\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]",
+    "[\"exec\",\"git\",[\"rev-parse\",\"--path-format=absolute\",\"--git-common-dir\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]",
+    "[\"exec\",\"git\",[\"rev-parse\",\"--show-toplevel\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]",
+    "[\"exec\",\"git\",[\"worktree\",\"list\",\"--porcelain\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]"
+  ]
+}

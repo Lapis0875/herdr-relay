@@ -1,0 +1,13 @@
+{
+  "t": "tree",
+  "copy": "workspace-chrome:brand",
+  "n": 1,
+  "ms": 2,
+  "tree": {
+    "tag": "h_flex",
+    "id": "settings",
+    "style": [["h", 28]],
+    "handlers": [{ "event": "on_click", "id": "h1", "args": [] }],
+    "children": []
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "v": 1,
+  "layout": "main",
+  "class": "desktop",
+  "routes": [
+    {
+      "path": "/",
+      "node": "root",
+      "open": "root",
+      "mounted": true,
+      "screen": {
+        "kind": "split",
+        "id": "root",
+        "axis": "row",
+        "children": [
+          {
+            "kind": "block",
+            "id": "sidebar",
+            "view": "spaces:sidebar",
+            "size": { "px": 268 },
+            "resize": { "kind": "percent", "collapsible": true }
+          },
+          { "kind": "block", "id": "main", "view": "tabs:main" }
+        ]
+      }
+    }
+  ],
+  "sheets": [],
+  "stack": ["/"]
+}

@@ -1,0 +1,194 @@
+{
+  "k": "el",
+  "tag": "v_flex",
+  "style": {
+    "display": "flex",
+    "flexDirection": "column",
+    "width": "100%",
+    "height": "100%",
+    "backgroundColor": "#1e2227",
+    "borderTopWidth": 1,
+    "borderColor": "#3a3f4b",
+    "paddingLeft": 8,
+    "paddingRight": 8,
+    "paddingTop": 4,
+    "paddingBottom": 8,
+    "fontSize": 13,
+    "borderStyle": "solid"
+  },
+  "children": [
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "id": "settings",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "height": 28,
+        "paddingLeft": 8,
+        "paddingRight": 8,
+        "rowGap": 9,
+        "columnGap": 9,
+        "borderTopLeftRadius": 8,
+        "borderTopRightRadius": 8,
+        "borderBottomRightRadius": 8,
+        "borderBottomLeftRadius": 8,
+        "color": "#7f848e",
+        "cursor": "pointer",
+        "overflowX": "hidden",
+        "overflowY": "hidden",
+        "textOverflow": "ellipsis",
+        "whiteSpace": "nowrap"
+      },
+      "states": {
+        "hover": {
+          "backgroundColor": "#2f343e",
+          "color": "#abb2bf"
+        }
+      },
+      "on": {
+        "click": 1,
+        "mousedown": {
+          "right": 2
+        }
+      },
+      "attrs": {
+        "tooltip": "Settings  cmd-,"
+      },
+      "children": [
+        {
+          "k": "svg",
+          "src": "mods/workspace-chrome/settings.svg",
+          "style": {
+            "width": 14,
+            "height": 14,
+            "flexGrow": 0,
+            "flexShrink": 0,
+            "flexBasis": "auto"
+          }
+        },
+        {
+          "k": "text",
+          "style": {},
+          "text": "Settings"
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "div",
+      "id": "live-dot",
+      "style": {
+        "width": 6,
+        "height": 6,
+        "borderTopLeftRadius": 9999,
+        "borderTopRightRadius": 9999,
+        "borderBottomRightRadius": 9999,
+        "borderBottomLeftRadius": 9999,
+        "backgroundColor": "#98c379"
+      },
+      "anim": {
+        "loop": {
+          "prop": "opacity",
+          "from": 0.35,
+          "to": 1,
+          "period": 1200
+        }
+      }
+    },
+    {
+      "k": "el",
+      "tag": "div",
+      "id": "progress",
+      "style": {
+        "position": "relative",
+        "height": 4,
+        "width": "62%"
+      },
+      "anim": {
+        "transition": [
+          [
+            "width",
+            {
+              "duration": 400,
+              "easing": "ease-out"
+            }
+          ]
+        ]
+      },
+      "children": [
+        {
+          "k": "path",
+          "path": {
+            "kind": "stroke",
+            "width": 2,
+            "ops": [
+              [
+                "move_to",
+                0,
+                "50%"
+              ],
+              [
+                "line_to",
+                "100%",
+                "50%"
+              ]
+            ]
+          },
+          "paint": "#61afef",
+          "style": {
+            "position": "absolute",
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "Input",
+      "id": "search",
+      "style": {
+        "width": "100%",
+        "overflowY": "auto"
+      },
+      "on": {
+        "keydown": 3
+      },
+      "attrs": {
+        "scrollbar": "y"
+      },
+      "widget": {
+        "type": "input",
+        "state": "InputState:4",
+        "props": {
+          "placeholder": "Search"
+        }
+      }
+    },
+    {
+      "k": "el",
+      "tag": "TextView",
+      "id": "notes",
+      "style": {},
+      "on": {
+        "link": 5
+      },
+      "widget": {
+        "type": "markdown",
+        "state": "notes",
+        "props": {
+          "source": "See [the queue](https://github.com/example/example)"
+        }
+      }
+    },
+    {
+      "k": "view",
+      "style": {},
+      "view": "lstack-herdr-cockpit:queue#2"
+    }
+  ]
+}

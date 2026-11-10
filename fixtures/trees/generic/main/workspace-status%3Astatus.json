@@ -1,0 +1,133 @@
+{
+  "k": "el",
+  "tag": "h_flex",
+  "style": {
+    "display": "flex",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "width": "100%",
+    "height": "100%",
+    "paddingLeft": 14,
+    "paddingRight": 14,
+    "rowGap": 16,
+    "columnGap": 16,
+    "backgroundColor": "#1e2227",
+    "borderTopWidth": 1,
+    "borderColor": "#3a3f4b",
+    "fontSize": 11.8,
+    "color": "#7f848e",
+    "borderStyle": "solid"
+  },
+  "children": [
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "rowGap": 6,
+        "columnGap": 6
+      },
+      "children": [
+        {
+          "k": "svg",
+          "src": "mods/workspace-chrome/monitor.svg",
+          "style": {
+            "width": 13,
+            "height": 13
+          }
+        },
+        {
+          "k": "text",
+          "style": {},
+          "text": "This computer"
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "rowGap": 6,
+        "columnGap": 6
+      },
+      "children": [
+        {
+          "k": "svg",
+          "src": "mods/workspace-chrome/branch.svg",
+          "style": {
+            "width": 13,
+            "height": 13
+          }
+        },
+        {
+          "k": "text",
+          "style": {},
+          "text": "main"
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "rowGap": 6,
+        "columnGap": 6
+      },
+      "children": [
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "width": 6,
+            "height": 6,
+            "borderTopLeftRadius": 3,
+            "borderTopRightRadius": 3,
+            "borderBottomRightRadius": 3,
+            "borderBottomLeftRadius": 3,
+            "backgroundColor": "#5c6370"
+          }
+        },
+        {
+          "k": "text",
+          "style": {},
+          "text": "0 agents"
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "div",
+      "style": {
+        "flexGrow": 1,
+        "flexShrink": 1,
+        "flexBasis": "0%"
+      }
+    },
+    {
+      "k": "el",
+      "tag": "div",
+      "id": "palette",
+      "style": {
+        "color": "#5c6370"
+      },
+      "on": {
+        "click": 1
+      },
+      "children": [
+        {
+          "k": "text",
+          "style": {},
+          "text": "⌃⇧P  commands"
+        }
+      ]
+    }
+  ]
+}

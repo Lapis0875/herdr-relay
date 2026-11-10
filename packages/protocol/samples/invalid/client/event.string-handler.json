@@ -1,0 +1,8 @@
+{
+  "t": "event",
+  "id": 4,
+  "view": "lstack-herdr-cockpit:activity",
+  "handler": "h1",
+  "kind": "hover",
+  "data": { "hovered": true }
+}

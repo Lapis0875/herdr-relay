@@ -1,0 +1,6 @@
+{
+  "t": "error",
+  "copy": "changes:changes",
+  "where": "render",
+  "error": "TypeError: Cannot read properties of undefined (reading 'files')\n    at render (mods/changes/main.js:118:22)"
+}

@@ -1,0 +1,189 @@
+{
+  "k": "el",
+  "tag": "v_flex",
+  "id": "worktree",
+  "style": {
+    "display": "flex",
+    "flexDirection": "column",
+    "width": "100%",
+    "height": "100%",
+    "paddingTop": 16,
+    "paddingRight": 16,
+    "paddingBottom": 16,
+    "paddingLeft": 16,
+    "rowGap": 10,
+    "columnGap": 10,
+    "backgroundColor": "#2c313a",
+    "fontSize": 13
+  },
+  "on": {
+    "keydown": 1
+  },
+  "attrs": {
+    "track_focus": {
+      "focus_handle": 1
+    }
+  },
+  "children": [
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center"
+      },
+      "children": [
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "flexGrow": 1,
+            "flexShrink": 1,
+            "flexBasis": "0%",
+            "fontWeight": 600,
+            "color": "#abb2bf"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "Open worktree of project"
+            }
+          ]
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "fontSize": 11,
+            "color": "#5c6370"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "0 checkouts"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "Input",
+      "style": {
+        "height": 32,
+        "paddingLeft": 10,
+        "paddingRight": 10,
+        "alignItems": "center",
+        "borderTopLeftRadius": 6,
+        "borderTopRightRadius": 6,
+        "borderBottomRightRadius": 6,
+        "borderBottomLeftRadius": 6,
+        "borderTopWidth": 1,
+        "borderRightWidth": 1,
+        "borderBottomWidth": 1,
+        "borderLeftWidth": 1,
+        "borderColor": "#61afef",
+        "backgroundColor": "#21252b",
+        "color": "#abb2bf",
+        "borderStyle": "solid"
+      },
+      "on": {
+        "change": 2
+      },
+      "widget": {
+        "type": "input",
+        "state": "InputState:1",
+        "props": {
+          "placeholder": "filter worktrees",
+          "value": ""
+        }
+      }
+    },
+    {
+      "k": "el",
+      "tag": "div",
+      "style": {
+        "position": "relative",
+        "flexGrow": 1,
+        "flexShrink": 1,
+        "flexBasis": "0%",
+        "minHeight": 0
+      },
+      "children": [
+        {
+          "k": "el",
+          "tag": "v_flex",
+          "id": "wt-list",
+          "style": {
+            "display": "flex",
+            "flexDirection": "column",
+            "width": "100%",
+            "height": "100%",
+            "overflowY": "auto"
+          },
+          "children": [
+            {
+              "k": "el",
+              "tag": "div",
+              "style": {
+                "paddingTop": 10,
+                "paddingRight": 10,
+                "paddingBottom": 10,
+                "paddingLeft": 10,
+                "color": "#5c6370"
+              },
+              "children": [
+                {
+                  "k": "text",
+                  "style": {},
+                  "text": "No matching worktrees."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "k": "el",
+          "tag": "Scrollbar",
+          "style": {
+            "position": "absolute",
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          },
+          "widget": {
+            "type": "scrollbar",
+            "state": "",
+            "props": {
+              "axis": "vertical",
+              "target": "wt-list"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "justifyContent": "flex-end",
+        "fontSize": 11,
+        "color": "#5c6370"
+      },
+      "children": [
+        {
+          "k": "text",
+          "style": {},
+          "text": "↑↓ choose · ↵ open · esc close"
+        }
+      ]
+    }
+  ]
+}

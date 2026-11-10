@@ -1,0 +1,576 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:herdr-relay:schema:screen-graph",
+  "title": "ScreenGraph (recomposed layout)",
+  "$ref": "#/$defs/ScreenGraph",
+  "$defs": {
+    "DeviceClass": {
+      "enum": [
+        "phone",
+        "tablet-portrait",
+        "tablet-landscape",
+        "desktop"
+      ]
+    },
+    "JsonObject": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      }
+    },
+    "JsonValue": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        }
+      ]
+    },
+    "RecomposeRule": {
+      "enum": [
+        "R1",
+        "R2",
+        "R3",
+        "R4",
+        "R5",
+        "R6",
+        "R7"
+      ]
+    },
+    "ScreenGraph": {
+      "type": "object",
+      "properties": {
+        "v": {
+          "const": 1
+        },
+        "layout": {
+          "type": "string",
+          "minLength": 1
+        },
+        "class": {
+          "$ref": "#/$defs/DeviceClass"
+        },
+        "routes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ScreenRoute"
+          },
+          "minItems": 1
+        },
+        "sheets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ScreenSheet"
+          }
+        },
+        "stack": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^/"
+          },
+          "minItems": 1
+        },
+        "overridden": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "v",
+        "layout",
+        "class",
+        "routes",
+        "sheets",
+        "stack"
+      ],
+      "additionalProperties": false
+    },
+    "ScreenNode": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "split"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "axis": {
+              "enum": [
+                "row",
+                "column"
+              ]
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ScreenNode"
+              }
+            },
+            "size": {
+              "$ref": "#/$defs/ScreenSize"
+            },
+            "resize": {
+              "$ref": "#/$defs/ScreenResize"
+            },
+            "collapsed": {
+              "type": "boolean"
+            },
+            "rule": {
+              "$ref": "#/$defs/RecomposeRule"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "axis",
+            "children"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "bar"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "axis": {
+              "enum": [
+                "row",
+                "column"
+              ]
+            },
+            "px": {
+              "type": "number",
+              "minimum": 0
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ScreenNode"
+              }
+            },
+            "rule": {
+              "$ref": "#/$defs/RecomposeRule"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "axis",
+            "px",
+            "children"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "block"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "view": {
+              "type": "string",
+              "minLength": 1
+            },
+            "size": {
+              "$ref": "#/$defs/ScreenSize"
+            },
+            "resize": {
+              "$ref": "#/$defs/ScreenResize"
+            },
+            "collapsed": {
+              "type": "boolean"
+            },
+            "rule": {
+              "$ref": "#/$defs/RecomposeRule"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "view"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "group"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "active": {
+              "type": "string",
+              "minLength": 1
+            },
+            "nav": {
+              "enum": [
+                "segments",
+                "tabs"
+              ]
+            },
+            "shown": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "more": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "destinations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "mounted": {
+                    "type": "boolean"
+                  },
+                  "screen": {
+                    "$ref": "#/$defs/ScreenNode"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "mounted",
+                  "screen"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1
+            },
+            "size": {
+              "$ref": "#/$defs/ScreenSize"
+            },
+            "resize": {
+              "$ref": "#/$defs/ScreenResize"
+            },
+            "collapsed": {
+              "type": "boolean"
+            },
+            "rule": {
+              "$ref": "#/$defs/RecomposeRule"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "active",
+            "nav",
+            "shown",
+            "more",
+            "destinations"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "panes"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "mode": {
+              "enum": [
+                "pager",
+                "split"
+              ]
+            },
+            "header": {
+              "type": "object",
+              "properties": {
+                "folder": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "props": {
+                  "$ref": "#/$defs/JsonObject"
+                },
+                "height": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "position": {
+                  "enum": [
+                    "top",
+                    "bottom"
+                  ]
+                }
+              },
+              "required": [
+                "folder",
+                "props",
+                "height",
+                "position"
+              ],
+              "additionalProperties": false
+            },
+            "size": {
+              "$ref": "#/$defs/ScreenSize"
+            },
+            "resize": {
+              "$ref": "#/$defs/ScreenResize"
+            },
+            "collapsed": {
+              "type": "boolean"
+            },
+            "rule": {
+              "$ref": "#/$defs/RecomposeRule"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "mode"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "terminal"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "agent": {
+              "const": "focused"
+            },
+            "terminal": {
+              "type": "string",
+              "minLength": 1
+            },
+            "size": {
+              "$ref": "#/$defs/ScreenSize"
+            },
+            "resize": {
+              "$ref": "#/$defs/ScreenResize"
+            },
+            "collapsed": {
+              "type": "boolean"
+            },
+            "rule": {
+              "$ref": "#/$defs/RecomposeRule"
+            }
+          },
+          "required": [
+            "kind",
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "link"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "route": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "rule": {
+              "$ref": "#/$defs/RecomposeRule"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "route"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "discriminator": {
+        "propertyName": "kind"
+      }
+    },
+    "ScreenResize": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "px",
+            "weight"
+          ]
+        },
+        "collapsible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "collapsible"
+      ],
+      "additionalProperties": false
+    },
+    "ScreenRoute": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "node": {
+          "type": "string",
+          "minLength": 1
+        },
+        "open": {
+          "enum": [
+            "root",
+            "drawer",
+            "push",
+            "sheet"
+          ]
+        },
+        "mounted": {
+          "type": "boolean"
+        },
+        "screen": {
+          "$ref": "#/$defs/ScreenNode"
+        },
+        "side": {
+          "enum": [
+            "left",
+            "right"
+          ]
+        },
+        "rule": {
+          "$ref": "#/$defs/RecomposeRule"
+        }
+      },
+      "required": [
+        "path",
+        "node",
+        "open",
+        "mounted",
+        "screen"
+      ],
+      "additionalProperties": false
+    },
+    "ScreenSheet": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "edge": {
+          "enum": [
+            "top",
+            "right",
+            "bottom",
+            "left"
+          ]
+        },
+        "align": {
+          "enum": [
+            "start",
+            "center",
+            "end"
+          ]
+        },
+        "screen": {
+          "$ref": "#/$defs/ScreenNode"
+        },
+        "peek": {
+          "type": "number",
+          "minimum": 0
+        },
+        "rule": {
+          "$ref": "#/$defs/RecomposeRule"
+        }
+      },
+      "required": [
+        "id",
+        "edge",
+        "align",
+        "screen"
+      ],
+      "additionalProperties": false
+    },
+    "ScreenSize": {
+      "type": "object",
+      "properties": {
+        "px": {
+          "type": "number",
+          "minimum": 0
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0
+        },
+        "min": {
+          "type": "number",
+          "minimum": 0
+        },
+        "max": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  }
+}

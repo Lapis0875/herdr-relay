@@ -1,0 +1,5 @@
+{
+  "t": "view.tree",
+  "view": "tabs:tabs",
+  "tree": { "k": "el", "style": {}, "children": [{ "k": "svg", "style": { "width": 14 } }] }
+}

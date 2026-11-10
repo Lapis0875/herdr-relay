@@ -1,0 +1,103 @@
+{
+  "t": "hello",
+  "v": 1,
+  "seq": 1,
+  "session": "s-9f2c",
+  "layout": {
+    "name": "lstack-herdr",
+    "tree": {
+      "id": "root",
+      "type": "row",
+      "titlebar": "none",
+      "background": "canvas",
+      "children": [
+        {
+          "id": "sidebar",
+          "type": "column",
+          "size": { "px": 320 },
+          "min": 44,
+          "max": 480,
+          "background": "chrome",
+          "children": [
+            { "id": "brand", "type": "block", "size": { "px": 46 }, "content": { "mod": "workspace-chrome" } }
+          ]
+        },
+        {
+          "id": "main",
+          "type": "block",
+          "content": { "tab": "active", "pane": { "gap": 8, "radius": 10 } }
+        }
+      ]
+    }
+  },
+  "screens": {
+    "v": 1,
+    "layout": "lstack-herdr",
+    "class": "tablet-landscape",
+    "routes": [
+      {
+        "path": "/",
+        "node": "root",
+        "open": "root",
+        "mounted": true,
+        "screen": {
+          "kind": "split",
+          "id": "root",
+          "axis": "row",
+          "children": [
+            {
+              "kind": "split",
+              "id": "sidebar",
+              "axis": "column",
+              "size": { "px": 320, "min": 44, "max": 480 },
+              "resize": { "kind": "px", "collapsible": true },
+              "collapsed": false,
+              "rule": "R2",
+              "children": [
+                {
+                  "kind": "bar",
+                  "id": "brand",
+                  "axis": "column",
+                  "px": 46,
+                  "rule": "R1",
+                  "children": [{ "kind": "block", "id": "brand", "view": "workspace-chrome:brand" }]
+                }
+              ]
+            },
+            { "kind": "panes", "id": "main", "mode": "split", "rule": "R6" }
+          ]
+        }
+      }
+    ],
+    "sheets": [],
+    "stack": ["/"],
+    "overridden": ["sidebar"]
+  },
+  "theme": { "background": "#282c34", "foreground": "#abb2bf", "chrome": "#21252b", "border": "#3a3f4b" },
+  "settings": { "app": { "theme": "atom-one-dark" }, "font": { "family": "D2Coding ligature", "size": 13 } },
+  "fonts": {
+    "ui": "Geist, Pretendard, sans-serif",
+    "mono": "JetBrains Mono, monospace",
+    "terminal": "D2Coding, monospace"
+  },
+  "scope": "act",
+  "hosts": [
+    { "folder": "workspace-chrome", "state": "running", "profile": "herdr-shipped" },
+    { "folder": "lstack-herdr-cockpit", "state": "starting", "profile": "lstack-herdr" },
+    {
+      "folder": "changes",
+      "state": "failed",
+      "reason": "mod folder contains a link outside itself: data/link.json",
+      "profile": "herdr-shipped"
+    }
+  ],
+  "compat": {
+    "herdrVersion": "0.1.15",
+    "tested": false,
+    "drift": [
+      { "surface": "herdr.d.ts", "detail": "herdr.d.ts differs from Herdr 0.1.14's" },
+      { "surface": "commands", "detail": "1 command herdr-relay does not classify, refused on devices: tab.pin" }
+    ],
+    "banner": "Herdr 0.1.15 is newer than herdr-relay was tested with (0.1.14)."
+  }
+}

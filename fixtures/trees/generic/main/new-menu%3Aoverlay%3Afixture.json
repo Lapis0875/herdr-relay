@@ -1,0 +1,389 @@
+{
+  "k": "el",
+  "tag": "v_flex",
+  "id": "new-menu",
+  "style": {
+    "display": "flex",
+    "flexDirection": "column",
+    "minHeight": 0,
+    "width": "100%",
+    "height": 198,
+    "backgroundColor": "#2c313a",
+    "paddingTop": 5,
+    "paddingRight": 5,
+    "paddingBottom": 5,
+    "paddingLeft": 5,
+    "fontSize": 12.8
+  },
+  "on": {
+    "keydown": 1
+  },
+  "attrs": {
+    "track_focus": {
+      "focus_handle": 1
+    }
+  },
+  "children": [
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "id": "terminal",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "height": 31,
+        "paddingLeft": 9,
+        "paddingRight": 9,
+        "rowGap": 10,
+        "columnGap": 10,
+        "borderTopLeftRadius": 7,
+        "borderTopRightRadius": 7,
+        "borderBottomRightRadius": 7,
+        "borderBottomLeftRadius": 7,
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "color": "#abb2bf"
+      },
+      "states": {
+        "hover": {
+          "backgroundColor": "#323844"
+        }
+      },
+      "on": {
+        "click": 2
+      },
+      "children": [
+        {
+          "k": "svg",
+          "src": "icons/shell.svg",
+          "style": {
+            "width": 14,
+            "height": 14
+          }
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "flexGrow": 1,
+            "flexShrink": 1,
+            "flexBasis": "0%"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "Terminal"
+            }
+          ]
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "fontSize": 11,
+            "color": "#5c6370"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "⌃⇧T"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "div",
+      "style": {
+        "paddingLeft": 9,
+        "paddingRight": 9,
+        "paddingTop": 8,
+        "paddingBottom": 4,
+        "fontSize": 11,
+        "color": "#5c6370"
+      },
+      "children": [
+        {
+          "k": "text",
+          "style": {},
+          "text": "Start an agent"
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "v_flex",
+      "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "flexGrow": 1,
+        "flexShrink": 1,
+        "flexBasis": "0%",
+        "minHeight": 0,
+        "overflowY": "auto"
+      },
+      "attrs": {
+        "scrollbar": "y"
+      },
+      "children": [
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "paddingLeft": 9,
+            "paddingRight": 9,
+            "paddingTop": 6,
+            "paddingBottom": 6,
+            "color": "#5c6370"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "Checking installed agents…"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "div",
+      "style": {
+        "height": 1,
+        "marginLeft": 4,
+        "marginRight": 4,
+        "marginTop": 5,
+        "marginBottom": 5,
+        "backgroundColor": "#3a3f4b"
+      }
+    },
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "id": "space",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "height": 31,
+        "paddingLeft": 9,
+        "paddingRight": 9,
+        "rowGap": 10,
+        "columnGap": 10,
+        "borderTopLeftRadius": 7,
+        "borderTopRightRadius": 7,
+        "borderBottomRightRadius": 7,
+        "borderBottomLeftRadius": 7,
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "color": "#abb2bf"
+      },
+      "states": {
+        "hover": {
+          "backgroundColor": "#323844"
+        }
+      },
+      "on": {
+        "click": 3
+      },
+      "children": [
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "width": 14
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "+"
+            }
+          ]
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "flexGrow": 1,
+            "flexShrink": 1,
+            "flexBasis": "0%"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "New space"
+            }
+          ]
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "fontSize": 11,
+            "color": "#5c6370"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "⌃⇧N"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "id": "worktree",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "height": 31,
+        "paddingLeft": 9,
+        "paddingRight": 9,
+        "rowGap": 10,
+        "columnGap": 10,
+        "borderTopLeftRadius": 7,
+        "borderTopRightRadius": 7,
+        "borderBottomRightRadius": 7,
+        "borderBottomLeftRadius": 7,
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "color": "#abb2bf"
+      },
+      "states": {
+        "hover": {
+          "backgroundColor": "#323844"
+        }
+      },
+      "on": {
+        "click": 4
+      },
+      "children": [
+        {
+          "k": "svg",
+          "src": "mods/workspace-chrome/branch.svg",
+          "style": {
+            "width": 14,
+            "height": 14
+          }
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "flexGrow": 1,
+            "flexShrink": 1,
+            "flexBasis": "0%"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "New worktree…"
+            }
+          ]
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "fontSize": 11,
+            "color": "#5c6370"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "id": "worktree-open",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "height": 31,
+        "paddingLeft": 9,
+        "paddingRight": 9,
+        "rowGap": 10,
+        "columnGap": 10,
+        "borderTopLeftRadius": 7,
+        "borderTopRightRadius": 7,
+        "borderBottomRightRadius": 7,
+        "borderBottomLeftRadius": 7,
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "color": "#abb2bf"
+      },
+      "states": {
+        "hover": {
+          "backgroundColor": "#323844"
+        }
+      },
+      "on": {
+        "click": 5
+      },
+      "children": [
+        {
+          "k": "svg",
+          "src": "mods/workspace-chrome/branch.svg",
+          "style": {
+            "width": 14,
+            "height": 14
+          }
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "flexGrow": 1,
+            "flexShrink": 1,
+            "flexBasis": "0%"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "Open worktree…"
+            }
+          ]
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "fontSize": 11,
+            "color": "#5c6370"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

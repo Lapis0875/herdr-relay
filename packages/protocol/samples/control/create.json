@@ -1,0 +1,7 @@
+{
+  "t": "create",
+  "copy": "lstack-herdr-cockpit:queue",
+  "props": { "app": "queue" },
+  "placement": { "edge": "right", "align": "center", "vertical": true, "hovered": false, "dragging": false },
+  "storage": { "queue.filter": "mine", "queue.collapsed": "[\"done\"]" }
+}

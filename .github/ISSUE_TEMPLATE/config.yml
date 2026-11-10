@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/Lapis0875/herdr-relay/security/advisories/new
+    about: Report it privately; see SECURITY.md.
+  - name: Install and setup guide
+    url: https://github.com/Lapis0875/herdr-relay/blob/main/docs/INSTALL.md
+    about: Requirements, herdr-relay doctor, pairing, launchd.

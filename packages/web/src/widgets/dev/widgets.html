@@ -1,0 +1,258 @@
+<!doctype html>
+<!-- Dev-only widget stories (T17): copied to dist/dev/ by `deno task bundle:dev`, served at /herdr-relay/dev/widgets
+     only while the bridge runs with HERDR_RELAY_DEV. Page styles live here, not in src/**/*.css, so app.css stays
+     free of them. -->
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <base href="/herdr-relay/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#1e2227" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="robots" content="noindex" />
+    <title>herdr-relay · widget stories (dev)</title>
+    <link rel="stylesheet" href="app.css" />
+    <style>
+    html,
+    body,
+    #root {
+      height: auto;
+      min-height: 100%;
+    }
+
+    body {
+      overscroll-behavior: auto;
+    }
+
+    .stories {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: calc(16px + var(--safe-top)) calc(16px + var(--safe-right)) calc(32px + var(--safe-bottom))
+        calc(16px + var(--safe-left));
+    }
+
+    .stories__title {
+      margin: 0;
+      font-size: var(--text-xl);
+      font-weight: 650;
+      letter-spacing: -0.01em;
+    }
+
+    .stories__note {
+      margin: 4px 0 12px;
+      color: var(--shell-muted);
+      font-size: var(--text-sm);
+    }
+
+    .stories__nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .stories__nav a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 0 12px;
+      border: 1px solid var(--shell-border);
+      border-radius: 999px;
+      color: var(--shell-fg);
+      font-size: var(--text-sm);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .stories__nav a:hover {
+      background: var(--shell-hover);
+    }
+
+    .stories__nav a[aria-current="page"] {
+      border-color: var(--shell-accent);
+      color: var(--shell-accent);
+    }
+
+    .stories__list {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      margin-top: 20px;
+    }
+
+    .story__title {
+      margin: 0;
+      font-size: var(--text-lg);
+      font-weight: 600;
+    }
+
+    .story__about {
+      margin: 4px 0 10px;
+      color: var(--shell-muted);
+      font-size: var(--text-sm);
+      text-wrap: pretty;
+    }
+
+    .story__state {
+      color: var(--shell-fg);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .story__frame {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--shell-border);
+      border-radius: var(--radius-md);
+      background: var(--shell-surface);
+    }
+
+    .story__frame > .r-view {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .story__toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-bottom: 1px solid var(--shell-border);
+      background: var(--shell-chrome);
+      font-size: var(--text-sm);
+    }
+
+    .story__label {
+      color: var(--shell-muted);
+    }
+
+    .story__select {
+      min-width: 0;
+      max-width: 100%;
+      min-height: 32px;
+      border: 1px solid var(--shell-border);
+      border-radius: var(--radius-sm);
+      background: var(--shell-raised);
+      color: var(--shell-fg);
+      font: inherit;
+      font-family: var(--font-mono, ui-monospace, monospace);
+    }
+
+    .story__term {
+      display: flex;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .story__term > * {
+      flex: 1 1 auto;
+    }
+
+    .story__waiting {
+      margin: auto;
+      color: var(--shell-muted);
+      font-size: var(--text-sm);
+    }
+
+    .story__split {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .story__half {
+      display: flex;
+      flex: 3 1 0;
+      min-height: 0;
+    }
+
+    .story__half--short {
+      flex: 2 1 0;
+      border-top: 1px solid var(--shell-border);
+    }
+
+    .story__half > .r-view {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .story__log {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin: 8px 0 0;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--shell-canvas);
+      color: var(--shell-muted);
+      font-family: var(--font-mono, ui-monospace, monospace);
+      font-size: 11px;
+      line-height: 1.45;
+      list-style: none;
+      overflow-wrap: anywhere;
+      word-break: normal;
+    }
+
+    .story__log li:first-child {
+      color: var(--shell-fg);
+    }
+
+    .story__log-empty {
+      font-family: var(--font-ui, system-ui, sans-serif);
+    }
+
+    /* One story (?story=…): it fills the screen under a one-row nav. */
+    .stories[data-single] {
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      padding-bottom: calc(12px + var(--safe-bottom));
+    }
+
+    .stories[data-single] .stories__note {
+      display: none;
+    }
+
+    .stories[data-single] .stories__nav {
+      flex-wrap: nowrap;
+      margin-top: 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .stories[data-single] .stories__list {
+      flex: 1 1 auto;
+      min-height: 0;
+      margin-top: 14px;
+    }
+
+    .stories[data-single] .story {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+    }
+
+    .stories[data-single] .story__frame {
+      flex: 1 1 auto;
+      height: auto !important;
+      min-height: 220px;
+    }
+
+    .stories[data-single] .story__log {
+      flex: none;
+      max-height: 132px;
+      overflow: auto;
+    }
+    </style>
+    <script type="module" src="dev/widgets.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>The widget stories need JavaScript.</noscript>
+  </body>
+</html>

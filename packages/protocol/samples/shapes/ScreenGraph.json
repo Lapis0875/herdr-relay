@@ -1,0 +1,283 @@
+{
+  "v": 1,
+  "layout": "lstack-herdr",
+  "class": "phone",
+  "routes": [
+    {
+      "path": "/",
+      "node": "main-area",
+      "open": "root",
+      "mounted": true,
+      "screen": {
+        "kind": "split",
+        "id": "main-area",
+        "axis": "column",
+        "children": [
+          {
+            "kind": "bar",
+            "id": "topbar",
+            "axis": "row",
+            "px": 42,
+            "rule": "R1",
+            "children": [
+              { "kind": "block", "id": "tabs", "view": "tabs:tabs" },
+              { "kind": "block", "id": "bell", "view": "lstack-herdr-cockpit:bell", "size": { "px": 52 } }
+            ]
+          },
+          {
+            "kind": "group",
+            "id": "center",
+            "rule": "R3",
+            "active": "work",
+            "nav": "segments",
+            "shown": ["home", "work", "inbox", "runbook"],
+            "more": ["todo", "meetings", "monitor", "routines", "mail"],
+            "destinations": [
+              {
+                "id": "home",
+                "title": "home",
+                "mounted": true,
+                "screen": {
+                  "kind": "split",
+                  "id": "home",
+                  "axis": "column",
+                  "children": [
+                    { "kind": "block", "id": "home-board", "view": "lstack-herdr-cockpit:home-board" },
+                    { "kind": "link", "id": "home-agent", "route": "/home-agent", "rule": "R2" }
+                  ]
+                }
+              },
+              {
+                "id": "work",
+                "title": "work",
+                "mounted": true,
+                "screen": {
+                  "kind": "group",
+                  "id": "view",
+                  "rule": "R3",
+                  "active": "main",
+                  "nav": "segments",
+                  "shown": ["main", "agent"],
+                  "more": [],
+                  "destinations": [
+                    {
+                      "id": "main",
+                      "title": "main",
+                      "mounted": true,
+                      "screen": {
+                        "kind": "panes",
+                        "id": "main",
+                        "rule": "R6",
+                        "mode": "pager",
+                        "header": {
+                          "folder": "lstack-herdr-cockpit",
+                          "props": { "app": "pane" },
+                          "height": 30,
+                          "position": "top"
+                        }
+                      }
+                    },
+                    {
+                      "id": "agent",
+                      "title": "agent",
+                      "mounted": true,
+                      "screen": {
+                        "kind": "split",
+                        "id": "agent",
+                        "axis": "column",
+                        "children": [
+                          {
+                            "kind": "bar",
+                            "id": "agent-head",
+                            "axis": "column",
+                            "px": 34,
+                            "rule": "R1",
+                            "children": [
+                              { "kind": "block", "id": "agent-head", "view": "lstack-herdr-cockpit:agent-head" }
+                            ]
+                          },
+                          { "kind": "terminal", "id": "agent-term", "agent": "focused", "rule": "R7" }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "inbox",
+                "title": "inbox",
+                "mounted": true,
+                "screen": { "kind": "block", "id": "inbox", "view": "lstack-herdr-cockpit:inbox" }
+              },
+              {
+                "id": "runbook",
+                "title": "runbook",
+                "mounted": true,
+                "screen": { "kind": "block", "id": "runbook", "view": "lstack-herdr-cockpit:runbook" }
+              },
+              {
+                "id": "todo",
+                "title": "todo",
+                "mounted": true,
+                "screen": { "kind": "block", "id": "todo", "view": "lstack-herdr-cockpit:todo" }
+              },
+              {
+                "id": "meetings",
+                "title": "meetings",
+                "mounted": true,
+                "screen": { "kind": "block", "id": "meetings", "view": "lstack-herdr-cockpit:meetings" }
+              },
+              {
+                "id": "monitor",
+                "title": "monitor",
+                "mounted": true,
+                "screen": { "kind": "block", "id": "monitor", "view": "lstack-herdr-cockpit:monitor" }
+              },
+              {
+                "id": "routines",
+                "title": "routines",
+                "mounted": true,
+                "screen": { "kind": "block", "id": "routines", "view": "lstack-herdr-cockpit:routines" }
+              },
+              {
+                "id": "mail",
+                "title": "mail",
+                "mounted": true,
+                "screen": { "kind": "block", "id": "mail", "view": "lstack-herdr-cockpit:mail" }
+              }
+            ]
+          },
+          {
+            "kind": "bar",
+            "id": "status",
+            "axis": "column",
+            "px": 34,
+            "rule": "R1",
+            "children": [{ "kind": "block", "id": "status", "view": "lstack-herdr-cockpit:status" }]
+          }
+        ]
+      }
+    },
+    {
+      "path": "/drawer",
+      "node": "sidebar",
+      "open": "drawer",
+      "side": "left",
+      "rule": "R2",
+      "mounted": true,
+      "screen": {
+        "kind": "split",
+        "id": "sidebar",
+        "axis": "column",
+        "children": [
+          {
+            "kind": "bar",
+            "id": "brand",
+            "axis": "column",
+            "px": 46,
+            "rule": "R1",
+            "children": [{ "kind": "block", "id": "brand", "view": "workspace-chrome:brand" }]
+          },
+          { "kind": "block", "id": "cockpit-sidebar", "view": "lstack-herdr-cockpit:cockpit-sidebar" },
+          {
+            "kind": "bar",
+            "id": "sidebar-footer",
+            "axis": "column",
+            "px": 69,
+            "rule": "R1",
+            "children": [{ "kind": "block", "id": "sidebar-footer", "view": "workspace-chrome:sidebar-footer" }]
+          }
+        ]
+      }
+    },
+    {
+      "path": "/panel",
+      "node": "panel",
+      "open": "push",
+      "side": "right",
+      "rule": "R2",
+      "mounted": true,
+      "screen": {
+        "kind": "group",
+        "id": "panel-body",
+        "rule": "R3",
+        "active": "tree",
+        "nav": "segments",
+        "shown": ["show", "review", "runbook-panel", "files", "changes", "tree"],
+        "more": [],
+        "destinations": [
+          {
+            "id": "show",
+            "title": "show",
+            "mounted": true,
+            "screen": { "kind": "block", "id": "show", "view": "lstack-herdr-cockpit:show" }
+          },
+          {
+            "id": "review",
+            "title": "review",
+            "mounted": true,
+            "screen": { "kind": "block", "id": "review", "view": "lstack-herdr-cockpit:review" }
+          },
+          {
+            "id": "runbook-panel",
+            "title": "runbook",
+            "mounted": true,
+            "screen": { "kind": "block", "id": "runbook-panel", "view": "lstack-herdr-cockpit:runbook-panel" }
+          },
+          {
+            "id": "files",
+            "title": "files",
+            "mounted": true,
+            "screen": { "kind": "block", "id": "files", "view": "files:files" }
+          },
+          {
+            "id": "changes",
+            "title": "changes",
+            "mounted": true,
+            "screen": { "kind": "block", "id": "changes", "view": "changes:changes" }
+          },
+          {
+            "id": "tree",
+            "title": "tree",
+            "mounted": true,
+            "screen": { "kind": "block", "id": "tree", "view": "lstack-herdr-cockpit:tree" }
+          }
+        ]
+      }
+    },
+    {
+      "path": "/home-agent",
+      "node": "home-agent",
+      "open": "push",
+      "rule": "R2",
+      "mounted": false,
+      "screen": {
+        "kind": "split",
+        "id": "home-agent-card",
+        "axis": "column",
+        "children": [
+          {
+            "kind": "bar",
+            "id": "home-agent-head",
+            "axis": "column",
+            "px": 34,
+            "rule": "R1",
+            "children": [{ "kind": "block", "id": "home-agent-head", "view": "lstack-herdr-cockpit:home-agent-head" }]
+          },
+          { "kind": "terminal", "id": "home-agent-term", "agent": "focused", "rule": "R7" }
+        ]
+      }
+    }
+  ],
+  "sheets": [
+    {
+      "id": "queue",
+      "edge": "right",
+      "align": "center",
+      "peek": 44,
+      "rule": "R4",
+      "screen": { "kind": "block", "id": "queue", "view": "lstack-herdr-cockpit:queue" }
+    }
+  ],
+  "stack": ["/", "/panel"]
+}

@@ -1,0 +1,8 @@
+# Fixtures are byte-exact copies (mods, recorded trees, probe mods); never normalise line endings.
+# Git stores symlinks (fixtures/probe-mods/evil/data/link.json) as links regardless of this file.
+fixtures/** -text
+*.woff2 binary
+*.woff binary
+*.ttf binary
+*.ttc binary
+*.png binary

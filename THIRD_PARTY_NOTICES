@@ -1,0 +1,357 @@
+herdr-relay third-party notices
+===============================
+
+herdr-relay is Copyright 2026 Lapis0875 and licensed under the Apache License,
+Version 2.0 (LICENSE). It contains, bundles or downloads the third-party
+material listed below. Each entry names the component, its version, its
+license, its copyright notice, and where the full license text is: in the
+last part of this file, or in a file the repository carries next to the
+material.
+
+Versions are the ones pinned in deno.json / deno.lock, in
+packages/web/public/fonts/fonts.manifest.json, and in
+fixtures/generic-home/MANIFEST.json. Update this file in the same change as
+any of them.
+
+
+1. Bundled into the device app
+------------------------------
+
+`deno task bundle` compiles packages/web into packages/web/dist, which the
+bridge serves to phones and tablets. The packages come from npm (deno.json
+"imports", locked in deno.lock); they are fetched by `deno install`, not
+committed.
+
+react 19.3.1 — MIT
+  Copyright (c) Meta Platforms, Inc. and affiliates.
+react-dom 19.3.1 — MIT
+  Copyright (c) Meta Platforms, Inc. and affiliates.
+scheduler 0.28.0 (dependency of react-dom) — MIT
+  Copyright (c) Meta Platforms, Inc. and affiliates.
+@xterm/xterm 6.0.0 — MIT
+  Copyright (c) 2017-2019, The xterm.js authors (https://github.com/xtermjs/xterm.js)
+  Copyright (c) 2014-2016, SourceLair Private Company (https://www.sourcelair.com)
+  Copyright (c) 2012-2013, Christopher Jeffrey (https://github.com/chjj/)
+@xterm/addon-unicode11 0.9.0 — MIT
+  Copyright (c) 2019, The xterm.js authors (https://github.com/xtermjs/xterm.js)
+marked 18.1.3 — MIT, plus the Markdown notice below
+  Copyright (c) 2018+, MarkedJS (https://github.com/markedjs/)
+  Copyright (c) 2011-2018, Christopher Jeffrey (https://github.com/chjj/)
+  Copyright © 2004, John Gruber (http://daringfireball.net/)
+dompurify 3.4.17 — Apache-2.0 OR MPL-2.0; herdr-relay uses it under Apache-2.0
+  (c) Cure53 and other contributors
+  The Apache-2.0 text is the same as this repository's LICENSE.
+highlight.js 11.12.0 — BSD-3-Clause (full text below)
+  Copyright (c) 2006, Ivan Sagalaev.
+
+
+2. Used at run time and in development (JSR and npm)
+----------------------------------------------------
+
+Fetched into the Deno cache by `deno install` or the herdr-relay launcher,
+never committed or bundled into the device app.
+
+@std/path 1.1.6, @std/internal 1.0.14 (the bridge at run time) — MIT
+  Copyright 2018-2026 the Deno authors.
+@std/assert 1.0.19, @std/async 1.5.1, @std/data-structures 1.1.3,
+@std/fs 1.0.24, @std/testing 1.0.21 (tests only) — MIT
+  Copyright 2018-2026 the Deno authors.
+@types/react 19.3.0, @types/react-dom 19.3.0, @types/trusted-types 2.0.7
+(type checking only) — MIT
+  Copyright (c) Microsoft Corporation.
+csstype 3.2.3 (type checking only) — MIT
+  Copyright (c) 2017-2018 Fredrik Nicol
+
+
+3. Fonts
+--------
+
+The font files are downloaded by `deno task --cwd packages/web fonts` from
+the pinned URLs in packages/web/public/fonts/fonts.manifest.json, checked
+against their SHA-256 there, and are not committed. Each family's license is
+committed as packages/web/public/fonts/<family>/OFL.txt (SIL Open Font
+License 1.1).
+
+Geist 1.9.2 — OFL-1.1 (packages/web/public/fonts/Geist/OFL.txt)
+  Copyright (c) 2023 Vercel, in collaboration with basement.studio
+Pretendard 1.3.9 — OFL-1.1 (packages/web/public/fonts/Pretendard/OFL.txt)
+  Copyright (c) 2021, Kil Hyung-jin (https://github.com/orioncactus/pretendard),
+  with Reserved Font Name Pretendard.
+JetBrains Mono 2.304 — OFL-1.1 (packages/web/public/fonts/JetBrainsMono/OFL.txt)
+  Copyright 2020 The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono)
+D2Coding 1.4.0 — OFL-1.1 (packages/web/public/fonts/D2Coding/OFL.txt)
+  Copyright (c) 2015, NAVER Corporation (https://www.navercorp.com),
+  with Reserved Font Names D2Coding and D2Coding-Bold.
+
+
+4. Herdr 0.1.14 test fixtures
+-----------------------------
+
+Used by the tests only, except the program table below; nothing else here is
+served to devices or installed.
+
+Herdr shipped mods, layouts, themes, frame images, icons, keys, programs and
+herdr.d.ts — Apache-2.0
+  © Herdr contributors. Unmodified copies from
+  https://github.com/herdrdev/herdr-app, tag v0.1.14
+  (commit 2405bf388c568c3ed479f05b8e405ccfa44b3f2c).
+  Where: fixtures/generic-home/ (file list and SHA-256 in MANIFEST.json,
+  attribution in NOTICE.md, license in fixtures/generic-home/LICENSE),
+  fixtures/contract/0.1.14/ (herdr.d.ts, keys.json, installed.json and the
+  `herdr-app commands` capture), fixtures/herdr-app-commands.json, and the
+  trees recorded from rendering those mods (fixtures/trees/generic/).
+
+Herdr's built-in program table — Apache-2.0
+  © Herdr contributors. defaults/programs.json at the same tag and commit,
+  unmodified apart from an added "$comment", in
+  packages/bridge/src/herdr/programs.json: the bridge ships it to name and
+  draw terminals as Herdr does (Herdr compiles the same file in).
+
+gpui-kit.d.ts — Apache-2.0
+  Generated by gpui-kit (gpui-shell 0.7.1).
+  Where: fixtures/generic-home/gpui-kit.d.ts, one copy in each
+  fixtures/generic-home/mods/<mod>/, fixtures/contract/0.1.14/gpui-kit.d.ts.
+
+Icons in fixtures/generic-home/icons/ and in the shipped mods
+(as described by fixtures/generic-home/icons/LICENSES.md):
+  - Brand icons: Simple Icons (https://simpleicons.org) — CC0 1.0 (text
+    below). Brands are their owners' trademarks.
+  - Glyphs: Lucide (https://lucide.dev) — ISC; Feather-derived Lucide icons —
+    MIT. Copyright (c) 2026 Lucide Icons and Contributors. Full notices:
+    fixtures/generic-home/icons/LICENSE-Lucide.txt.
+  - Agent icons: LobeHub icons — MIT, Copyright (c) 2023 LobeHub — and the
+    agents' own marks. Full notice:
+    fixtures/generic-home/icons/LICENSE-LobeHub.txt.
+  These licenses grant no trademark rights.
+
+Fonts of the win98 mod (fixtures/generic-home/mods/win98/fonts/):
+  - Pixelated MS Sans Serif, Regular and Bold — CC BY-SA 3.0
+    (http://creativecommons.org/licenses/by-sa/3.0/).
+    Copyright lou 2017. Built with FontStruct; FontStruct is a trademark of
+    FSI FontShop International GmbH. Notice: LICENSE-MSSansSerif.txt.
+  - PxPlus IBM VGA 8x16 (int10h.org) — CC BY-SA 4.0. Full license text:
+    LICENSE-PxPlus.txt.
+
+
+5. License texts
+----------------
+
+5.1 MIT License
+
+Applies to react, react-dom, scheduler, @xterm/xterm, @xterm/addon-unicode11,
+marked, @std/*, @types/react, @types/react-dom, @types/trusted-types and
+csstype, each under its own copyright notice listed above.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+5.2 Markdown (included in marked's license)
+
+Copyright © 2004, John Gruber
+http://daringfireball.net/
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+* Neither the name “Markdown” nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+This software is provided by the copyright holders and contributors “as is” and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall the copyright owner or contributors be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.
+
+
+5.3 highlight.js — BSD 3-Clause License
+
+Copyright (c) 2006, Ivan Sagalaev.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+5.4 Apache License 2.0
+
+Applies to dompurify, the Herdr fixtures and gpui-kit.d.ts. The text is
+identical to this repository's LICENSE file.
+
+
+5.5 SIL Open Font License 1.1
+
+Applies to the four device-app font families; each family's full text with
+its copyright notice is packages/web/public/fonts/<family>/OFL.txt.
+
+
+5.6 ISC License (Lucide), MIT License (Feather, LobeHub), CC BY-SA 4.0
+(PxPlus IBM VGA 8x16)
+
+Full texts with their copyright notices: fixtures/generic-home/icons/
+LICENSE-Lucide.txt, fixtures/generic-home/icons/LICENSE-LobeHub.txt and
+fixtures/generic-home/mods/win98/fonts/LICENSE-PxPlus.txt.
+
+
+5.7 CC BY-SA 3.0 (Pixelated MS Sans Serif)
+
+Legal code: https://creativecommons.org/licenses/by-sa/3.0/legalcode
+
+
+5.8 CC0 1.0 Universal (Simple Icons)
+
+Creative Commons Legal Code
+
+CC0 1.0 Universal
+
+    CREATIVE COMMONS CORPORATION IS NOT A LAW FIRM AND DOES NOT PROVIDE
+    LEGAL SERVICES. DISTRIBUTION OF THIS DOCUMENT DOES NOT CREATE AN
+    ATTORNEY-CLIENT RELATIONSHIP. CREATIVE COMMONS PROVIDES THIS
+    INFORMATION ON AN "AS-IS" BASIS. CREATIVE COMMONS MAKES NO WARRANTIES
+    REGARDING THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS
+    PROVIDED HEREUNDER, AND DISCLAIMS LIABILITY FOR DAMAGES RESULTING FROM
+    THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS PROVIDED
+    HEREUNDER.
+
+Statement of Purpose
+
+The laws of most jurisdictions throughout the world automatically confer
+exclusive Copyright and Related Rights (defined below) upon the creator
+and subsequent owner(s) (each and all, an "owner") of an original work of
+authorship and/or a database (each, a "Work").
+
+Certain owners wish to permanently relinquish those rights to a Work for
+the purpose of contributing to a commons of creative, cultural and
+scientific works ("Commons") that the public can reliably and without fear
+of later claims of infringement build upon, modify, incorporate in other
+works, reuse and redistribute as freely as possible in any form whatsoever
+and for any purposes, including without limitation commercial purposes.
+These owners may contribute to the Commons to promote the ideal of a free
+culture and the further production of creative, cultural and scientific
+works, or to gain reputation or greater distribution for their Work in
+part through the use and efforts of others.
+
+For these and/or other purposes and motivations, and without any
+expectation of additional consideration or compensation, the person
+associating CC0 with a Work (the "Affirmer"), to the extent that he or she
+is an owner of Copyright and Related Rights in the Work, voluntarily
+elects to apply CC0 to the Work and publicly distribute the Work under its
+terms, with knowledge of his or her Copyright and Related Rights in the
+Work and the meaning and intended legal effect of CC0 on those rights.
+
+1. Copyright and Related Rights. A Work made available under CC0 may be
+protected by copyright and related or neighboring rights ("Copyright and
+Related Rights"). Copyright and Related Rights include, but are not
+limited to, the following:
+
+  i. the right to reproduce, adapt, distribute, perform, display,
+     communicate, and translate a Work;
+ ii. moral rights retained by the original author(s) and/or performer(s);
+iii. publicity and privacy rights pertaining to a person's image or
+     likeness depicted in a Work;
+ iv. rights protecting against unfair competition in regards to a Work,
+     subject to the limitations in paragraph 4(a), below;
+  v. rights protecting the extraction, dissemination, use and reuse of data
+     in a Work;
+ vi. database rights (such as those arising under Directive 96/9/EC of the
+     European Parliament and of the Council of 11 March 1996 on the legal
+     protection of databases, and under any national implementation
+     thereof, including any amended or successor version of such
+     directive); and
+vii. other similar, equivalent or corresponding rights throughout the
+     world based on applicable law or treaty, and any national
+     implementations thereof.
+
+2. Waiver. To the greatest extent permitted by, but not in contravention
+of, applicable law, Affirmer hereby overtly, fully, permanently,
+irrevocably and unconditionally waives, abandons, and surrenders all of
+Affirmer's Copyright and Related Rights and associated claims and causes
+of action, whether now known or unknown (including existing as well as
+future claims and causes of action), in the Work (i) in all territories
+worldwide, (ii) for the maximum duration provided by applicable law or
+treaty (including future time extensions), (iii) in any current or future
+medium and for any number of copies, and (iv) for any purpose whatsoever,
+including without limitation commercial, advertising or promotional
+purposes (the "Waiver"). Affirmer makes the Waiver for the benefit of each
+member of the public at large and to the detriment of Affirmer's heirs and
+successors, fully intending that such Waiver shall not be subject to
+revocation, rescission, cancellation, termination, or any other legal or
+equitable action to disrupt the quiet enjoyment of the Work by the public
+as contemplated by Affirmer's express Statement of Purpose.
+
+3. Public License Fallback. Should any part of the Waiver for any reason
+be judged legally invalid or ineffective under applicable law, then the
+Waiver shall be preserved to the maximum extent permitted taking into
+account Affirmer's express Statement of Purpose. In addition, to the
+extent the Waiver is so judged Affirmer hereby grants to each affected
+person a royalty-free, non transferable, non sublicensable, non exclusive,
+irrevocable and unconditional license to exercise Affirmer's Copyright and
+Related Rights in the Work (i) in all territories worldwide, (ii) for the
+maximum duration provided by applicable law or treaty (including future
+time extensions), (iii) in any current or future medium and for any number
+of copies, and (iv) for any purpose whatsoever, including without
+limitation commercial, advertising or promotional purposes (the
+"License"). The License shall be deemed effective as of the date CC0 was
+applied by Affirmer to the Work. Should any part of the License for any
+reason be judged legally invalid or ineffective under applicable law, such
+partial invalidity or ineffectiveness shall not invalidate the remainder
+of the License, and in such case Affirmer hereby affirms that he or she
+will not (i) exercise any of his or her remaining Copyright and Related
+Rights in the Work or (ii) assert any associated claims and causes of
+action with respect to the Work, in either case contrary to Affirmer's
+express Statement of Purpose.
+
+4. Limitations and Disclaimers.
+
+ a. No trademark or patent rights held by Affirmer are waived, abandoned,
+    surrendered, licensed or otherwise affected by this document.
+ b. Affirmer offers the Work as-is and makes no representations or
+    warranties of any kind concerning the Work, express, implied,
+    statutory or otherwise, including without limitation warranties of
+    title, merchantability, fitness for a particular purpose, non
+    infringement, or the absence of latent or other defects, accuracy, or
+    the present or absence of errors, whether or not discoverable, all to
+    the greatest extent permissible under applicable law.
+ c. Affirmer disclaims responsibility for clearing rights of other persons
+    that may apply to the Work or any use thereof, including without
+    limitation any person's Copyright and Related Rights in the Work.
+    Further, Affirmer disclaims responsibility for obtaining any necessary
+    consents, permissions or other rights required for any use of the
+    Work.
+ d. Affirmer understands and acknowledges that Creative Commons is not a
+    party to this document and has no duty or obligation with respect to
+    this CC0 or use of the Work.

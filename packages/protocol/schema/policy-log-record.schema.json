@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:herdr-relay:schema:policy-log-record",
+  "title": "Policy decision log record",
+  "$ref": "#/$defs/PolicyLogRecord",
+  "$defs": {
+    "PolicyLogRecord": {
+      "type": "object",
+      "properties": {
+        "ts": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "ms since the epoch"
+        },
+        "folder": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "argv": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "decision": {
+          "enum": [
+            "allow",
+            "refuse",
+            "intercept"
+          ]
+        },
+        "rule": {
+          "enum": [
+            "E1",
+            "E2",
+            "E3",
+            "E4",
+            "E5",
+            "E6",
+            "E7",
+            "E8",
+            "E9",
+            "E10",
+            "E11",
+            "E12",
+            "E13",
+            "E14",
+            "E15",
+            "E16",
+            "read",
+            "symlink",
+            "run.session",
+            "run.mod",
+            "run.structural",
+            "run.passthrough",
+            "run.unknown",
+            "write",
+            "storage",
+            "net",
+            "rpc.unknown",
+            "push",
+            "origin"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "session": {
+          "type": "string",
+          "minLength": 1
+        },
+        "profile": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+        }
+      },
+      "required": [
+        "ts",
+        "folder",
+        "method",
+        "argv",
+        "decision",
+        "rule"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

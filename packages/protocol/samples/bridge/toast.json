@@ -1,0 +1,7 @@
+{
+  "t": "toast",
+  "title": "Agent needs you",
+  "body": "π blocked  review PWA auth",
+  "level": "warning",
+  "action": { "open": "https://github.com/example/example/pull/12" }
+}

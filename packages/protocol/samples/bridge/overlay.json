@@ -1,0 +1,9 @@
+{
+  "t": "overlay",
+  "id": "o3",
+  "kind": "popup",
+  "view": "lstack-herdr-cockpit:overlay:o3",
+  "at": { "x": 120, "y": 64 },
+  "width": 220,
+  "height": 260
+}

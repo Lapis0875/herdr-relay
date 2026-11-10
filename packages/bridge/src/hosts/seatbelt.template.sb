@@ -1,0 +1,39 @@
+;; herdr-relay — macOS Seatbelt profile for ONE mod host (one mod folder). DESIGN-v2 §1.3.
+;;
+;; Template: packages/bridge/src/hosts/seatbelt.ts replaces every double-braced placeholder with generated filters
+;; and writes <run>/seatbelt/<folder>.sb; the host runs as `sandbox-exec -f <that file> <deno> run …`.
+;; Derived by T05 on macOS 27.0 (26A428) with Deno 2.9.8 using packages/bridge/scripts/seatbelt-derive.ts: a benign
+;; host (load + render of the folder's copies, ping/pong, exit) under this profile behaves exactly as unconfined for
+;; all six fixture folders, and the kernel probes (symlink to a secret, read/write outside, spawn, other ports,
+;; listen) are denied while Deno's own permissions are wide open. Rules the derivation showed unnecessary are absent:
+;; no extra mach-lookup (system.sb's set suffices), no metadata of ancestor directories (the host's working
+;; directory is the mod folder). Re-run that script after any macOS or Deno upgrade.
+;;
+;; Deny by default. No process-fork (the host cannot start any process, even through an escaped Deno.Command), no
+;; network-inbound, no writes outside this host's DENO_DIR. Seatbelt checks the RESOLVED path, so a link inside the
+;; mod folder that points elsewhere is denied in the kernel (Deno's own path permissions do not resolve links).
+
+(version 1)
+(deny default)
+
+;; dyld, system libraries/frameworks, /dev/{null,zero,random,urandom}, sysctl-read, the logging and directory
+;; services lookups every process makes (/System/Library/Sandbox/Profiles/system.sb).
+(import "system.sb")
+
+;; The deno binary and the non-system libraries it links, transitively (scripts/deno-runtime.ts reads them from the
+;; Mach-O load commands): exec of the binary only; read + map of those files; metadata of the links on the way.
+(allow process-exec {{DENO_EXEC}})
+(allow file-read* file-map-executable {{DENO_FILES}})
+(allow file-read-metadata {{DENO_LINKS}})
+
+;; The mod host package (bridge-authored entry + shims) and the mod folder: the only trees the host reads.
+(allow file-read* {{READ_TREES}})
+
+;; This host's throwaway DENO_DIR (caches/location_data cannot land anywhere shared).
+(allow file-read* file-write* {{DENO_DIR}})
+
+;; The control channel to the bridge. ("localhost" also matches 127.0.0.1.)
+(allow network-outbound (remote tcp {{CTL}}))
+
+;; Deno.kill(Deno.pid) only; the supervisor restarts the host.
+(allow signal (target self))

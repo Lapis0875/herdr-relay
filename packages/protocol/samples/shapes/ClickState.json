@@ -1,0 +1,76 @@
+{
+  "nodes": {
+    "center": { "active": "work" },
+    "panel": { "size": { "px": 24.0 }, "hidden": false },
+    "panel-body": { "active": "tree" },
+    "sidebar": { "size": { "px": 320.0 } }
+  },
+  "file": {
+    "id": "root",
+    "type": "row",
+    "background": "canvas",
+    "children": [
+      {
+        "id": "sidebar",
+        "type": "column",
+        "size": { "px": 268 },
+        "min": 44,
+        "max": 480,
+        "children": [
+          { "id": "brand", "type": "block", "content": { "mod": "workspace-chrome" }, "size": { "px": 46 } }
+        ]
+      },
+      {
+        "id": "center",
+        "type": "stack",
+        "active": "home",
+        "children": [
+          { "id": "home", "type": "block", "content": { "mod": "lstack-herdr-cockpit", "props": { "app": "home" } } },
+          {
+            "id": "work",
+            "type": "row",
+            "children": [
+              { "id": "main", "type": "block", "content": { "tab": "active", "pane": { "lone": true } } },
+              {
+                "id": "panel",
+                "type": "row",
+                "size": { "px": 420 },
+                "min": 280,
+                "max": 900,
+                "hidden": true,
+                "children": [
+                  {
+                    "id": "panel-body",
+                    "type": "stack",
+                    "active": "show",
+                    "children": [
+                      {
+                        "id": "show",
+                        "type": "block",
+                        "content": { "mod": "lstack-herdr-cockpit", "props": { "app": "show" } }
+                      },
+                      {
+                        "id": "tree",
+                        "type": "block",
+                        "content": { "mod": "lstack-herdr-cockpit", "props": { "app": "tree" } }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "floating": [
+      {
+        "id": "queue",
+        "content": { "mod": "lstack-herdr-cockpit", "props": { "app": "queue" } },
+        "edge": "right",
+        "align": "center",
+        "peek": 44
+      }
+    ]
+  }
+}

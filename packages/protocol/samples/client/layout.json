@@ -1,0 +1,6 @@
+{
+  "t": "layout",
+  "id": 7,
+  "action": "set",
+  "changes": [{ "node": "spaces", "size": { "weight": 1.4 } }, { "node": "agents", "size": { "weight": 0.6 } }]
+}

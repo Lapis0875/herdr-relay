@@ -1,0 +1,11 @@
+{
+  "t": "event",
+  "id": 4,
+  "view": "lstack-herdr-cockpit:activity",
+  "handler": 7,
+  "kind": "key",
+  "data": {
+    "click_count": 1,
+    "modifiers": { "shift": false, "control": false, "alt": false, "platform": false, "function": false }
+  }
+}

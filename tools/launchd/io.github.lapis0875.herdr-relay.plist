@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  herdr-relay as a per-user launchd agent (DESIGN-v2 T33, OSS-PLAN T44). A template: replace __REPO__ (the clone or
+  the unpacked release) and __HOME__ (your home directory) before loading it; docs/INSTALL.md "Start at login" has the
+  exact commands. It runs the launcher shim's `start`, which computes the bridge's deno flags at run time (its
+  print-flags option prints them; an XML comment cannot spell the option), records <state>/environment.json and
+  forwards SIGTERM, so `launchctl bootout` stops the bridge cleanly. Restarted after a non-zero exit, at most every
+  30 s.
+-->
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>io.github.lapis0875.herdr-relay</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/sh</string>
+		<string>__REPO__/packages/bridge/bin/herdr-relay</string>
+		<string>start</string>
+	</array>
+	<key>WorkingDirectory</key>
+	<string>__REPO__</string>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<!-- launchd's own PATH is /usr/bin:/bin:/usr/sbin:/sbin: deno, hc, herdr-app and cockpit need theirs. -->
+		<key>PATH</key>
+		<string>__HOME__/.local/bin:__HOME__/.deno/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+	</dict>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>KeepAlive</key>
+	<dict>
+		<key>SuccessfulExit</key>
+		<false/>
+	</dict>
+	<key>ThrottleInterval</key>
+	<integer>30</integer>
+	<key>StandardOutPath</key>
+	<string>__HOME__/Library/Logs/herdr-relay.log</string>
+	<key>StandardErrorPath</key>
+	<string>__HOME__/Library/Logs/herdr-relay.log</string>
+</dict>
+</plist>

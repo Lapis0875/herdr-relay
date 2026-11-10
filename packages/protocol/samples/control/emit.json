@@ -1,0 +1,7 @@
+{
+  "t": "emit",
+  "copy": "lstack-herdr-cockpit:sidebar",
+  "method": "run",
+  "args": ["layout.select", { "stack": "center", "child": "work" }],
+  "origin": { "session": "s-9f2c" }
+}

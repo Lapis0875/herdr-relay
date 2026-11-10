@@ -1,0 +1,16 @@
+{
+  "$schema": "../../../packages/protocol/schema/policy-profile.schema.json",
+  "id": "lstack-shape",
+  "description": "Synthetic probe installed as mods/lstack-herdr; E2 remains disabled.",
+  "folders": ["lstack-herdr"],
+  "requires": { "herdr": ">=0.1.13" },
+  "reads": { "appHome": ["**"], "spaces": false },
+  "writes": { "appHome": ["data/cockpit/show/**"], "extra": ["~/.cache/lstack-herdr/**"] },
+  "exec": { "rows": ["E1", "E10", "E14", "E15"] },
+  "scripts": { "mods/lstack-herdr/components/lh-scan.mjs": "lh-scan" },
+  "shLiterals": {
+    "a3163594cfb779a6a5beefd7c0aeb4a6838b8fce63061c24c245bbb6513d4231": "listing",
+    "36d9dd22119b98c3137469d3a81cb794dddef92e72b28b4927a743832c5f3077": "picture-remote"
+  },
+  "overlay": "device"
+}

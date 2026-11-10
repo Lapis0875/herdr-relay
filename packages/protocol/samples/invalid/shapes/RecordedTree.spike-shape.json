@@ -1,0 +1,6 @@
+{
+  "tag": "div",
+  "style": [["px", 8], ["hover", { "style": [["bg", "#2f343e"]] }]],
+  "handlers": [{ "event": "on_click", "id": "h1" }],
+  "children": [{ "unknown": "[function]" }]
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:herdr-relay:schema:placement",
+  "title": "Placement (floating copy position)",
+  "$ref": "#/$defs/Placement",
+  "$defs": {
+    "Placement": {
+      "type": "object",
+      "properties": {
+        "edge": {
+          "enum": [
+            "top",
+            "right",
+            "bottom",
+            "left"
+          ]
+        },
+        "align": {
+          "enum": [
+            "start",
+            "center",
+            "end"
+          ]
+        },
+        "vertical": {
+          "type": "boolean"
+        },
+        "hovered": {
+          "type": "boolean"
+        },
+        "dragging": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "edge",
+        "align",
+        "vertical",
+        "hovered",
+        "dragging"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

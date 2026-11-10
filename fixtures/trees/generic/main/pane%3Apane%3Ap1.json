@@ -1,0 +1,71 @@
+{
+  "k": "el",
+  "tag": "h_flex",
+  "id": "pane-head-p1",
+  "style": {
+    "display": "flex",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "width": "100%",
+    "height": "100%",
+    "paddingLeft": 10,
+    "paddingRight": 10,
+    "rowGap": 8,
+    "columnGap": 8,
+    "backgroundColor": "#21252b",
+    "borderBottomWidth": 1,
+    "borderColor": "#3a3f4b",
+    "fontSize": 12,
+    "borderStyle": "solid"
+  },
+  "on": {
+    "hover": 1,
+    "click": 2
+  },
+  "children": [
+    {
+      "k": "el",
+      "tag": "div",
+      "style": {
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "overflowX": "hidden",
+        "overflowY": "hidden",
+        "textOverflow": "ellipsis",
+        "whiteSpace": "nowrap",
+        "maxWidth": 260,
+        "fontWeight": 500,
+        "color": "#abb2bf"
+      },
+      "children": [
+        {
+          "k": "text",
+          "style": {},
+          "text": "Shell"
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "div",
+      "style": {
+        "flexGrow": 1,
+        "flexShrink": 1,
+        "flexBasis": "0%",
+        "overflowX": "hidden",
+        "overflowY": "hidden",
+        "textOverflow": "ellipsis",
+        "whiteSpace": "nowrap",
+        "color": "#5c6370"
+      },
+      "children": [
+        {
+          "k": "text",
+          "style": {},
+          "text": "~/project"
+        }
+      ]
+    }
+  ]
+}

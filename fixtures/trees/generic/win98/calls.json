@@ -1,0 +1,7 @@
+{
+  "win98": [
+    "[\"exec\",\"sh\",[\"-c\",\"for c in claude codex pi opencode amp gemini cursor-agent copilot grok kimi crush; do command -v \\\"$c\\\" >/dev/null 2>&1 && echo \\\"$c\\\"; done\"],{}]",
+    "[\"exec\",\"sh\",[\"-c\",\"ps -o etime= -p \\\"$PPID\\\"\"],{}]",
+    "[\"hc\",[\"machine\",\"ls\",\"--json\"]]"
+  ]
+}

@@ -1,0 +1,1055 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:herdr-relay:schema:element-tree",
+  "title": "ElementTree (client render tree)",
+  "$ref": "#/$defs/ElementNode",
+  "$defs": {
+    "Anim": {
+      "type": "object",
+      "properties": {
+        "spin": {
+          "type": "number",
+          "minimum": 100,
+          "description": "ms per turn"
+        },
+        "loop": {
+          "$ref": "#/$defs/LoopAnimation"
+        },
+        "transition": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "$ref": "#/$defs/MotionProperty"
+              },
+              {
+                "$ref": "#/$defs/TransitionPolicy"
+              }
+            ],
+            "items": false,
+            "minItems": 2
+          }
+        },
+        "frames": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "number",
+              "minimum": 16,
+              "description": "ms per frame"
+            }
+          ],
+          "items": false,
+          "minItems": 2
+        },
+        "spring": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "$ref": "#/$defs/MotionProperty"
+              },
+              {
+                "$ref": "#/$defs/SpringPolicy"
+              }
+            ],
+            "items": false,
+            "minItems": 2
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "Background": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "solid"
+            },
+            "color": {
+              "$ref": "#/$defs/Color"
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "color_space": {
+              "enum": [
+                "srgb",
+                "oklab"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "color"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "linear_gradient"
+            },
+            "angle": {
+              "type": "number"
+            },
+            "from": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Color"
+                },
+                {
+                  "$ref": "#/$defs/BackgroundStop"
+                }
+              ]
+            },
+            "to": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Color"
+                },
+                {
+                  "$ref": "#/$defs/BackgroundStop"
+                }
+              ]
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "color_space": {
+              "enum": [
+                "srgb",
+                "oklab"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "angle",
+            "from",
+            "to"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "pattern_slash"
+            },
+            "color": {
+              "$ref": "#/$defs/Color"
+            },
+            "width": {
+              "type": "number"
+            },
+            "interval": {
+              "type": "number"
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "color_space": {
+              "enum": [
+                "srgb",
+                "oklab"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "color",
+            "width",
+            "interval"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "checkerboard"
+            },
+            "color": {
+              "$ref": "#/$defs/Color"
+            },
+            "size": {
+              "type": "number"
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "color_space": {
+              "enum": [
+                "srgb",
+                "oklab"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "color",
+            "size"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "discriminator": {
+        "propertyName": "kind"
+      }
+    },
+    "BackgroundStop": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "$ref": "#/$defs/Color"
+        },
+        "percentage": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "color",
+        "percentage"
+      ],
+      "additionalProperties": false
+    },
+    "ButtonHandlers": {
+      "type": "object",
+      "properties": {
+        "left": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "right": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "middle": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "Color": {
+      "type": "string",
+      "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+    },
+    "ElementNode": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "k": {
+              "const": "el"
+            },
+            "style": {
+              "$ref": "#/$defs/Style"
+            },
+            "id": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            },
+            "states": {
+              "$ref": "#/$defs/States"
+            },
+            "anim": {
+              "$ref": "#/$defs/Anim"
+            },
+            "on": {
+              "$ref": "#/$defs/Handlers"
+            },
+            "widget": {
+              "$ref": "#/$defs/Widget"
+            },
+            "attrs": {
+              "$ref": "#/$defs/JsonObject"
+            },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            }
+          },
+          "required": [
+            "k",
+            "style"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "k": {
+              "const": "text"
+            },
+            "style": {
+              "$ref": "#/$defs/Style"
+            },
+            "text": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            },
+            "states": {
+              "$ref": "#/$defs/States"
+            },
+            "anim": {
+              "$ref": "#/$defs/Anim"
+            },
+            "on": {
+              "$ref": "#/$defs/Handlers"
+            },
+            "widget": {
+              "$ref": "#/$defs/Widget"
+            },
+            "attrs": {
+              "$ref": "#/$defs/JsonObject"
+            },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            }
+          },
+          "required": [
+            "k",
+            "style",
+            "text"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "k": {
+              "const": "svg"
+            },
+            "style": {
+              "$ref": "#/$defs/Style"
+            },
+            "src": {
+              "type": "string",
+              "minLength": 1
+            },
+            "id": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            },
+            "states": {
+              "$ref": "#/$defs/States"
+            },
+            "anim": {
+              "$ref": "#/$defs/Anim"
+            },
+            "on": {
+              "$ref": "#/$defs/Handlers"
+            },
+            "widget": {
+              "$ref": "#/$defs/Widget"
+            },
+            "attrs": {
+              "$ref": "#/$defs/JsonObject"
+            },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            }
+          },
+          "required": [
+            "k",
+            "style",
+            "src"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "k": {
+              "const": "image"
+            },
+            "style": {
+              "$ref": "#/$defs/Style"
+            },
+            "src": {
+              "type": "string",
+              "minLength": 1
+            },
+            "id": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            },
+            "states": {
+              "$ref": "#/$defs/States"
+            },
+            "anim": {
+              "$ref": "#/$defs/Anim"
+            },
+            "on": {
+              "$ref": "#/$defs/Handlers"
+            },
+            "widget": {
+              "$ref": "#/$defs/Widget"
+            },
+            "attrs": {
+              "$ref": "#/$defs/JsonObject"
+            },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            }
+          },
+          "required": [
+            "k",
+            "style",
+            "src"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "k": {
+              "const": "path"
+            },
+            "style": {
+              "$ref": "#/$defs/Style"
+            },
+            "path": {
+              "$ref": "#/$defs/PathSpec"
+            },
+            "paint": {
+              "$ref": "#/$defs/Paint"
+            },
+            "id": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            },
+            "states": {
+              "$ref": "#/$defs/States"
+            },
+            "anim": {
+              "$ref": "#/$defs/Anim"
+            },
+            "on": {
+              "$ref": "#/$defs/Handlers"
+            },
+            "widget": {
+              "$ref": "#/$defs/Widget"
+            },
+            "attrs": {
+              "$ref": "#/$defs/JsonObject"
+            },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            }
+          },
+          "required": [
+            "k",
+            "style",
+            "path",
+            "paint"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "k": {
+              "const": "terminal"
+            },
+            "style": {
+              "$ref": "#/$defs/Style"
+            },
+            "terminal": {
+              "type": "string",
+              "minLength": 1
+            },
+            "id": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            },
+            "states": {
+              "$ref": "#/$defs/States"
+            },
+            "anim": {
+              "$ref": "#/$defs/Anim"
+            },
+            "on": {
+              "$ref": "#/$defs/Handlers"
+            },
+            "widget": {
+              "$ref": "#/$defs/Widget"
+            },
+            "attrs": {
+              "$ref": "#/$defs/JsonObject"
+            },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            }
+          },
+          "required": [
+            "k",
+            "style",
+            "terminal"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "k": {
+              "const": "view"
+            },
+            "style": {
+              "$ref": "#/$defs/Style"
+            },
+            "view": {
+              "type": "string",
+              "minLength": 1
+            },
+            "id": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            },
+            "states": {
+              "$ref": "#/$defs/States"
+            },
+            "anim": {
+              "$ref": "#/$defs/Anim"
+            },
+            "on": {
+              "$ref": "#/$defs/Handlers"
+            },
+            "widget": {
+              "$ref": "#/$defs/Widget"
+            },
+            "attrs": {
+              "$ref": "#/$defs/JsonObject"
+            },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            }
+          },
+          "required": [
+            "k",
+            "style",
+            "view"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "k": {
+              "const": "error"
+            },
+            "style": {
+              "$ref": "#/$defs/Style"
+            },
+            "reason": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "tag": {
+              "type": "string"
+            },
+            "states": {
+              "$ref": "#/$defs/States"
+            },
+            "anim": {
+              "$ref": "#/$defs/Anim"
+            },
+            "on": {
+              "$ref": "#/$defs/Handlers"
+            },
+            "widget": {
+              "$ref": "#/$defs/Widget"
+            },
+            "attrs": {
+              "$ref": "#/$defs/JsonObject"
+            },
+            "slots": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/ElementNode"
+              }
+            },
+            "folder": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "k",
+            "style",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "discriminator": {
+        "propertyName": "k"
+      }
+    },
+    "Handlers": {
+      "type": "object",
+      "properties": {
+        "click": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mousedown": {
+          "$ref": "#/$defs/ButtonHandlers"
+        },
+        "mouseup": {
+          "$ref": "#/$defs/ButtonHandlers"
+        },
+        "mousemove": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mousedownout": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hover": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "wheel": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "keydown": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "keyup": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "modifiers": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "item": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "itemsecondary": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "change": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "step": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "openchange": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "confirm": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "dismiss": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "resize": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "drop": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "action": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "tokenclick": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "tokenhover": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "link": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "JsonObject": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      }
+    },
+    "JsonValue": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        }
+      ]
+    },
+    "LoopAnimation": {
+      "type": "object",
+      "properties": {
+        "prop": {
+          "$ref": "#/$defs/MotionProperty"
+        },
+        "from": {
+          "type": "number"
+        },
+        "to": {
+          "type": "number"
+        },
+        "period": {
+          "type": "number",
+          "minimum": 100,
+          "description": "ms"
+        },
+        "easing": {
+          "$ref": "#/$defs/MotionEasing"
+        }
+      },
+      "required": [
+        "prop",
+        "from",
+        "to",
+        "period"
+      ],
+      "additionalProperties": false
+    },
+    "MotionEasing": {
+      "enum": [
+        "linear",
+        "ease-in",
+        "ease-out",
+        "ease-in-out"
+      ]
+    },
+    "MotionProperty": {
+      "enum": [
+        "opacity",
+        "width",
+        "height",
+        "left",
+        "top"
+      ]
+    },
+    "Paint": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Color"
+        },
+        {
+          "$ref": "#/$defs/Background"
+        }
+      ]
+    },
+    "PathSpec": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "fill",
+            "stroke"
+          ]
+        },
+        "ops": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "enum": [
+                  "move_to",
+                  "line_to",
+                  "curve_to",
+                  "cubic_bezier_to",
+                  "arc_to",
+                  "add_polygon",
+                  "close",
+                  "dash_array"
+                ]
+              }
+            ],
+            "items": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "minItems": 1
+          }
+        },
+        "width": {
+          "type": "number",
+          "minimum": 0,
+          "description": "stroke width, px"
+        }
+      },
+      "required": [
+        "kind",
+        "ops"
+      ],
+      "additionalProperties": false
+    },
+    "SpringPolicy": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "approximate response period, ms"
+        },
+        "damping": {
+          "type": "number",
+          "minimum": 0
+        },
+        "epsilon": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "States": {
+      "type": "object",
+      "properties": {
+        "hover": {
+          "$ref": "#/$defs/Style"
+        },
+        "active": {
+          "$ref": "#/$defs/Style"
+        },
+        "focus": {
+          "$ref": "#/$defs/Style"
+        },
+        "range_style": {
+          "$ref": "#/$defs/Style"
+        },
+        "cell_style": {
+          "$ref": "#/$defs/Style"
+        },
+        "cell_active_style": {
+          "$ref": "#/$defs/Style"
+        },
+        "caret_style": {
+          "$ref": "#/$defs/Style"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "Style": {
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          }
+        ]
+      },
+      "propertyNames": {
+        "pattern": "^(--[a-z0-9-]+|[a-z][A-Za-z]*)$"
+      },
+      "description": "CSS longhands (camelCase) or --herdr-* custom properties; numbers are px except unitless ones"
+    },
+    "TransitionPolicy": {
+      "type": "object",
+      "properties": {
+        "duration": {
+          "type": "number",
+          "minimum": 0,
+          "description": "ms"
+        },
+        "delay": {
+          "type": "number",
+          "minimum": 0,
+          "description": "ms"
+        },
+        "easing": {
+          "$ref": "#/$defs/MotionEasing"
+        }
+      },
+      "required": [
+        "duration"
+      ],
+      "additionalProperties": false
+    },
+    "Widget": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "input",
+            "textarea",
+            "editor",
+            "markdown",
+            "html",
+            "vlist",
+            "hovercard",
+            "resizable",
+            "scrollbar"
+          ]
+        },
+        "state": {
+          "type": "string"
+        },
+        "props": {
+          "$ref": "#/$defs/JsonObject"
+        }
+      },
+      "required": [
+        "type",
+        "state",
+        "props"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

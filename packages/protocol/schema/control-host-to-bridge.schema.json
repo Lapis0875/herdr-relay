@@ -1,0 +1,557 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:herdr-relay:schema:control-host-to-bridge",
+  "title": "Mod host → bridge control line",
+  "$ref": "#/$defs/HostToBridge",
+  "$defs": {
+    "Created": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "created"
+        },
+        "copy": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*:\\S+$"
+        },
+        "ms": {
+          "type": "number",
+          "minimum": 0,
+          "description": "milliseconds"
+        }
+      },
+      "required": [
+        "t",
+        "copy",
+        "ms"
+      ],
+      "additionalProperties": false
+    },
+    "Emit": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "emit"
+        },
+        "copy": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*:\\S+$"
+        },
+        "method": {
+          "enum": [
+            "run",
+            "notify",
+            "openOverlay",
+            "closeOverlay",
+            "setShared",
+            "setAgentOrder",
+            "playSound",
+            "write_to_clipboard",
+            "net.close",
+            "focus"
+          ]
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        "origin": {
+          "$ref": "#/$defs/Origin"
+        }
+      },
+      "required": [
+        "t",
+        "copy",
+        "method",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    "EventResult": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "event-result"
+        },
+        "copy": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*:\\S+$"
+        },
+        "handler": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ok": {
+          "type": "boolean"
+        },
+        "error": {
+          "type": "string"
+        },
+        "stale": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "t",
+        "copy",
+        "handler",
+        "ok"
+      ],
+      "additionalProperties": false
+    },
+    "HostError": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "error"
+        },
+        "copy": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*:\\S+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "where": {
+          "type": "string",
+          "minLength": 1
+        },
+        "error": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "t",
+        "copy",
+        "where",
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "HostHello": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "hello"
+        },
+        "token": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pid": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "folder": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        }
+      },
+      "required": [
+        "t",
+        "token",
+        "pid",
+        "folder"
+      ],
+      "additionalProperties": false
+    },
+    "HostToBridge": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/HostHello"
+        },
+        {
+          "$ref": "#/$defs/Loaded"
+        },
+        {
+          "$ref": "#/$defs/Created"
+        },
+        {
+          "$ref": "#/$defs/Tree"
+        },
+        {
+          "$ref": "#/$defs/Emit"
+        },
+        {
+          "$ref": "#/$defs/Rpc"
+        },
+        {
+          "$ref": "#/$defs/EventResult"
+        },
+        {
+          "$ref": "#/$defs/HostError"
+        },
+        {
+          "$ref": "#/$defs/Pong"
+        }
+      ],
+      "discriminator": {
+        "propertyName": "t"
+      }
+    },
+    "JsonObject": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      }
+    },
+    "JsonValue": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        }
+      ]
+    },
+    "Loaded": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "loaded"
+        },
+        "ms": {
+          "type": "number",
+          "minimum": 0,
+          "description": "milliseconds"
+        },
+        "exports": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "error": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "t",
+        "ms"
+      ],
+      "additionalProperties": false
+    },
+    "Origin": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "session"
+      ],
+      "additionalProperties": false
+    },
+    "Pong": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "pong"
+        },
+        "n": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "copies": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*:\\S+$"
+          }
+        },
+        "heap": {
+          "type": "number",
+          "minimum": 0,
+          "description": "bytes"
+        }
+      },
+      "required": [
+        "t",
+        "n",
+        "copies",
+        "heap"
+      ],
+      "additionalProperties": false
+    },
+    "RecordedCall": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "string",
+          "minLength": 1
+        }
+      ],
+      "items": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "minItems": 1
+    },
+    "RecordedElement": {
+      "type": "object",
+      "properties": {
+        "tag": {
+          "type": "string",
+          "minLength": 1
+        },
+        "style": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RecordedCall"
+          }
+        },
+        "handlers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RecordedHandler"
+          }
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RecordedNode"
+          }
+        },
+        "id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "states": {
+          "$ref": "#/$defs/RecordedStates"
+        },
+        "slots": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/RecordedElement"
+          }
+        },
+        "props": {
+          "$ref": "#/$defs/JsonObject"
+        }
+      },
+      "required": [
+        "tag",
+        "style",
+        "handlers",
+        "children"
+      ],
+      "additionalProperties": false
+    },
+    "RecordedHandler": {
+      "type": "object",
+      "properties": {
+        "event": {
+          "type": "string",
+          "minLength": 1
+        },
+        "id": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        }
+      },
+      "required": [
+        "event",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "RecordedNode": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/RecordedElement"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "text"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "entity": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "entity"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "RecordedStates": {
+      "type": "object",
+      "properties": {
+        "hover": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RecordedCall"
+          }
+        },
+        "active": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RecordedCall"
+          }
+        },
+        "focus": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RecordedCall"
+          }
+        },
+        "range_style": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RecordedCall"
+          }
+        },
+        "cell_style": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RecordedCall"
+          }
+        },
+        "cell_active_style": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RecordedCall"
+          }
+        },
+        "caret_style": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RecordedCall"
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "Rpc": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "rpc"
+        },
+        "id": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "copy": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*:\\S+$"
+        },
+        "method": {
+          "enum": [
+            "readTextFile",
+            "writeTextFile",
+            "exec",
+            "hc",
+            "knownAgents",
+            "watchFolder",
+            "net.connect",
+            "net.write",
+            "net.read",
+            "storage.set"
+          ]
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        "origin": {
+          "$ref": "#/$defs/Origin"
+        }
+      },
+      "required": [
+        "t",
+        "id",
+        "copy",
+        "method",
+        "args"
+      ],
+      "additionalProperties": false
+    },
+    "Tree": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "tree"
+        },
+        "copy": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*:\\S+$"
+        },
+        "n": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ms": {
+          "type": "number",
+          "minimum": 0,
+          "description": "milliseconds"
+        },
+        "tree": {
+          "$ref": "#/$defs/RecordedNode"
+        }
+      },
+      "required": [
+        "t",
+        "copy",
+        "n",
+        "ms",
+        "tree"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

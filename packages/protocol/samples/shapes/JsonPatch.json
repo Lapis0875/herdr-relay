@@ -1,0 +1,10 @@
+[
+  { "op": "test", "path": "/children/0/id", "value": "settings" },
+  { "op": "replace", "path": "/children/0/style/backgroundColor", "value": "#2f343e" },
+  { "op": "add", "path": "/children/-", "value": { "k": "text", "style": {}, "text": "done" } },
+  { "op": "remove", "path": "/children/1/attrs/tooltip" },
+  { "op": "move", "from": "/children/2", "path": "/children/0" },
+  { "op": "copy", "from": "/on/click", "path": "/on/keydown" },
+  { "op": "replace", "path": "/style/--herdr-text-bg", "value": "#61afef33" },
+  { "op": "replace", "path": "/attrs/a~1b~0c", "value": true }
+]

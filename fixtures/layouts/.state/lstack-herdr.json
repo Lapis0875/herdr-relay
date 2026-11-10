@@ -1,0 +1,539 @@
+{
+  "nodes": {
+    "center": {
+      "active": "work"
+    },
+    "panel": {
+      "size": {
+        "px": 24.0
+      },
+      "hidden": false
+    },
+    "panel-body": {
+      "active": "tree"
+    },
+    "sidebar": {
+      "size": {
+        "px": 320.0
+      }
+    }
+  },
+  "file": {
+    "id": "root",
+    "type": "row",
+    "children": [
+      {
+        "id": "sidebar",
+        "type": "column",
+        "children": [
+          {
+            "id": "brand",
+            "type": "block",
+            "content": {
+              "mod": "workspace-chrome"
+            },
+            "size": {
+              "px": 46.0
+            },
+            "window_drag": true
+          },
+          {
+            "id": "cockpit-sidebar",
+            "type": "block",
+            "content": {
+              "mod": "lstack-herdr-cockpit",
+              "props": {
+                "app": "sidebar"
+              }
+            },
+            "size": {
+              "weight": 1.0
+            },
+            "min": 120.0
+          },
+          {
+            "id": "sidebar-footer",
+            "type": "block",
+            "content": {
+              "mod": "workspace-chrome",
+              "props": {
+                "footer": true
+              }
+            },
+            "size": {
+              "px": 69.0
+            }
+          }
+        ],
+        "size": {
+          "px": 268.0
+        },
+        "min": 44.0,
+        "max": 480.0,
+        "background": "chrome",
+        "resizable": false
+      },
+      {
+        "id": "main-area",
+        "type": "column",
+        "children": [
+          {
+            "id": "topbar",
+            "type": "row",
+            "children": [
+              {
+                "id": "tabs",
+                "type": "block",
+                "content": {
+                  "mod": "tabs"
+                },
+                "window_drag": true
+              },
+              {
+                "id": "bell",
+                "type": "block",
+                "content": {
+                  "mod": "lstack-herdr-cockpit",
+                  "props": {
+                    "app": "bell"
+                  }
+                },
+                "size": {
+                  "px": 52.0
+                },
+                "window_drag": true
+              }
+            ],
+            "size": {
+              "px": 42.0
+            },
+            "resizable": false
+          },
+          {
+            "id": "center",
+            "type": "stack",
+            "children": [
+              {
+                "id": "home",
+                "type": "row",
+                "children": [
+                  {
+                    "id": "home-board",
+                    "type": "block",
+                    "content": {
+                      "mod": "lstack-herdr-cockpit",
+                      "props": {
+                        "app": "home"
+                      }
+                    },
+                    "background": "background",
+                    "border": {
+                      "width": 1.0,
+                      "color": "border"
+                    },
+                    "radius": 10.0,
+                    "shadow": "sm"
+                  },
+                  {
+                    "id": "home-agent",
+                    "type": "column",
+                    "children": [
+                      {
+                        "id": "home-agent-card",
+                        "type": "column",
+                        "children": [
+                          {
+                            "id": "home-agent-head",
+                            "type": "block",
+                            "content": {
+                              "mod": "lstack-herdr-cockpit",
+                              "props": {
+                                "app": "agent-head",
+                                "place": "home"
+                              }
+                            },
+                            "size": {
+                              "px": 34.0
+                            }
+                          },
+                          {
+                            "id": "home-agent-term",
+                            "type": "block",
+                            "content": {
+                              "agent": "focused"
+                            }
+                          }
+                        ],
+                        "background": "background",
+                        "border": {
+                          "width": 1.0,
+                          "color": "border"
+                        },
+                        "radius": 10.0,
+                        "shadow": "sm",
+                        "resizable": false
+                      }
+                    ],
+                    "size": {
+                      "px": 600.0
+                    },
+                    "min": 360.0,
+                    "max": 1100.0,
+                    "hidden": true,
+                    "padding": [
+                      0.0,
+                      0.0
+                    ]
+                  }
+                ],
+                "gap": 8.0
+              },
+              {
+                "id": "work",
+                "type": "row",
+                "children": [
+                  {
+                    "id": "view",
+                    "type": "stack",
+                    "children": [
+                      {
+                        "id": "main",
+                        "type": "block",
+                        "content": {
+                          "tab": "active",
+                          "pane": {
+                            "header": {
+                              "content": {
+                                "mod": "lstack-herdr-cockpit",
+                                "props": {
+                                  "app": "pane"
+                                }
+                              },
+                              "reveal": "always",
+                              "height": 30.0,
+                              "position": "top"
+                            },
+                            "background": "background",
+                            "border": {
+                              "width": 1.0,
+                              "color": "border"
+                            },
+                            "focus": {
+                              "width": 1.0,
+                              "color": "solid"
+                            },
+                            "radius": 10.0,
+                            "gap": 8.0,
+                            "lone": true
+                          }
+                        }
+                      },
+                      {
+                        "id": "agent",
+                        "type": "column",
+                        "children": [
+                          {
+                            "id": "agent-head",
+                            "type": "block",
+                            "content": {
+                              "mod": "lstack-herdr-cockpit",
+                              "props": {
+                                "app": "agent-head",
+                                "place": "work"
+                              }
+                            },
+                            "size": {
+                              "px": 34.0
+                            }
+                          },
+                          {
+                            "id": "agent-term",
+                            "type": "block",
+                            "content": {
+                              "agent": "focused"
+                            }
+                          }
+                        ],
+                        "background": "background",
+                        "border": {
+                          "width": 1.0,
+                          "color": "border"
+                        },
+                        "radius": 10.0,
+                        "shadow": "sm",
+                        "resizable": false
+                      }
+                    ],
+                    "active": "main"
+                  },
+                  {
+                    "id": "panel",
+                    "type": "row",
+                    "children": [
+                      {
+                        "id": "panel-body",
+                        "type": "stack",
+                        "children": [
+                          {
+                            "id": "show",
+                            "type": "block",
+                            "content": {
+                              "mod": "lstack-herdr-cockpit",
+                              "props": {
+                                "app": "show"
+                              }
+                            }
+                          },
+                          {
+                            "id": "review",
+                            "type": "block",
+                            "content": {
+                              "mod": "lstack-herdr-cockpit",
+                              "props": {
+                                "app": "review"
+                              }
+                            }
+                          },
+                          {
+                            "id": "runbook-panel",
+                            "type": "block",
+                            "content": {
+                              "mod": "lstack-herdr-cockpit",
+                              "props": {
+                                "app": "runbook",
+                                "scope": "focused"
+                              }
+                            }
+                          },
+                          {
+                            "id": "files",
+                            "type": "block",
+                            "content": {
+                              "mod": "files"
+                            }
+                          },
+                          {
+                            "id": "changes",
+                            "type": "block",
+                            "content": {
+                              "mod": "changes"
+                            }
+                          },
+                          {
+                            "id": "tree",
+                            "type": "block",
+                            "content": {
+                              "mod": "lstack-herdr-cockpit",
+                              "props": {
+                                "app": "tree"
+                              }
+                            }
+                          }
+                        ],
+                        "active": "show"
+                      },
+                      {
+                        "id": "activity",
+                        "type": "block",
+                        "content": {
+                          "mod": "lstack-herdr-cockpit",
+                          "props": {
+                            "app": "activity",
+                            "stack": "panel-body"
+                          }
+                        },
+                        "size": {
+                          "px": 44.0
+                        }
+                      }
+                    ],
+                    "size": {
+                      "px": 420.0
+                    },
+                    "min": 280.0,
+                    "max": 900.0,
+                    "hidden": true,
+                    "background": "background",
+                    "border": {
+                      "width": 1.0,
+                      "color": "border"
+                    },
+                    "radius": 10.0,
+                    "shadow": "sm",
+                    "resizable": false
+                  }
+                ],
+                "padding": 0.0,
+                "gap": 8.0
+              },
+              {
+                "id": "inbox",
+                "type": "block",
+                "content": {
+                  "mod": "lstack-herdr-cockpit",
+                  "props": {
+                    "app": "inbox"
+                  }
+                },
+                "background": "background",
+                "border": {
+                  "width": 1.0,
+                  "color": "border"
+                },
+                "radius": 10.0,
+                "shadow": "sm"
+              },
+              {
+                "id": "runbook",
+                "type": "block",
+                "content": {
+                  "mod": "lstack-herdr-cockpit",
+                  "props": {
+                    "app": "runbook"
+                  }
+                },
+                "background": "background",
+                "border": {
+                  "width": 1.0,
+                  "color": "border"
+                },
+                "radius": 10.0,
+                "shadow": "sm"
+              },
+              {
+                "id": "todo",
+                "type": "block",
+                "content": {
+                  "mod": "lstack-herdr-cockpit",
+                  "props": {
+                    "app": "todo"
+                  }
+                },
+                "background": "background",
+                "border": {
+                  "width": 1.0,
+                  "color": "border"
+                },
+                "radius": 10.0,
+                "shadow": "sm"
+              },
+              {
+                "id": "meetings",
+                "type": "block",
+                "content": {
+                  "mod": "lstack-herdr-cockpit",
+                  "props": {
+                    "app": "meetings"
+                  }
+                },
+                "background": "background",
+                "border": {
+                  "width": 1.0,
+                  "color": "border"
+                },
+                "radius": 10.0,
+                "shadow": "sm"
+              },
+              {
+                "id": "monitor",
+                "type": "block",
+                "content": {
+                  "mod": "lstack-herdr-cockpit",
+                  "props": {
+                    "app": "monitor"
+                  }
+                },
+                "background": "background",
+                "border": {
+                  "width": 1.0,
+                  "color": "border"
+                },
+                "radius": 10.0,
+                "shadow": "sm"
+              },
+              {
+                "id": "routines",
+                "type": "block",
+                "content": {
+                  "mod": "lstack-herdr-cockpit",
+                  "props": {
+                    "app": "routines"
+                  }
+                },
+                "background": "background",
+                "border": {
+                  "width": 1.0,
+                  "color": "border"
+                },
+                "radius": 10.0,
+                "shadow": "sm"
+              },
+              {
+                "id": "mail",
+                "type": "block",
+                "content": {
+                  "mod": "lstack-herdr-cockpit",
+                  "props": {
+                    "app": "mail"
+                  }
+                },
+                "background": "background",
+                "border": {
+                  "width": 1.0,
+                  "color": "border"
+                },
+                "radius": 10.0,
+                "shadow": "sm"
+              }
+            ],
+            "active": "home",
+            "padding": 8.0
+          },
+          {
+            "id": "status",
+            "type": "block",
+            "content": {
+              "mod": "lstack-herdr-cockpit",
+              "props": {
+                "app": "status"
+              }
+            },
+            "size": {
+              "px": 34.0
+            }
+          }
+        ],
+        "resizable": false
+      }
+    ],
+    "background": "canvas",
+    "terminal_padding": [
+      14.0,
+      12.0
+    ],
+    "divider": {
+      "width": 1.0,
+      "color": "border"
+    },
+    "floating": [
+      {
+        "id": "queue",
+        "content": {
+          "mod": "lstack-herdr-cockpit",
+          "props": {
+            "app": "queue"
+          }
+        },
+        "edge": "right",
+        "align": "center",
+        "peek": 44.0
+      }
+    ],
+    "titlebar": "none",
+    "traffic_lights": [
+      12.0,
+      16.0
+    ],
+    "preview": "layouts/lstack-herdr.svg"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:herdr-relay:schema:style",
+  "title": "Style (CSS declarations)",
+  "$ref": "#/$defs/Style",
+  "$defs": {
+    "Style": {
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "number"
+          }
+        ]
+      },
+      "propertyNames": {
+        "pattern": "^(--[a-z0-9-]+|[a-z][A-Za-z]*)$"
+      },
+      "description": "CSS longhands (camelCase) or --herdr-* custom properties; numbers are px except unitless ones"
+    }
+  }
+}

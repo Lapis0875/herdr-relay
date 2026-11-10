@@ -1,0 +1,98 @@
+{
+  "t": "snapshot",
+  "seq": 2,
+  "spaces": [
+    {
+      "id": "s1",
+      "index": 1,
+      "name": "herdr-relay",
+      "named": true,
+      "folder": "/Users/sam/work/example",
+      "machine": null,
+      "branch": "main",
+      "active": true,
+      "status": "blocked",
+      "tabs": [
+        {
+          "id": "s1/t1",
+          "index": 1,
+          "name": "bridge",
+          "named": true,
+          "active": true,
+          "status": "blocked",
+          "panes": 1,
+          "zoomed": false,
+          "settled": false,
+          "settled_at": null,
+          "changed_at": 1762650000000,
+          "working_since": null
+        }
+      ]
+    }
+  ],
+  "agents": [
+    {
+      "address": "t5",
+      "pane": "p3",
+      "space": "s1",
+      "space_name": "herdr-relay",
+      "tab": "s1/t1",
+      "tab_index": 1,
+      "tab_name": "bridge",
+      "status": "blocked",
+      "app": "omp",
+      "program": {
+        "key": "omp",
+        "name": "OMP",
+        "icon": "my-icons/omp.svg",
+        "tint": false,
+        "tile": "#0f0a14",
+        "color": null,
+        "shell": false,
+        "agent": true
+      },
+      "title": "π blocked  review PWA auth",
+      "seq": 9,
+      "pinned": false,
+      "focused": true
+    }
+  ],
+  "terminals": [
+    { "address": "t5", "argv": ["omp"], "state": "live", "status": "blocked", "title": "π blocked  review PWA auth" }
+  ],
+  "panes": [
+    {
+      "pane": "p3",
+      "terminal": "t5",
+      "tab": "s1/t1",
+      "title": "π blocked  review PWA auth",
+      "cwd": "/Users/sam/work/example",
+      "branch": "main",
+      "status": "blocked",
+      "app": "omp",
+      "program": {
+        "key": "omp",
+        "name": "OMP",
+        "icon": "my-icons/omp.svg",
+        "tint": false,
+        "tile": "#0f0a14",
+        "color": null,
+        "shell": false,
+        "agent": true
+      },
+      "focused": true,
+      "zoomed": false,
+      "movable": false
+    }
+  ],
+  "focused": {
+    "space": "s1",
+    "tab": "s1/t1",
+    "pane": "p3",
+    "terminal": "t5",
+    "shown": null,
+    "agent": "t5",
+    "cwd": "/Users/sam/work/example"
+  },
+  "shared": { "layout": "lstack-herdr", "lstack-herdr-cockpit.app": "work" }
+}

@@ -1,0 +1,257 @@
+{
+  "t": "boot",
+  "state": {
+    "folder": "lstack-herdr-cockpit",
+    "home": "/Users/sam",
+    "appHome": "/Users/sam/.config/herdr-app",
+    "spaces": [
+      {
+        "id": "s1",
+        "index": 1,
+        "name": "herdr-relay",
+        "named": true,
+        "folder": "/Users/sam/work/example",
+        "machine": null,
+        "branch": "main",
+        "active": true,
+        "status": "working",
+        "tabs": [
+          {
+            "id": "s1/t1",
+            "index": 1,
+            "name": "bridge",
+            "named": true,
+            "active": true,
+            "status": "working",
+            "panes": 2,
+            "zoomed": false,
+            "settled": false,
+            "settled_at": null,
+            "changed_at": 1762650000000,
+            "working_since": 1762649100000
+          }
+        ]
+      }
+    ],
+    "agents": [
+      {
+        "address": "t3",
+        "pane": "p1",
+        "space": "s1",
+        "space_name": "herdr-relay",
+        "tab": "s1/t1",
+        "tab_index": 1,
+        "tab_name": "bridge",
+        "status": "working",
+        "app": "omp",
+        "program": {
+          "key": "omp",
+          "name": "OMP",
+          "icon": "my-icons/omp.svg",
+          "tint": false,
+          "tile": "#0f0a14",
+          "color": null,
+          "shell": false,
+          "agent": true
+        },
+        "title": "π working  T02 protocol",
+        "seq": 12,
+        "pinned": false,
+        "focused": true
+      }
+    ],
+    "panes": [
+      {
+        "pane": "p1",
+        "terminal": "t3",
+        "tab": "s1/t1",
+        "title": "π working  T02 protocol",
+        "cwd": "/Users/sam/work/example",
+        "branch": "main",
+        "status": "working",
+        "app": "omp",
+        "program": {
+          "key": "omp",
+          "name": "OMP",
+          "icon": "my-icons/omp.svg",
+          "tint": false,
+          "tile": "#0f0a14",
+          "color": null,
+          "shell": false,
+          "agent": true
+        },
+        "focused": true,
+        "zoomed": false,
+        "movable": true
+      },
+      {
+        "pane": "p2",
+        "terminal": null,
+        "mod": "files",
+        "tab": "s1/t1",
+        "title": "files",
+        "focused": false,
+        "zoomed": false
+      }
+    ],
+    "terminals": [
+      {
+        "address": "t3",
+        "argv": [
+          "omp"
+        ],
+        "name": null,
+        "state": "live",
+        "status": "working",
+        "report": {
+          "app": "omp",
+          "state": "working"
+        },
+        "title": "π working  T02 protocol",
+        "cwd": "/Users/sam/work/example"
+      }
+    ],
+    "focused": {
+      "space": "s1",
+      "tab": "s1/t1",
+      "pane": "p1",
+      "terminal": "t3",
+      "shown": null,
+      "agent": "t3",
+      "cwd": "/Users/sam/work/example"
+    },
+    "layout": {
+      "id": "root",
+      "type": "row",
+      "titlebar": "none",
+      "background": "canvas",
+      "children": [
+        {
+          "id": "sidebar",
+          "type": "column",
+          "size": {
+            "px": 268
+          },
+          "min": 44,
+          "max": 480,
+          "children": [
+            {
+              "id": "brand",
+              "type": "block",
+              "size": {
+                "px": 46
+              },
+              "content": {
+                "mod": "workspace-chrome"
+              }
+            }
+          ]
+        },
+        {
+          "id": "main",
+          "type": "block",
+          "content": {
+            "tab": "active"
+          }
+        }
+      ]
+    },
+    "layouts": [
+      "lstack-herdr",
+      "main"
+    ],
+    "commands": [
+      {
+        "name": "layout.select",
+        "args": [
+          {
+            "name": "stack",
+            "required": true
+          },
+          {
+            "name": "child",
+            "required": true
+          }
+        ],
+        "about": "Shows one child of a stack"
+      }
+    ],
+    "window": {
+      "platform": "macos",
+      "titlebar": "none",
+      "buttons": false,
+      "maximized": false,
+      "fullscreen": false,
+      "active": true
+    },
+    "theme": {
+      "background": "#282c34",
+      "foreground": "#abb2bf",
+      "chrome": "#21252b",
+      "border": "#3a3f4b",
+      "working": "#61afef",
+      "blocked": "#e5c07b"
+    },
+    "themes": [
+      {
+        "name": "atom-one-dark",
+        "light": false,
+        "colors": {
+          "background": "#282c34",
+          "foreground": "#abb2bf"
+        }
+      }
+    ],
+    "fonts": [
+      "JetBrains Mono",
+      "D2Coding ligature",
+      "SF Pro"
+    ],
+    "updates": {
+      "app": {
+        "version": "0.9.0",
+        "ready": null,
+        "updates": true
+      },
+      "notes": [],
+      "core": {
+        "version": "0.1.19",
+        "managed": null,
+        "ready": null,
+        "updating": false,
+        "error": null
+      },
+      "checked": 1762646400,
+      "checks": true,
+      "checking": false
+    },
+    "settings": {
+      "app": {
+        "theme": "atom-one-dark"
+      },
+      "font": {
+        "family": "D2Coding ligature",
+        "size": 13
+      }
+    },
+    "keys": [
+      {
+        "section": "app",
+        "keys": "cmd-k",
+        "action": "palette.open"
+      }
+    ],
+    "machines": [
+      {
+        "name": null,
+        "layout": "ready"
+      }
+    ],
+    "shared": {
+      "layout": "lstack-herdr",
+      "lstack-herdr-cockpit.app": "work"
+    }
+  },
+  "harden": true,
+  "mainUrl": "file:///Users/sam/.config/herdr-app/mods/lstack-herdr-cockpit/main.js"
+}

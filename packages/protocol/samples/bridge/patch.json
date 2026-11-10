@@ -1,0 +1,15 @@
+{
+  "t": "patch",
+  "seq": 3,
+  "views": [
+    {
+      "view": "lstack-herdr-cockpit:activity",
+      "ops": [
+        { "op": "replace", "path": "/children/1/style/backgroundColor", "value": "#2f343e" },
+        { "op": "replace", "path": "/children/1/on/click", "value": 12 },
+        { "op": "remove", "path": "/children/2/attrs/tooltip" }
+      ]
+    }
+  ],
+  "state": [{ "op": "replace", "path": "/agents/0/status", "value": "working" }]
+}

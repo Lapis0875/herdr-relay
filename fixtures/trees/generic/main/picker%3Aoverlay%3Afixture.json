@@ -1,0 +1,295 @@
+{
+  "k": "el",
+  "tag": "v_flex",
+  "id": "picker",
+  "style": {
+    "display": "flex",
+    "flexDirection": "column",
+    "width": "100%",
+    "minHeight": 0,
+    "paddingTop": 18,
+    "paddingRight": 18,
+    "paddingBottom": 18,
+    "paddingLeft": 18,
+    "rowGap": 10,
+    "columnGap": 10,
+    "backgroundColor": "#2c313a",
+    "fontSize": 13
+  },
+  "on": {
+    "keydown": 1
+  },
+  "attrs": {
+    "track_focus": {
+      "focus_handle": 1
+    }
+  },
+  "children": [
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center"
+      },
+      "children": [
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "flexGrow": 1,
+            "flexShrink": 1,
+            "flexBasis": "0%",
+            "fontSize": 15,
+            "fontWeight": 600,
+            "color": "#abb2bf"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "Go to…"
+            }
+          ]
+        },
+        {
+          "k": "el",
+          "tag": "div",
+          "style": {
+            "fontSize": 11,
+            "color": "#5c6370"
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "Esc"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "height": 36,
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "paddingLeft": 10,
+        "paddingRight": 10,
+        "rowGap": 8,
+        "columnGap": 8,
+        "borderTopLeftRadius": 9,
+        "borderTopRightRadius": 9,
+        "borderBottomRightRadius": 9,
+        "borderBottomLeftRadius": 9,
+        "borderTopWidth": 1,
+        "borderRightWidth": 1,
+        "borderBottomWidth": 1,
+        "borderLeftWidth": 1,
+        "borderColor": "#61afef",
+        "backgroundColor": "#21252b",
+        "borderStyle": "solid"
+      },
+      "children": [
+        {
+          "k": "svg",
+          "src": "mods/workspace-chrome/search.svg",
+          "style": {
+            "width": 15,
+            "height": 15,
+            "color": "#5c6370"
+          }
+        },
+        {
+          "k": "el",
+          "tag": "Input",
+          "style": {
+            "flexGrow": 1,
+            "flexShrink": 1,
+            "flexBasis": "0%",
+            "height": "100%",
+            "fontSize": 12.8,
+            "color": "#abb2bf"
+          },
+          "on": {
+            "change": 2
+          },
+          "widget": {
+            "type": "input",
+            "state": "InputState:1",
+            "props": {
+              "placeholder": "Go to a tab, space or agent…",
+              "value": ""
+            }
+          }
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "v_flex",
+      "id": "pk-list",
+      "style": {
+        "display": "flex",
+        "flexDirection": "column",
+        "height": 103,
+        "minHeight": 0,
+        "marginBottom": 6
+      },
+      "on": {
+        "size": 3
+      },
+      "children": [
+        {
+          "k": "el",
+          "tag": "h_flex",
+          "id": "pk-earlier",
+          "style": {
+            "display": "flex",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "marginTop": 6,
+            "paddingLeft": 10,
+            "paddingRight": 10,
+            "paddingTop": 6,
+            "paddingBottom": 6,
+            "borderTopWidth": 1,
+            "borderColor": "#3a3f4b",
+            "fontSize": 12,
+            "color": "#5c6370",
+            "cursor": "pointer",
+            "borderStyle": "solid"
+          },
+          "states": {
+            "hover": {
+              "color": "#abb2bf"
+            }
+          },
+          "on": {
+            "click": 4
+          },
+          "children": [
+            {
+              "k": "text",
+              "style": {},
+              "text": "earlier: 1 quiet space ▾"
+            }
+          ]
+        },
+        {
+          "k": "el",
+          "tag": "h_flex",
+          "id": "pk-new",
+          "style": {
+            "display": "flex",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "marginLeft": 4,
+            "marginRight": 4,
+            "marginTop": 4,
+            "paddingLeft": 10,
+            "paddingRight": 10,
+            "height": 32,
+            "borderTopLeftRadius": 7,
+            "borderTopRightRadius": 7,
+            "borderBottomRightRadius": 7,
+            "borderBottomLeftRadius": 7,
+            "rowGap": 8,
+            "columnGap": 8,
+            "color": "#7f848e",
+            "cursor": "pointer",
+            "backgroundColor": "#2f343e"
+          },
+          "states": {
+            "hover": {
+              "backgroundColor": "#2f343e"
+            }
+          },
+          "on": {
+            "click": 5
+          },
+          "children": [
+            {
+              "k": "el",
+              "tag": "div",
+              "style": {
+                "width": 12
+              },
+              "children": [
+                {
+                  "k": "text",
+                  "style": {},
+                  "text": "+"
+                }
+              ]
+            },
+            {
+              "k": "text",
+              "style": {},
+              "text": "new tab"
+            }
+          ]
+        },
+        {
+          "k": "el",
+          "tag": "h_flex",
+          "id": "pk-space-here",
+          "style": {
+            "display": "flex",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "marginLeft": 4,
+            "marginRight": 4,
+            "paddingLeft": 10,
+            "paddingRight": 10,
+            "height": 32,
+            "borderTopLeftRadius": 7,
+            "borderTopRightRadius": 7,
+            "borderBottomRightRadius": 7,
+            "borderBottomLeftRadius": 7,
+            "rowGap": 8,
+            "columnGap": 8,
+            "color": "#7f848e",
+            "cursor": "pointer"
+          },
+          "states": {
+            "hover": {
+              "backgroundColor": "#2f343e"
+            }
+          },
+          "on": {
+            "click": 6
+          },
+          "children": [
+            {
+              "k": "el",
+              "tag": "div",
+              "style": {
+                "width": 12
+              },
+              "children": [
+                {
+                  "k": "text",
+                  "style": {},
+                  "text": "+"
+                }
+              ]
+            },
+            {
+              "k": "text",
+              "style": {},
+              "text": "new space"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

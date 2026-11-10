@@ -1,0 +1,1143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:herdr-relay:schema:client-message",
+  "title": "Client → bridge WebSocket text message",
+  "$ref": "#/$defs/ClientMessage",
+  "$defs": {
+    "Bounds": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number"
+        },
+        "height": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false
+    },
+    "ClickData": {
+      "type": "object",
+      "properties": {
+        "click_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "modifiers": {
+          "$ref": "#/$defs/Modifiers"
+        },
+        "key": {
+          "type": "string",
+          "description": "virtual-list row key (on_item_click / on_item_secondary_click)"
+        }
+      },
+      "required": [
+        "click_count",
+        "modifiers"
+      ],
+      "additionalProperties": false
+    },
+    "ClientEvent": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "t": {
+              "const": "event"
+            },
+            "id": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "client-chosen; echoed by ack"
+            },
+            "view": {
+              "type": "string",
+              "minLength": 1
+            },
+            "handler": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "kind": {
+              "const": "click"
+            },
+            "data": {
+              "$ref": "#/$defs/ClickData"
+            }
+          },
+          "required": [
+            "t",
+            "id",
+            "view",
+            "handler",
+            "kind",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "t": {
+              "const": "event"
+            },
+            "id": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "client-chosen; echoed by ack"
+            },
+            "view": {
+              "type": "string",
+              "minLength": 1
+            },
+            "handler": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "kind": {
+              "const": "mousedown"
+            },
+            "data": {
+              "$ref": "#/$defs/MouseButtonData"
+            }
+          },
+          "required": [
+            "t",
+            "id",
+            "view",
+            "handler",
+            "kind",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "t": {
+              "const": "event"
+            },
+            "id": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "client-chosen; echoed by ack"
+            },
+            "view": {
+              "type": "string",
+              "minLength": 1
+            },
+            "handler": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "kind": {
+              "const": "mouseup"
+            },
+            "data": {
+              "$ref": "#/$defs/MouseButtonData"
+            }
+          },
+          "required": [
+            "t",
+            "id",
+            "view",
+            "handler",
+            "kind",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "t": {
+              "const": "event"
+            },
+            "id": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "client-chosen; echoed by ack"
+            },
+            "view": {
+              "type": "string",
+              "minLength": 1
+            },
+            "handler": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "kind": {
+              "const": "mousemove"
+            },
+            "data": {
+              "$ref": "#/$defs/MouseMoveData"
+            }
+          },
+          "required": [
+            "t",
+            "id",
+            "view",
+            "handler",
+            "kind",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "t": {
+              "const": "event"
+            },
+            "id": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "client-chosen; echoed by ack"
+            },
+            "view": {
+              "type": "string",
+              "minLength": 1
+            },
+            "handler": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "kind": {
+              "const": "hover"
+            },
+            "data": {
+              "$ref": "#/$defs/HoverData"
+            }
+          },
+          "required": [
+            "t",
+            "id",
+            "view",
+            "handler",
+            "kind",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "t": {
+              "const": "event"
+            },
+            "id": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "client-chosen; echoed by ack"
+            },
+            "view": {
+              "type": "string",
+              "minLength": 1
+            },
+            "handler": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "kind": {
+              "const": "wheel"
+            },
+            "data": {
+              "$ref": "#/$defs/WheelData"
+            }
+          },
+          "required": [
+            "t",
+            "id",
+            "view",
+            "handler",
+            "kind",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "t": {
+              "const": "event"
+            },
+            "id": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "client-chosen; echoed by ack"
+            },
+            "view": {
+              "type": "string",
+              "minLength": 1
+            },
+            "handler": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "kind": {
+              "const": "key"
+            },
+            "data": {
+              "$ref": "#/$defs/KeyData"
+            }
+          },
+          "required": [
+            "t",
+            "id",
+            "view",
+            "handler",
+            "kind",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "t": {
+              "const": "event"
+            },
+            "id": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "client-chosen; echoed by ack"
+            },
+            "view": {
+              "type": "string",
+              "minLength": 1
+            },
+            "handler": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "kind": {
+              "const": "size"
+            },
+            "data": {
+              "$ref": "#/$defs/SizeData"
+            }
+          },
+          "required": [
+            "t",
+            "id",
+            "view",
+            "handler",
+            "kind",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "t": {
+              "const": "event"
+            },
+            "id": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "client-chosen; echoed by ack"
+            },
+            "view": {
+              "type": "string",
+              "minLength": 1
+            },
+            "handler": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "kind": {
+              "const": "input"
+            },
+            "data": {
+              "$ref": "#/$defs/InputData"
+            }
+          },
+          "required": [
+            "t",
+            "id",
+            "view",
+            "handler",
+            "kind",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "t": {
+              "const": "event"
+            },
+            "id": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "client-chosen; echoed by ack"
+            },
+            "view": {
+              "type": "string",
+              "minLength": 1
+            },
+            "handler": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "kind": {
+              "const": "link"
+            },
+            "data": {
+              "$ref": "#/$defs/LinkData"
+            }
+          },
+          "required": [
+            "t",
+            "id",
+            "view",
+            "handler",
+            "kind",
+            "data"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "discriminator": {
+        "propertyName": "kind"
+      }
+    },
+    "ClientHello": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "hello"
+        },
+        "v": {
+          "const": 1
+        },
+        "device": {
+          "type": "string",
+          "minLength": 1
+        },
+        "class": {
+          "$ref": "#/$defs/DeviceClass"
+        },
+        "viewport": {
+          "$ref": "#/$defs/Viewport"
+        },
+        "since": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "session": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "t",
+        "v",
+        "device",
+        "class",
+        "viewport"
+      ],
+      "additionalProperties": false
+    },
+    "ClientMessage": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ClientHello"
+        },
+        {
+          "$ref": "#/$defs/Nav"
+        },
+        {
+          "$ref": "#/$defs/ClientEvent"
+        },
+        {
+          "$ref": "#/$defs/Command"
+        },
+        {
+          "$ref": "#/$defs/TermOpen"
+        },
+        {
+          "$ref": "#/$defs/TermClose"
+        },
+        {
+          "$ref": "#/$defs/Visible"
+        },
+        {
+          "$ref": "#/$defs/PushSub"
+        },
+        {
+          "$ref": "#/$defs/LayoutMessage"
+        }
+      ],
+      "discriminator": {
+        "propertyName": "t"
+      }
+    },
+    "Command": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "command"
+        },
+        "id": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "client-chosen; echoed by ack"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "args": {
+          "$ref": "#/$defs/JsonObject"
+        }
+      },
+      "required": [
+        "t",
+        "id",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "DeviceClass": {
+      "enum": [
+        "phone",
+        "tablet-portrait",
+        "tablet-landscape",
+        "desktop"
+      ]
+    },
+    "HoverData": {
+      "type": "object",
+      "properties": {
+        "hovered": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "hovered"
+      ],
+      "additionalProperties": false
+    },
+    "InputData": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "event": {
+          "enum": [
+            "change",
+            "submit",
+            "focus",
+            "blur",
+            "paste_other",
+            "confirm",
+            "dismiss",
+            "step",
+            "open"
+          ]
+        },
+        "secondary": {
+          "type": "boolean"
+        },
+        "shift": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "JsonObject": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      }
+    },
+    "JsonValue": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        }
+      ]
+    },
+    "KeyData": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "keystroke": {
+          "type": "string"
+        },
+        "modifiers": {
+          "$ref": "#/$defs/Modifiers"
+        },
+        "key_char": {
+          "type": "string"
+        },
+        "is_held": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "key",
+        "keystroke",
+        "modifiers"
+      ],
+      "additionalProperties": false
+    },
+    "LayoutChange": {
+      "type": "object",
+      "properties": {
+        "node": {
+          "type": "string",
+          "minLength": 1
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "px": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "px"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "weight": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "weight"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "collapsed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "node"
+      ],
+      "additionalProperties": false
+    },
+    "LayoutMessage": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "t": {
+              "const": "layout"
+            },
+            "id": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "client-chosen; echoed by ack"
+            },
+            "action": {
+              "const": "set"
+            },
+            "changes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/LayoutChange"
+              },
+              "minItems": 1,
+              "maxItems": 8
+            }
+          },
+          "required": [
+            "t",
+            "id",
+            "action",
+            "changes"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "t": {
+              "const": "layout"
+            },
+            "id": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "client-chosen; echoed by ack"
+            },
+            "action": {
+              "const": "reset"
+            },
+            "node": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "t",
+            "id",
+            "action"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "discriminator": {
+        "propertyName": "action"
+      }
+    },
+    "LinkData": {
+      "type": "object",
+      "properties": {
+        "href": {
+          "type": "string",
+          "pattern": "^https?://"
+        }
+      },
+      "required": [
+        "href"
+      ],
+      "additionalProperties": false
+    },
+    "Modifiers": {
+      "type": "object",
+      "properties": {
+        "shift": {
+          "type": "boolean"
+        },
+        "control": {
+          "type": "boolean"
+        },
+        "alt": {
+          "type": "boolean"
+        },
+        "platform": {
+          "type": "boolean"
+        },
+        "function": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "shift",
+        "control",
+        "alt",
+        "platform",
+        "function"
+      ],
+      "additionalProperties": false
+    },
+    "MouseButtonData": {
+      "type": "object",
+      "properties": {
+        "button": {
+          "enum": [
+            "left",
+            "right",
+            "middle"
+          ]
+        },
+        "click_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "position": {
+          "$ref": "#/$defs/Point"
+        },
+        "modifiers": {
+          "$ref": "#/$defs/Modifiers"
+        },
+        "local_position": {
+          "$ref": "#/$defs/Point"
+        },
+        "bounds": {
+          "$ref": "#/$defs/Bounds"
+        },
+        "key": {
+          "type": "string",
+          "description": "virtual-list row key (on_item_click / on_item_secondary_click)"
+        }
+      },
+      "required": [
+        "button",
+        "click_count",
+        "position",
+        "modifiers"
+      ],
+      "additionalProperties": false
+    },
+    "MouseMoveData": {
+      "type": "object",
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/Point"
+        },
+        "local_position": {
+          "$ref": "#/$defs/Point"
+        },
+        "bounds": {
+          "$ref": "#/$defs/Bounds"
+        },
+        "modifiers": {
+          "$ref": "#/$defs/Modifiers"
+        }
+      },
+      "required": [
+        "position",
+        "local_position",
+        "bounds",
+        "modifiers"
+      ],
+      "additionalProperties": false
+    },
+    "Nav": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "nav"
+        },
+        "id": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "client-chosen; echoed by ack"
+        },
+        "action": {
+          "enum": [
+            "push",
+            "pop",
+            "select",
+            "replace"
+          ]
+        },
+        "route": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "stack": {
+          "type": "string",
+          "minLength": 1
+        },
+        "child": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "t",
+        "id",
+        "action"
+      ],
+      "additionalProperties": false
+    },
+    "Point": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "additionalProperties": false
+    },
+    "PushSub": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "push.sub"
+        },
+        "id": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "client-chosen; echoed by ack"
+        },
+        "subscription": {
+          "$ref": "#/$defs/PushSubscription"
+        }
+      },
+      "required": [
+        "t",
+        "id",
+        "subscription"
+      ],
+      "additionalProperties": false
+    },
+    "PushSubscription": {
+      "type": "object",
+      "properties": {
+        "endpoint": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "keys": {
+          "type": "object",
+          "properties": {
+            "p256dh": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]+=*$",
+              "description": "base64url P-256 public key"
+            },
+            "auth": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]+=*$",
+              "description": "base64url auth secret"
+            }
+          },
+          "required": [
+            "p256dh",
+            "auth"
+          ],
+          "additionalProperties": false
+        },
+        "expirationTime": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "endpoint",
+        "keys"
+      ],
+      "additionalProperties": false
+    },
+    "SizeData": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "width": {
+              "type": "number",
+              "minimum": 0
+            },
+            "height": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "width",
+            "height"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sizes": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "required": [
+            "sizes"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "TermClose": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "term.close"
+        },
+        "id": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "client-chosen; echoed by ack"
+        },
+        "terminal": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "t",
+        "id",
+        "terminal"
+      ],
+      "additionalProperties": false
+    },
+    "TermOpen": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "term.open"
+        },
+        "id": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "client-chosen; echoed by ack"
+        },
+        "terminal": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mode": {
+          "enum": [
+            "observe",
+            "type"
+          ]
+        }
+      },
+      "required": [
+        "t",
+        "id",
+        "terminal",
+        "mode"
+      ],
+      "additionalProperties": false
+    },
+    "Viewport": {
+      "type": "object",
+      "properties": {
+        "w": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "CSS px"
+        },
+        "h": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "CSS px"
+        },
+        "dpr": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "required": [
+        "w",
+        "h",
+        "dpr"
+      ],
+      "additionalProperties": false
+    },
+    "Visible": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "const": "visible"
+        },
+        "visible": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "t",
+        "visible"
+      ],
+      "additionalProperties": false
+    },
+    "WheelData": {
+      "type": "object",
+      "properties": {
+        "delta": {
+          "$ref": "#/$defs/Point"
+        },
+        "touch_phase": {
+          "enum": [
+            "started",
+            "moved",
+            "ended",
+            "cancelled"
+          ]
+        },
+        "position": {
+          "$ref": "#/$defs/Point"
+        },
+        "modifiers": {
+          "$ref": "#/$defs/Modifiers"
+        },
+        "delta_lines": {
+          "$ref": "#/$defs/Point"
+        },
+        "local_position": {
+          "$ref": "#/$defs/Point"
+        },
+        "bounds": {
+          "$ref": "#/$defs/Bounds"
+        }
+      },
+      "required": [
+        "delta",
+        "touch_phase",
+        "position",
+        "modifiers"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

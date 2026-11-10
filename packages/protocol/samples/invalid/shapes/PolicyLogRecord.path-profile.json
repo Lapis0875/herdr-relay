@@ -1,0 +1,9 @@
+{
+  "ts": 1762650000123,
+  "folder": "files",
+  "method": "exec",
+  "argv": ["git", "status"],
+  "decision": "refuse",
+  "rule": "E4",
+  "profile": "../profiles/herdr-shipped.json"
+}

@@ -1,0 +1,76 @@
+{
+  "workspace": [
+    "./packages/protocol",
+    "./packages/bridge",
+    "./packages/web"
+  ],
+  "nodeModulesDir": "auto",
+  "lock": {
+    "path": "./deno.lock",
+    "frozen": true
+  },
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "lib": [
+      "deno.window",
+      "dom",
+      "dom.iterable"
+    ]
+  },
+  "imports": {
+    "@herdr-relay/protocol": "./packages/protocol/mod.ts",
+    "@std/assert": "jsr:@std/assert@1.0.19",
+    "@std/async": "jsr:@std/async@1.5.1",
+    "@std/path": "jsr:@std/path@1.1.6",
+    "@std/testing": "jsr:@std/testing@1.0.21",
+    "@types/react": "npm:@types/react@19.3.0",
+    "@types/react-dom": "npm:@types/react-dom@19.3.0",
+    "@xterm/addon-unicode11": "npm:@xterm/addon-unicode11@0.9.0",
+    "@xterm/xterm": "npm:@xterm/xterm@6.0.0",
+    "dompurify": "npm:dompurify@3.4.17",
+    "highlight.js": "npm:highlight.js@11.12.0",
+    "marked": "npm:marked@18.1.3",
+    "react": "npm:react@19.3.1",
+    "react-dom": "npm:react-dom@19.3.1"
+  },
+  "fmt": {
+    "lineWidth": 120,
+    "exclude": [
+      "**/*.md"
+    ]
+  },
+  "lint": {
+    "rules": {
+      "tags": [
+        "recommended"
+      ]
+    }
+  },
+  "exclude": [
+    "fixtures",
+    "packages/web/dist",
+    "node_modules",
+    "mods/*/gpui-kit.d.ts",
+    "packages/web/test/__snapshots__",
+    "tools/device-tests"
+  ],
+  "tasks": {
+    "check": "deno fmt --check && deno lint && deno check packages/protocol packages/bridge packages/web tools/release tools/scrub tools/fixtures tools/contract tools/sync-config",
+    "check:modhost": "deno check --config packages/modhost/deno.json packages/modhost/src/main.js",
+    "test": "deno test --permit-no-files --allow-read=. --allow-write=./.tmp --allow-net=127.0.0.1 --allow-env=HOME,TMPDIR,PATH,HC_SOCKET,HERDR_RELAY_LIVE_CORE,HERDR_RELAY_UPDATE_TREES,NODE_ENV,RSYNC_RSH --allow-run=deno,sandbox-exec,git,./packages/bridge/test/unit/core/fake-hc,rsync packages/protocol packages/bridge packages/web tools/scrub tools/sync-config",
+    "test:security": "deno test --allow-read=. --allow-write=./.tmp --allow-net=127.0.0.1 --allow-env=HOME,TMPDIR,PATH --allow-run=deno,sandbox-exec,git packages/bridge/test/security",
+    "test:core": "HERDR_RELAY_LIVE_CORE=1 deno test --allow-read=. --allow-env=HOME,PATH,HERDR_RELAY_LIVE_CORE --allow-run=hc packages/bridge/test/live",
+    "bundle": "deno task --cwd packages/web bundle",
+    "start": "deno run --no-prompt --cached-only --no-npm --lock=deno.lock --allow-import=jsr.io:443 --allow-read=$HOME,/tmp,/private/tmp,$TMPDIR/herdr-relay,./packages,./deno.json --deny-read=$HOME/.ssh,$HOME/.gnupg,$HOME/.aws,$HOME/.config/gh,$HOME/Library/Keychains,$HOME/Library/Cookies,$HOME/.herdr/herdr-relay/devices.json.bak --allow-write=$HOME/.herdr/herdr-relay,$TMPDIR/herdr-relay,$HOME/.config/herdr-app/data/herdr-relay --allow-net=127.0.0.1,web.push.apple.com:443,fcm.googleapis.com:443,updates.push.services.mozilla.com:443 --allow-env=HOME,TMPDIR,HERDR_APP_HOME,HERDR_RELAY_PORT,HERDR_RELAY_DEV,PATH,HERDR_RELAY_TAILSCALE_BIN --allow-run=hc,herdr-app,git,deno,sandbox-exec,/Applications/Tailscale.app/Contents/MacOS/Tailscale,cockpit,/usr/sbin/netstat,/bin/ps,/usr/sbin/lsof packages/bridge/src/main.ts",
+    "start:dev": "HERDR_RELAY_DEV=1 deno run --no-prompt --cached-only --no-npm --lock=deno.lock --allow-import=jsr.io:443 --allow-read=$HOME,/tmp,/private/tmp,$TMPDIR/herdr-relay,./packages,./deno.json --deny-read=$HOME/.ssh,$HOME/.gnupg,$HOME/.aws,$HOME/.config/gh,$HOME/Library/Keychains,$HOME/Library/Cookies,$HOME/.herdr/herdr-relay/devices.json.bak --allow-write=$HOME/.herdr/herdr-relay,$TMPDIR/herdr-relay,$HOME/.config/herdr-app/data/herdr-relay --allow-net=127.0.0.1,web.push.apple.com:443,fcm.googleapis.com:443,updates.push.services.mozilla.com:443 --allow-env=HOME,TMPDIR,HERDR_APP_HOME,HERDR_RELAY_PORT,HERDR_RELAY_DEV,PATH,HERDR_RELAY_TAILSCALE_BIN --allow-run=hc,herdr-app,git,deno,sandbox-exec,/Applications/Tailscale.app/Contents/MacOS/Tailscale,cockpit,/usr/sbin/netstat,/bin/ps,/usr/sbin/lsof packages/bridge/src/main.ts",
+    "herdr-relay": "sh packages/bridge/bin/herdr-relay",
+    "test:views:update": "HERDR_RELAY_UPDATE_TREES=1 deno test --allow-read=. --allow-write=./.tmp,./fixtures/trees,./fixtures/private/trees --allow-net=127.0.0.1 --allow-env=HOME,TMPDIR,PATH,HERDR_RELAY_UPDATE_TREES --allow-run=deno,sandbox-exec packages/bridge/test/views",
+    "contract:update": "deno run --allow-read=.,$HOME/.config/herdr-app --allow-write=fixtures/contract,fixtures/generic-home,packages/bridge/src/compat/pins.json --allow-net=api.github.com,raw.githubusercontent.com --allow-run=deno,herdr-app --allow-env=HOME,PATH tools/contract/update.ts",
+    "scrub:check": "deno run --allow-run=git --allow-read=. tools/scrub/check.ts",
+    "test:web:update": "HERDR_RELAY_UPDATE_TREES=1 deno test --allow-read=. --allow-write=packages/web/test/__snapshots__ --allow-env=HERDR_RELAY_UPDATE_TREES,NODE_ENV packages/web/test",
+    "bundle:release": "deno task bundle && deno run --allow-read=. --allow-write=./.tmp/release --allow-run=git tools/release/build.ts",
+    "release:dry": "deno task bundle:release --dry",
+    "sync-config": "deno run --allow-read --allow-env=HOME,HERDR_APP_HOME,RSYNC_RSH --allow-run=rsync --allow-write=$TMPDIR tools/sync-config/mod.ts"
+  }
+}

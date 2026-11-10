@@ -1,0 +1,8 @@
+{
+  "t": "event-result",
+  "copy": "lstack-herdr-cockpit:activity",
+  "handler": 7,
+  "ok": false,
+  "stale": "render 11 is not current",
+  "error": "stale render 11 (current 12)"
+}

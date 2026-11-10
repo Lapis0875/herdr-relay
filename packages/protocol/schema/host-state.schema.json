@@ -1,0 +1,1039 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:herdr-relay:schema:host-state",
+  "title": "HostState (per-folder herdr snapshot)",
+  "$ref": "#/$defs/HostState",
+  "$defs": {
+    "AgentInfo": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "pane": {
+          "type": "string"
+        },
+        "space": {
+          "type": "string"
+        },
+        "space_name": {
+          "type": "string"
+        },
+        "tab": {
+          "type": "string"
+        },
+        "tab_index": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "tab_name": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/Status"
+        },
+        "app": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "program": {
+          "$ref": "#/$defs/Program"
+        },
+        "title": {
+          "type": "string"
+        },
+        "seq": {
+          "type": "number"
+        },
+        "pinned": {
+          "type": "boolean"
+        },
+        "focused": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "address",
+        "pane",
+        "space",
+        "space_name",
+        "tab",
+        "tab_index",
+        "tab_name",
+        "status",
+        "app",
+        "program",
+        "title",
+        "seq",
+        "pinned",
+        "focused"
+      ],
+      "additionalProperties": false
+    },
+    "CommandInfo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "required": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "required"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "about": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "args",
+        "about"
+      ],
+      "additionalProperties": false
+    },
+    "Focused": {
+      "type": "object",
+      "properties": {
+        "space": {
+          "type": "string"
+        },
+        "tab": {
+          "type": "string"
+        },
+        "pane": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "terminal": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "shown": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "agent": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cwd": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "space",
+        "tab",
+        "pane",
+        "terminal",
+        "shown",
+        "agent",
+        "cwd"
+      ],
+      "additionalProperties": false
+    },
+    "HostState": {
+      "type": "object",
+      "properties": {
+        "folder": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "home": {
+          "type": "string",
+          "minLength": 1
+        },
+        "appHome": {
+          "type": "string",
+          "minLength": 1
+        },
+        "spaces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SpaceInfo"
+          }
+        },
+        "agents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AgentInfo"
+          }
+        },
+        "panes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PaneInfo"
+          }
+        },
+        "terminals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TerminalInfo"
+          }
+        },
+        "focused": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Focused"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "layout": {
+          "$ref": "#/$defs/LayoutNode"
+        },
+        "layouts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "commands": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CommandInfo"
+          }
+        },
+        "window": {
+          "$ref": "#/$defs/WindowInfo"
+        },
+        "theme": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "themes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ThemeInfo"
+          }
+        },
+        "fonts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "updates": {
+          "$ref": "#/$defs/UpdatesInfo"
+        },
+        "settings": {
+          "$ref": "#/$defs/JsonObject"
+        },
+        "keys": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/KeyBindingInfo"
+          }
+        },
+        "machines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/MachineInfo"
+          }
+        },
+        "shared": {
+          "$ref": "#/$defs/Shared"
+        }
+      },
+      "required": [
+        "folder",
+        "home",
+        "appHome",
+        "spaces",
+        "agents",
+        "panes",
+        "terminals",
+        "focused",
+        "layout",
+        "layouts",
+        "commands",
+        "window",
+        "theme",
+        "themes",
+        "fonts",
+        "updates",
+        "settings",
+        "keys",
+        "machines",
+        "shared"
+      ],
+      "additionalProperties": false
+    },
+    "JsonObject": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      }
+    },
+    "JsonValue": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        }
+      ]
+    },
+    "KeyBindingInfo": {
+      "type": "object",
+      "properties": {
+        "section": {
+          "type": "string"
+        },
+        "keys": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "section",
+        "keys",
+        "action"
+      ],
+      "additionalProperties": false
+    },
+    "LayoutNode": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "description": "row | column | stack | block (floating entries have none)"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/LayoutNode"
+          }
+        },
+        "floating": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/LayoutNode"
+          }
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "active": {
+          "type": "string"
+        },
+        "size": {
+          "type": "object",
+          "properties": {
+            "px": {
+              "type": "number"
+            },
+            "weight": {
+              "type": "number"
+            }
+          },
+          "required": [],
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "content": {
+          "$ref": "#/$defs/JsonObject"
+        }
+      },
+      "required": [],
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      }
+    },
+    "MachineInfo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "layout": {
+          "enum": [
+            "loading",
+            "ready",
+            "unavailable"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "layout"
+      ],
+      "additionalProperties": false
+    },
+    "PaneInfo": {
+      "type": "object",
+      "properties": {
+        "pane": {
+          "type": "string"
+        },
+        "terminal": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tab": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "focused": {
+          "type": "boolean"
+        },
+        "zoomed": {
+          "type": "boolean"
+        },
+        "mod": {
+          "type": "string"
+        },
+        "cwd": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "branch": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Status"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "app": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "program": {
+          "$ref": "#/$defs/Program"
+        },
+        "movable": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "pane",
+        "terminal",
+        "tab",
+        "title",
+        "focused",
+        "zoomed"
+      ],
+      "additionalProperties": false
+    },
+    "Program": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "icon": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tint": {
+          "type": "boolean"
+        },
+        "tile": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "color": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "shell": {
+          "type": "boolean"
+        },
+        "agent": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "key",
+        "name",
+        "icon",
+        "tint",
+        "tile",
+        "color",
+        "shell",
+        "agent"
+      ],
+      "additionalProperties": false
+    },
+    "Shared": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      }
+    },
+    "SpaceInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string"
+        },
+        "named": {
+          "type": "boolean"
+        },
+        "folder": {
+          "type": "string"
+        },
+        "machine": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "branch": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Status"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tabs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TabInfo"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "index",
+        "name",
+        "named",
+        "folder",
+        "machine",
+        "branch",
+        "active",
+        "status",
+        "tabs"
+      ],
+      "additionalProperties": false
+    },
+    "Status": {
+      "enum": [
+        "working",
+        "blocked",
+        "done",
+        "idle"
+      ]
+    },
+    "TabInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string"
+        },
+        "named": {
+          "type": "boolean"
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Status"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "panes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "zoomed": {
+          "type": "boolean"
+        },
+        "settled": {
+          "type": "boolean"
+        },
+        "settled_at": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "changed_at": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "working_since": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "index",
+        "name",
+        "named",
+        "active",
+        "status",
+        "panes",
+        "zoomed",
+        "settled",
+        "settled_at",
+        "changed_at",
+        "working_since"
+      ],
+      "additionalProperties": false
+    },
+    "TerminalInfo": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "address"
+      ],
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      }
+    },
+    "ThemeInfo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "light": {
+          "type": "boolean"
+        },
+        "colors": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "light",
+        "colors"
+      ],
+      "additionalProperties": false
+    },
+    "UpdatesInfo": {
+      "type": "object",
+      "properties": {
+        "app": {
+          "type": "object",
+          "properties": {
+            "version": {
+              "type": "string"
+            },
+            "ready": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "updates": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "version",
+            "ready",
+            "updates"
+          ],
+          "additionalProperties": false
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "version": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "headline": {
+                      "type": "string"
+                    },
+                    "detail": {
+                      "type": "string"
+                    },
+                    "fixed": {
+                      "type": "boolean"
+                    },
+                    "media": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string"
+                          },
+                          "width": {
+                            "type": "number"
+                          },
+                          "height": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "path",
+                          "width",
+                          "height"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "headline",
+                    "detail",
+                    "fixed",
+                    "media"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "spotlight": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "version",
+              "date",
+              "items",
+              "spotlight"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "core": {
+          "type": "object",
+          "properties": {
+            "version": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "managed": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "ready": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "updating": {
+              "type": "boolean"
+            },
+            "error": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "version",
+            "managed",
+            "ready",
+            "updating",
+            "error"
+          ],
+          "additionalProperties": false
+        },
+        "checked": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "checks": {
+          "type": "boolean"
+        },
+        "checking": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "app",
+        "notes",
+        "core",
+        "checked",
+        "checks",
+        "checking"
+      ],
+      "additionalProperties": false
+    },
+    "WindowInfo": {
+      "type": "object",
+      "properties": {
+        "platform": {
+          "enum": [
+            "linux",
+            "macos",
+            "windows"
+          ]
+        },
+        "titlebar": {
+          "enum": [
+            "system",
+            "none"
+          ]
+        },
+        "buttons": {
+          "type": "boolean"
+        },
+        "maximized": {
+          "type": "boolean"
+        },
+        "fullscreen": {
+          "type": "boolean"
+        },
+        "active": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "platform",
+        "titlebar",
+        "buttons",
+        "maximized",
+        "fullscreen",
+        "active"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

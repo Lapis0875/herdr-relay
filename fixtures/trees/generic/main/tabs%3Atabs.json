@@ -1,0 +1,281 @@
+{
+  "k": "el",
+  "tag": "h_flex",
+  "style": {
+    "display": "flex",
+    "flexDirection": "row",
+    "alignItems": "center",
+    "width": "100%",
+    "height": "100%",
+    "minWidth": 0,
+    "paddingLeft": 10,
+    "paddingRight": 10,
+    "rowGap": 3,
+    "columnGap": 3,
+    "backgroundColor": "#1e2227",
+    "borderBottomWidth": 1,
+    "borderColor": "#3a3f4b",
+    "borderStyle": "solid"
+  },
+  "on": {
+    "mouseup": {
+      "left": 1
+    },
+    "wheel": 2
+  },
+  "children": [
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "id": "tab-scroll",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "flexGrow": 1,
+        "flexShrink": 1,
+        "flexBasis": "0%",
+        "minWidth": 0,
+        "height": "100%",
+        "rowGap": 3,
+        "columnGap": 3,
+        "overflowX": "auto"
+      },
+      "attrs": {
+        "scrollbar": "x"
+      },
+      "children": [
+        {
+          "k": "el",
+          "tag": "h_flex",
+          "id": "tab-s1/t1",
+          "style": {
+            "display": "flex",
+            "flexDirection": "row",
+            "alignItems": "center",
+            "height": 29,
+            "paddingLeft": 10,
+            "paddingRight": 10,
+            "rowGap": 7,
+            "columnGap": 7,
+            "borderTopLeftRadius": 7,
+            "borderTopRightRadius": 7,
+            "borderBottomRightRadius": 7,
+            "borderBottomLeftRadius": 7,
+            "flexGrow": 0,
+            "flexShrink": 0,
+            "flexBasis": "auto",
+            "fontSize": 12.8,
+            "borderTopWidth": 1,
+            "borderRightWidth": 1,
+            "borderBottomWidth": 1,
+            "borderLeftWidth": 1,
+            "borderColor": "#3a3f4b",
+            "backgroundColor": "#2c313a",
+            "color": "#abb2bf",
+            "borderStyle": "solid"
+          },
+          "states": {
+            "hover": {
+              "backgroundColor": "#2f343e"
+            }
+          },
+          "on": {
+            "mousedown": {
+              "left": 3,
+              "right": 5
+            },
+            "mouseup": {
+              "left": 4
+            }
+          },
+          "children": [
+            {
+              "k": "el",
+              "tag": "div",
+              "style": {
+                "maxWidth": 170,
+                "overflowX": "hidden",
+                "overflowY": "hidden",
+                "textOverflow": "ellipsis",
+                "whiteSpace": "nowrap"
+              },
+              "children": [
+                {
+                  "k": "text",
+                  "style": {},
+                  "text": "Terminal"
+                }
+              ]
+            },
+            {
+              "k": "el",
+              "tag": "div",
+              "id": "close-s1/t1",
+              "style": {
+                "color": "#5c6370"
+              },
+              "on": {
+                "mousedown": {
+                  "left": 6
+                },
+                "click": 7
+              },
+              "children": [
+                {
+                  "k": "svg",
+                  "src": "mods/pane/close.svg",
+                  "style": {
+                    "width": 12,
+                    "height": 12
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "div",
+      "id": "tab-new",
+      "style": {
+        "width": 26,
+        "height": 26,
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "display": "flex",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "borderTopLeftRadius": 6,
+        "borderTopRightRadius": 6,
+        "borderBottomRightRadius": 6,
+        "borderBottomLeftRadius": 6,
+        "color": "#5c6370"
+      },
+      "states": {
+        "hover": {
+          "backgroundColor": "#2f343e",
+          "color": "#abb2bf"
+        }
+      },
+      "on": {
+        "mousedown": {
+          "left": 8
+        },
+        "click": 9
+      },
+      "children": [
+        {
+          "k": "text",
+          "style": {},
+          "text": "+"
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "id": "panel-files",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "height": 26,
+        "paddingLeft": 8,
+        "paddingRight": 8,
+        "rowGap": 5,
+        "columnGap": 5,
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "borderTopLeftRadius": 6,
+        "borderTopRightRadius": 6,
+        "borderBottomRightRadius": 6,
+        "borderBottomLeftRadius": 6,
+        "fontSize": 12,
+        "backgroundColor": "#1e2227",
+        "color": "#7f848e"
+      },
+      "states": {
+        "hover": {
+          "backgroundColor": "#2f343e"
+        }
+      },
+      "on": {
+        "mousedown": {
+          "left": 10
+        },
+        "click": 11
+      },
+      "children": [
+        {
+          "k": "svg",
+          "src": "mods/files/file.svg",
+          "style": {
+            "width": 14,
+            "height": 14
+          }
+        },
+        {
+          "k": "text",
+          "style": {},
+          "text": "Files"
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "h_flex",
+      "id": "panel-changes",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "height": 26,
+        "paddingLeft": 8,
+        "paddingRight": 8,
+        "rowGap": 5,
+        "columnGap": 5,
+        "flexGrow": 0,
+        "flexShrink": 0,
+        "flexBasis": "auto",
+        "borderTopLeftRadius": 6,
+        "borderTopRightRadius": 6,
+        "borderBottomRightRadius": 6,
+        "borderBottomLeftRadius": 6,
+        "fontSize": 12,
+        "backgroundColor": "#1e2227",
+        "color": "#7f848e"
+      },
+      "states": {
+        "hover": {
+          "backgroundColor": "#2f343e"
+        }
+      },
+      "on": {
+        "mousedown": {
+          "left": 12
+        },
+        "click": 13
+      },
+      "children": [
+        {
+          "k": "svg",
+          "src": "mods/changes/changes.svg",
+          "style": {
+            "width": 14,
+            "height": 14
+          }
+        },
+        {
+          "k": "text",
+          "style": {},
+          "text": "Changes"
+        }
+      ]
+    }
+  ]
+}

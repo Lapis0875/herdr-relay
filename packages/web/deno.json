@@ -1,0 +1,8 @@
+{
+  "tasks": {
+    "bundle": "deno bundle --platform browser --minify -o dist/app.js src/main.tsx && deno run --allow-read=.,../../node_modules --allow-write=dist tools/assets.ts build",
+    "bundle:dev": "deno bundle --platform browser --minify -o dist/dev/widgets.js src/widgets/dev/main.tsx && deno run --allow-read=.,../../node_modules --allow-write=dist tools/assets.ts build && cp src/widgets/dev/widgets.html dist/dev/widgets.html",
+    "watch": "deno bundle --platform browser --minify --watch -o dist/app.js src/main.tsx",
+    "fonts": "deno run --allow-net=cdn.jsdelivr.net,github.com,release-assets.githubusercontent.com,objects.githubusercontent.com --allow-read=. --allow-write=public/fonts --allow-run=woff2_compress tools/assets.ts fonts"
+  }
+}

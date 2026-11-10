@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:herdr-relay:schema:push-subscription",
+  "title": "PushSubscription (W3C Push API)",
+  "$ref": "#/$defs/PushSubscription",
+  "$defs": {
+    "PushSubscription": {
+      "type": "object",
+      "properties": {
+        "endpoint": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "keys": {
+          "type": "object",
+          "properties": {
+            "p256dh": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]+=*$",
+              "description": "base64url P-256 public key"
+            },
+            "auth": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]+=*$",
+              "description": "base64url auth secret"
+            }
+          },
+          "required": [
+            "p256dh",
+            "auth"
+          ],
+          "additionalProperties": false
+        },
+        "expirationTime": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "endpoint",
+        "keys"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
