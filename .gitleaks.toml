@@ -1,0 +1,27 @@
+# gitleaks configuration for CI (`secrets` job). Default rules stay on; only the files below are exempt.
+# Every exempt file holds published test vectors, synthetic sample values or file hashes, never a credential:
+# - fixtures/generic-home/MANIFEST.json: sha256 digests of Herdr's shipped files.
+# - packages/protocol/samples/**: made-up loopback tokens and Web Push keys in protocol samples.
+# - push_test.ts: the RFC 8291 Appendix A test vectors.
+# - the other tests: made-up WebSocket keys, tokens and the scrub tool's planted fake secret.
+# A new finding anywhere else fails the job.
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Test vectors, synthetic samples and file hashes"
+paths = [
+  '''^fixtures/generic-home/MANIFEST\.json$''',
+  '''^packages/protocol/samples/shapes/PushSubscription\.json$''',
+  '''^packages/protocol/samples/client/push\.sub\.json$''',
+  '''^packages/protocol/samples/invalid/client/push\.sub\.missing-id\.json$''',
+  '''^packages/protocol/samples/invalid/client/push\.sub\.http-endpoint\.json$''',
+  '''^packages/protocol/samples/control/hello\.json$''',
+  '''^packages/protocol/samples/invalid/control/hello\.path-folder\.json$''',
+  '''^packages/bridge/test/unit/push/push_test\.ts$''',
+  '''^packages/bridge/test/unit/server/revoke_sweep_test\.ts$''',
+  '''^packages/bridge/test/unit/server/cross_site_nav_test\.ts$''',
+  '''^packages/bridge/test/unit/views/layout_profile_test\.ts$''',
+  '''^tools/scrub/test/check_test\.ts$''',
+]
