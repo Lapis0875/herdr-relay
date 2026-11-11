@@ -569,6 +569,9 @@
             "attrs": {
               "$ref": "#/$defs/JsonObject"
             },
+            "scrollTo": {
+              "$ref": "#/$defs/ScrollRequest"
+            },
             "slots": {
               "type": "object",
               "additionalProperties": {
@@ -620,6 +623,9 @@
             },
             "attrs": {
               "$ref": "#/$defs/JsonObject"
+            },
+            "scrollTo": {
+              "$ref": "#/$defs/ScrollRequest"
             },
             "slots": {
               "type": "object",
@@ -675,6 +681,9 @@
             "attrs": {
               "$ref": "#/$defs/JsonObject"
             },
+            "scrollTo": {
+              "$ref": "#/$defs/ScrollRequest"
+            },
             "slots": {
               "type": "object",
               "additionalProperties": {
@@ -728,6 +737,9 @@
             },
             "attrs": {
               "$ref": "#/$defs/JsonObject"
+            },
+            "scrollTo": {
+              "$ref": "#/$defs/ScrollRequest"
             },
             "slots": {
               "type": "object",
@@ -785,6 +797,9 @@
             "attrs": {
               "$ref": "#/$defs/JsonObject"
             },
+            "scrollTo": {
+              "$ref": "#/$defs/ScrollRequest"
+            },
             "slots": {
               "type": "object",
               "additionalProperties": {
@@ -840,6 +855,9 @@
             "attrs": {
               "$ref": "#/$defs/JsonObject"
             },
+            "scrollTo": {
+              "$ref": "#/$defs/ScrollRequest"
+            },
             "slots": {
               "type": "object",
               "additionalProperties": {
@@ -894,6 +912,9 @@
             "attrs": {
               "$ref": "#/$defs/JsonObject"
             },
+            "scrollTo": {
+              "$ref": "#/$defs/ScrollRequest"
+            },
             "slots": {
               "type": "object",
               "additionalProperties": {
@@ -946,6 +967,9 @@
             },
             "attrs": {
               "$ref": "#/$defs/JsonObject"
+            },
+            "scrollTo": {
+              "$ref": "#/$defs/ScrollRequest"
             },
             "slots": {
               "type": "object",
@@ -2420,6 +2444,66 @@
       },
       "required": [],
       "additionalProperties": false
+    },
+    "ScrollRequest": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "seq": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "request number of the mod host process (from 1)"
+            },
+            "index": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "zero-based direct child or list item (not slots)"
+            },
+            "strategy": {
+              "enum": [
+                "top",
+                "center"
+              ]
+            },
+            "gen": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "description": "the mod host process `seq` counts in"
+            }
+          },
+          "required": [
+            "seq",
+            "index"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "seq": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "request number of the mod host process (from 1)"
+            },
+            "bottom": {
+              "const": true
+            },
+            "gen": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "description": "the mod host process `seq` counts in"
+            }
+          },
+          "required": [
+            "seq",
+            "bottom"
+          ],
+          "additionalProperties": false
+        }
+      ]
     },
     "Shared": {
       "type": "object",

@@ -15,6 +15,7 @@ export {
 } from "./alerts.ts";
 export {
   type AlertSource,
+  ERROR_MAX,
   PUSH_KEY_PATH,
   PUSH_TTL_S,
   type PushDelivery,
@@ -29,6 +30,7 @@ export {
   TEST_TAG,
   TEST_TITLE,
 } from "./service.ts";
+export { apnsIdOf, redactDiagnostic, SEGMENT_MIN, type SubscriptionSecrets, TOKEN_MIN } from "./redact.ts";
 export {
   ensureVapidKeys,
   MAX_ENDPOINT_LENGTH,

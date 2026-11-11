@@ -8,11 +8,13 @@ import {
   element,
   emitFor,
   hostObjects,
+  lateHostObjects,
   lazyList,
   LIST_WINDOW,
   listCx,
   markDirty,
   noteUnknown,
+  renderingCopy,
   report,
   ser,
   setProp,
@@ -242,8 +244,87 @@ export const TextareaState = {
 };
 export const EditorState = { new: (options) => textState("EditorState", options, () => ({})) };
 
+/** Scroll requests of this host, of both handle kinds, numbered from 1: a device carries out each once. */
+let scrollSeq = 0;
+
+/**
+ * A retained scroll handle. A request (`ask(method, request)`: `{index, strategy?}`, `{bottom: true}`, or `null` for an
+ * index that names no item — negative, not a number — which drops the pending one) replaces the earlier one, as GPUI's
+ * deferred request does, takes the next `seq` and re-renders the copy that owns the handle, unless that copy is
+ * rendering now (the tree it is building carries the request). `track_scroll(handle)` records the handle id, or
+ * `{handle, scroll_to: {seq, …request}}` while a request is kept, read when the tree is serialised
+ * (`lateHostObjects`), so a request made later in the same render reaches it. Every tree keeps the latest request; a
+ * device carries it out once per `seq`, after layout (PROTOCOL.md "Scroll requests"). `release()` returns true; after
+ * it every use throws, `release()` included.
+ */
+function scrollHandle(kind, methods) {
+  const owner = currentStore()?.copy ?? null;
+  let request = null;
+  let released = false;
+  const use = (what) => {
+    if (released) throw new TypeError(`${what}: the ${kind} was released`);
+  };
+  const ask = (method, next) => {
+    use(`${kind}.${method}()`);
+    request = next === null ? null : { seq: ++scrollSeq, ...next };
+    const copy = owner ?? currentStore()?.copy;
+    if (copy && copy !== renderingCopy()) markDirty(copy);
+  };
+  const { id, obj } = retained(kind, {
+    ...methods(ask),
+    release() {
+      use(`${kind}.release()`);
+      released = true;
+      return true;
+    },
+  }, () => ({}));
+  lateHostObjects.set(obj, () => {
+    use("track_scroll()");
+    return request === null ? id : { handle: id, scroll_to: { ...request } };
+  });
+  return obj;
+}
+
+/** An item index as GPUI takes it (a whole number from 0), or `null`. */
+function itemIndex(index) {
+  const i = Math.trunc(Number(index));
+  return Number.isSafeInteger(i) && i >= 0 ? i : null;
+}
+
+/**
+ * A plain scroll area's position: `scroll_to_item(index)` reveals direct child `index` with the smallest scroll
+ * (`{index}`).
+ */
+export const ScrollHandle = {
+  new: () =>
+    scrollHandle("ScrollHandle", (ask) => ({
+      scroll_to_item(index) {
+        const i = itemIndex(index);
+        ask("scroll_to_item", i === null ? null : { index: i });
+      },
+    })),
+};
+
+/**
+ * A virtual list's position: `scroll_to_item(index, strategy?)` puts item `index` on screen, `"top"` (the default,
+ * `{index}`) at the near edge with the smallest scroll, `"center"` (`{index, strategy: "center"}`) in the middle;
+ * `scroll_to_bottom()` (`{bottom: true}`) scrolls to the end. Another strategy is reported as unknown and taken as
+ * `"top"`.
+ */
 export const VirtualListScrollHandle = {
-  new: () => retained("VirtualListScrollHandle", { scroll_to_item() {}, scroll_to_bottom() {} }, () => ({})).obj,
+  new: () =>
+    scrollHandle("VirtualListScrollHandle", (ask) => ({
+      scroll_to_item(index, strategy) {
+        if (strategy !== undefined && strategy !== "top" && strategy !== "center") {
+          noteUnknown("VirtualListScrollHandle", `scroll_to_item(strategy ${JSON.stringify(strategy)})`);
+        }
+        const i = itemIndex(index);
+        ask("scroll_to_item", i === null ? null : strategy === "center" ? { index: i, strategy } : { index: i });
+      },
+      scroll_to_bottom() {
+        ask("scroll_to_bottom", { bottom: true });
+      },
+    })),
 };
 
 const notModeled = (name) => ({

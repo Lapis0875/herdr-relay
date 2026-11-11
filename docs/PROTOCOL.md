@@ -185,14 +185,60 @@ The package stays authoritative: `PushTestSchema` (`messages.ts`); the bridge si
 2. **Ack** `{t:"ack", id, ok, message}`: `ok` is true when at least one push service accepted the message (2xx). The
    `message` sums up every subscription's result, joined by `; `: `sent to 1 subscription (201)`,
    `sent to 1 of 2 subscriptions (201)`, `push service answered 403: BadJwtToken` (the service's own `reason`/`message`
-   or body text, one line, at most 120 characters), `push service answered 410: Unregistered (subscription removed)`,
-   `push service unreachable: <error>`. Refusals are `ok:false, error:"refused"` with `no subscription for this device`
-   or `wait <n> s before another test notification` (at most one `push.test` per device per 5 s).
+   or body text, redacted, one line, at most 120 characters), `push service answered 410: Unregistered (subscription
+   removed)`, `push service unreachable: <error>` (redacted, at most 240 characters). Refusals are `ok:false,
+   error:"refused"` with `no subscription for this device` or `wait <n> s before another test notification` (at most
+   one `push.test` per device per 5 s).
 3. **Same delivery as alerts**: VAPID (RFC 8292; `aud` = the endpoint's origin, `exp` = now + 12 h, `sub` =
    `HERDR_RELAY_PUSH_SUBJECT` when it is a valid `mailto:` address or `https:` URL, else `https://<MagicDNS name>`, else
    the project page), `aes128gcm` (RFC 8291, body ≤ 4096 bytes), `TTL: 86400`, `Urgency: high`. 404/410 drop the
    subscription; every other answer keeps it. Every send is logged on the Mac as
-   `herdr-relay: push: <service host> <status> [<apns-id or reason>]` — never an endpoint path, key or token.
+   `herdr-relay: push: <service host> <status> [<reason or apns-id>]`; the `apns-id` only when it is a UUID.
+4. **Redaction** (`packages/bridge/src/push/redact.ts`). A push service's answer is untrusted and may echo the request:
+   before truncation, and before it reaches the log or an ack, the reason and any delivery error lose the
+   subscription's endpoint (whole → its host; its path, path segments and their base64url pieces of 8+ characters →
+   `[path]`; also percent- or JSON-escaped), its `p256dh`/`auth` keys (base64url or base64, padded or not → `[key]`),
+   every other URL (`[url]`) and every run of 16+ base64url or hex characters (`[redacted]`) except plain identifiers
+   such as `TooManyProviderTokenUpdates` or `INVALID_ARGUMENT` (letters only, each `_`/`-` part lowercase, uppercase or
+   CamelCase, not all hex).
+
+## Scroll requests (Herdr 0.1.15, 2026-11-11)
+
+The package stays authoritative: `ScrollRequestSchema` and `ElementNode.scrollTo` (`tree.ts`). The host side is
+`ScrollHandle` and `VirtualListScrollHandle` in `packages/modhost/src/shims/gpui-base.js`, the device side
+`packages/web/src/render/scroll.ts` (plain elements) and `packages/web/src/widgets/VirtualList.tsx` (virtual lists).
+
+1. **Host.** gpui-base `ScrollHandle.new()` and `VirtualListScrollHandle.new()` (gpui-kit.d.ts 0.1.15) are retained
+   handles with ids `ScrollHandle:<n>` / `VirtualListScrollHandle:<n>`. Each keeps one request: `scroll_to_item(index)`
+   → `{seq, index}`; `VirtualListScrollHandle.scroll_to_item(index, "center")` → `{seq, index, strategy: "center"}`
+   (`"top"`, the default, records no strategy; another strategy is reported as unknown and taken as `"top"`);
+   `VirtualListScrollHandle.scroll_to_bottom()` → `{seq, bottom: true}`. `seq` numbers the requests of the mod host
+   process from 1 (both kinds share it; a restarted host starts again at 1), a later request replaces the earlier one,
+   and an index that names no item (negative, not a number) drops it. The copy that owns the handle re-renders, unless
+   it is rendering now (the tree it is building carries the request). `release()` returns `true`; afterwards every
+   method, `release()` included, and `track_scroll(handle)` throw.
+2. **RecordedTree.** `track_scroll(handle)` records `["track_scroll", "<handle id>"]` (no request yet) or
+   `["track_scroll", {handle, scroll_to: <request>}]`, read when the render's tree is serialised, so a request made
+   later in the same render is in that tree. Every tree keeps the latest request: the bridge sends only the newest
+   tree of a flush, so a request carried by one tree could be lost.
+3. **ElementTree.** The converter keeps the handle id in `attrs.track_scroll` and puts the request in `scrollTo`
+   (`ScrollRequest`: `{seq, index, strategy?: "top"|"center", gen?}` or `{seq, bottom: true, gen?}`; integers, `seq` ≥
+   1, `index` ≥ 0); any other object, including one carrying `gen`, is a diagnostic. `gen` is the bridge's name for
+   the host process that recorded the tree (`toElementTree(tree, {scrollGen})`): the view manager sets
+   `<run>.<host generation>`, `<run>` 8 random hex digits per bridge run, so a restarted host or a restarted bridge
+   never repeats an identity a mounted view has already carried out. An unchanged request diffs to nothing.
+4. **Device.** Each request (`gen` + `seq`; no `gen` counts as `""`) is carried out once, in the layout phase of the
+   commit that brings it; a device that mounts the element later (a reload, a re-shown view) carries out the latest
+   request once. Nothing but the tracked element scrolls (not the page, not an outer scroller).
+   - **Plain element** (not a widget, not `frames`): reveals its direct child `index` (in the node's `children`; slots
+     drawn before them are skipped; `bottom`: the last child) on each axis it scrolls (`overflowX`/`overflowY` `auto`
+     or `scroll`): by the CSS `nearest` amount, so a child already in view stays put, or with `center` centred. An
+     index past the children, a child without a box or an element that does not scroll does nothing.
+   - **Virtual list** (`widget.type: "vlist"`): from the row offsets of `props.sizes`, so the row need not be mounted:
+     `index` comes in by the `nearest` amount (`"top"`: the near edge) or centred (`"center"`); `bottom` scrolls to
+     the end. The rows in view are mounted before the frame is drawn. An `index` the host did not record (past the
+     rows, below `props.count`) scrolls to the end, where the list notes how many rows are not shown; an `index` at or
+     past `count` does nothing.
 
 ## 4. Mirror endpoint (loopback HTTP, T12) — `packages/bridge/src/mirror.ts`
 

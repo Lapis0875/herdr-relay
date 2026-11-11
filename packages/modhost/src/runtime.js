@@ -654,6 +654,13 @@ const records = new WeakMap();
 const consumed = new WeakSet();
 /** Host objects (focus handles, paths, backgrounds, retained states) → the JSON a tree carries for them. */
 export const hostObjects = new WeakMap();
+/**
+ * Host objects a recorded builder call reads again when the render's tree is serialised: object → `() => JsonValue`.
+ * The function runs when the call is made too (it may throw there, e.g. on a released handle), but the tree carries
+ * what it returns at serialisation, so state the mod changes later in the same render still reaches this tree
+ * (`ScrollHandle`: `track_scroll(handle)` then `handle.scroll_to_item(i)`).
+ */
+export const lateHostObjects = new WeakMap();
 export const isElement = (v) => v !== null && (typeof v === "object" || typeof v === "function") && records.has(v);
 export const entityMark = Symbol("entity");
 
@@ -684,7 +691,17 @@ const NOT_METHODS = new Set(["then", "toJSON", "constructor"]);
 
 /** A recorder element. `props` is the factory data (`src`, `path`/`paint`, `format`/`source`, `state`, …). */
 export function element(tag, props) {
-  const rec = { tag, id: null, style: [], handlers: [], children: [], states: null, slots: null, props: props ?? null };
+  const rec = {
+    tag,
+    id: null,
+    style: [],
+    late: false,
+    handlers: [],
+    children: [],
+    states: null,
+    slots: null,
+    props: props ?? null,
+  };
   const proxy = new Proxy(Object.create(null), {
     get(_t, prop) {
       if (typeof prop !== "string" || NOT_METHODS.has(prop)) return undefined;
@@ -771,7 +788,7 @@ function call(proxy, rec, name, args) {
       noteUnknown("element", `non-style call in ${name}`);
     }
     const states = (rec.states ??= {});
-    states[name] = [...(states[name] ?? []), ...d.style];
+    states[name] = [...(states[name] ?? []), ...(d.late ? d.style.map(lateCall) : d.style)];
     return proxy;
   }
   if (SLOTS.has(name) && args.length === 1 && isElement(args[0])) {
@@ -793,8 +810,25 @@ function call(proxy, rec, name, args) {
     return proxy;
   }
   if (name === "key_context") checkKeyContext(args[0]);
-  rec.style.push([name, ...args.map((a) => ser(a))]);
+  rec.style.push([
+    name,
+    ...args.map((a) => {
+      const json = lateHostObjects.get(a);
+      if (json === undefined) return ser(a);
+      json();
+      rec.late = true;
+      return a;
+    }),
+  ]);
   return proxy;
+}
+
+/** A recorded call with its late host objects (`lateHostObjects`) read now. */
+function lateCall(c) {
+  return c.map((a) => {
+    const json = lateHostObjects.get(a);
+    return json === undefined ? a : json();
+  });
 }
 
 /** Unparsable `key_context` values already reported, at most `BAD_CONTEXTS_MAX` of them. */
@@ -837,7 +871,7 @@ function addChild(rec, c) {
 function toTree(rec) {
   const out = { tag: rec.tag };
   if (rec.id !== null) out.id = rec.id;
-  out.style = rec.style;
+  out.style = rec.late ? rec.style.map(lateCall) : rec.style;
   out.handlers = rec.handlers;
   out.children = rec.children.map((c) => (recordSet.has(c) ? toTree(c) : c));
   if (rec.states) out.states = rec.states;

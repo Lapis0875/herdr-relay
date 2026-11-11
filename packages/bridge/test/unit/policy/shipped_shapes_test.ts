@@ -54,6 +54,33 @@ Deno.test("shipped git and hc shapes retain structural refusals and rooted git-d
     ) {
       assertEquals((await decideExec(ctx, { ...req, argv })).kind, "refuse", argv.join(" "));
     }
+    const spaces = { ...req, folder: "spaces" };
+    for (
+      const argv of [
+        ["rev-parse", "--path-format=absolute", "--show-toplevel"],
+        ["symbolic-ref", "-q", "HEAD"],
+        ["symbolic-ref", "--quiet", "HEAD"],
+        ["rev-list", "--left-right", "--count", "HEAD...@{upstream}"],
+      ]
+    ) {
+      assertEquals((await decideExec(ctx, { ...spaces, argv })).kind, "spawn", argv.join(" "));
+    }
+    for (
+      const argv of [
+        ["rev-parse", "--path-format=absolute", "--show-toplevel", "--output=outside"],
+        ["symbolic-ref", "-q", "HEAD", "refs/heads/main"],
+        ["symbolic-ref", "-d", "HEAD"],
+        ["symbolic-ref", "--delete", "HEAD"],
+        ["symbolic-ref", "-m", "message", "HEAD"],
+        ["symbolic-ref", "--short", "HEAD"],
+        ["symbolic-ref", "--", "HEAD"],
+        ["rev-list", "--left-right", "--count"],
+        ["rev-list", "--left-right", "--count", "HEAD...@{upstream}", "HEAD"],
+        ["rev-list", "--left-right", "--count", "--all"],
+      ]
+    ) {
+      assertEquals((await decideExec(ctx, { ...spaces, argv })).kind, "refuse", argv.join(" "));
+    }
     const hc = { folder: "spaces", method: "hc" as const, command: "", scope: "act" as const, session: "device" };
     assertEquals((await decideExec(ctx, { ...hc, argv: ["machine", "ls", "--json"] })).kind, "spawn");
     for (const argv of [["machine", "add", "host", "--json"], ["machine", "rm", "host", "--json"]]) {

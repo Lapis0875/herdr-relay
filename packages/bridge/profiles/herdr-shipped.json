@@ -2,7 +2,7 @@
   {
     "$schema": "../../protocol/schema/policy-profile.schema.json",
     "id": "herdr-shipped",
-    "description": "Herdr's shipped mods (0.1.14): git reads and the changes commit (U1), hc reads, links opened on the device, the files listing (Herdr's own literal, pinned per Herdr version); reads the space folders and appHome icons. worktree and machine-add have their own profiles below.",
+    "description": "Herdr's shipped mods (0.1.14, 0.1.15): git reads and the changes commit (U1), hc reads, links opened on the device, the files listing (Herdr's own literal, pinned per Herdr version); reads the space folders and appHome icons. worktree and machine-add have their own profiles below.",
     "folders": [
       "agents",
       "changes",
@@ -38,7 +38,7 @@
   {
     "$schema": "../../protocol/schema/policy-profile.schema.json",
     "id": "herdr-shipped-worktree",
-    "description": "Herdr's worktree dialog (0.1.14): git reads, including its submodule checks through --git-dir and config --file/--blob, every path under the read roots. git worktree add/remove are refused with a toast (use the Herdr window).",
+    "description": "Herdr's worktree dialog (0.1.14, 0.1.15): git reads, including its submodule checks through --git-dir and config --file/--blob, every path under the read roots. git worktree add/remove are refused with a toast (use the Herdr window).",
     "folders": ["worktree"],
     "requires": { "herdr": ">=0.1.13" },
     "reads": {
@@ -51,7 +51,7 @@
   {
     "$schema": "../../protocol/schema/policy-profile.schema.json",
     "id": "herdr-shipped-machine-add",
-    "description": "Herdr's Add machine dialog (0.1.14): adding a machine is a change only the Herdr window makes, so opening it on a device shows a toast instead; nothing runs.",
+    "description": "Herdr's Add machine dialog (0.1.14, 0.1.15): adding a machine is a change only the Herdr window makes, so opening it on a device shows a toast instead; nothing runs.",
     "folders": ["machine-add"],
     "requires": { "herdr": ">=0.1.13" },
     "reads": {

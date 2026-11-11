@@ -1,13 +1,44 @@
-// Refresh the offline Herdr fixture from an immutable upstream commit.
+// Refresh the offline Herdr fixture from an immutable upstream commit. A tag is accepted when
+// `fixtures/contract/<ver>/` holds that version's captured `herdr.d.ts` and `gpui-kit.d.ts` (Herdr generates the
+// latter; the upstream repository has none): `deno task contract:update --tag v<ver> --from <appHome>` captures them.
+// Without `--tag`, the newest captured version.
 const root = new URL("../../fixtures/generic-home/", import.meta.url);
-const contract = new URL("../../fixtures/contract/0.1.14/", import.meta.url);
+const contracts = new URL("../../fixtures/contract/", import.meta.url);
 const args = Deno.args;
 const check = args.includes("--check");
-const tagIndex = args.indexOf("--tag");
-const tag = tagIndex < 0 ? "v0.1.14" : args[tagIndex + 1];
-if (!tag || !/^v\d+\.\d+\.\d+$/.test(tag) || tag !== "v0.1.14") {
-  throw new Error("Only v0.1.14 has a captured gpui-kit contract");
+async function exists(url: URL): Promise<boolean> {
+  try {
+    return (await Deno.stat(url)).isFile;
+  } catch (e) {
+    if (e instanceof Deno.errors.NotFound) return false;
+    throw e;
+  }
 }
+/** The versions with a captured contract, oldest first. */
+async function capturedVersions(): Promise<string[]> {
+  const versions: string[] = [];
+  for await (const entry of Deno.readDir(contracts)) {
+    if (!entry.isDirectory || !/^\d+\.\d+\.\d+$/.test(entry.name)) continue;
+    const dir = new URL(`${entry.name}/`, contracts);
+    const found = await Promise.all(["gpui-kit.d.ts", "herdr.d.ts"].map((name) => exists(new URL(name, dir))));
+    if (found.every(Boolean)) versions.push(entry.name);
+  }
+  return versions.sort((a, b) => {
+    const [x, y] = [a.split(".").map(Number), b.split(".").map(Number)];
+    return x[0] - y[0] || x[1] - y[1] || x[2] - y[2];
+  });
+}
+const captured = await capturedVersions();
+const tagIndex = args.indexOf("--tag");
+const tag = tagIndex < 0 ? (captured.length > 0 ? `v${captured.at(-1)}` : undefined) : args[tagIndex + 1];
+if (!tag || !/^v\d+\.\d+\.\d+$/.test(tag) || !captured.includes(tag.slice(1))) {
+  throw new Error(
+    `${tag ?? "No tag"} has no captured contract in fixtures/contract/ (captured: ${
+      captured.map((v) => `v${v}`).join(", ") || "none"
+    })`,
+  );
+}
+const contract = new URL(`${tag.slice(1)}/`, contracts);
 const encoder = new TextEncoder();
 const digest = async (algorithm: string, bytes: Uint8Array) =>
   Array.from(new Uint8Array(await crypto.subtle.digest(algorithm, bytes as Uint8Array<ArrayBuffer>))).map((b) =>

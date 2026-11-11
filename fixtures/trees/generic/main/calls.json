@@ -21,9 +21,10 @@
     "[\"hc\",[\"machine\",\"ls\",\"--json\"]]"
   ],
   "spaces": [
-    "[\"exec\",\"git\",[\"--no-optional-locks\",\"-c\",\"core.fsmonitor=false\",\"status\",\"--porcelain=v2\",\"--branch\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]",
+    "[\"exec\",\"git\",[\"rev-list\",\"--left-right\",\"--count\",\"HEAD...@{upstream}\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]",
     "[\"exec\",\"git\",[\"rev-parse\",\"--path-format=absolute\",\"--git-common-dir\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]",
-    "[\"exec\",\"git\",[\"rev-parse\",\"--show-toplevel\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]",
+    "[\"exec\",\"git\",[\"rev-parse\",\"--path-format=absolute\",\"--show-toplevel\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]",
+    "[\"exec\",\"git\",[\"symbolic-ref\",\"-q\",\"HEAD\"],{\"cwd\":\".tmp/fixture-home/project\",\"on\":null}]",
     "[\"hc\",[\"machine\",\"ls\",\"--json\"]]"
   ],
   "worktree": [

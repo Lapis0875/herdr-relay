@@ -23,7 +23,7 @@ herdr-relay는 Mac에서 쓰는 [Herdr](https://herdr.dev) 화면을 휴대폰�
   ([docs/PLATFORMS.md](docs/PLATFORMS.md)).
 - **Tailscale로만 접속합니다.** 기기는 tailnet 안에서 `tailscale serve`를 거쳐 Mac에 붙습니다. 인터넷에 공개하는 Funnel은
   거부하고, 리버스 프록시 방식은 아직 없습니다.
-- **Herdr 0.1.14에서 테스트했습니다.** 다른 버전에서도 돌아가지만 경고 배너가 뜹니다([호환성](#호환성)).
+- **Herdr 0.1.14와 0.1.15에서 테스트했습니다.** 다른 버전에서도 돌아가지만 경고 배너가 뜹니다([호환성](#호환성)).
 - 기기에서 보는 터미널은 Mac 터미널의 크기를 따릅니다. 보기만 할 때는 Mac 터미널 크기를 건드리지 않습니다. 다만 입력할 때는
   herdr-core의 attach 방식에 한계가 있어 Mac 터미널 크기가 잠깐 바뀔 수 있습니다([docs/AMENDMENTS-c1-wave3.md](docs/AMENDMENTS-c1-wave3.md)).
 - 워크트리 생성, 머신 추가처럼 구조를 바꾸는 작업은 Mac에서만 할 수 있습니다. 기기에서 시도하면 안내 메시지가 뜹니다.
@@ -34,7 +34,7 @@ herdr-relay는 Mac에서 쓰는 [Herdr](https://herdr.dev) 화면을 휴대폰�
 |---|---|
 | macOS | 샌드박스 프로필은 macOS 27 기준으로 만들었습니다. 다른 버전이면 확인 절차를 먼저 실행하세요([docs/INSTALL.md](docs/INSTALL.md) §8) |
 | [Deno](https://deno.com) | 2.9 이상 |
-| [Herdr](https://herdr.dev) 앱 | 0.1.13 또는 0.1.14. `herdr-app`과 `hc`가 `PATH`에 있어야 합니다 |
+| [Herdr](https://herdr.dev) 앱 | 0.1.13~0.1.15. `herdr-app`과 `hc`가 `PATH`에 있어야 합니다 |
 | [Tailscale](https://tailscale.com) | macOS 앱에 로그인한 상태, MagicDNS와 HTTPS 인증서 사용 |
 | 기기 | 같은 tailnet에 있는 iPhone·iPad(Safari) 또는 Android(Chrome) |
 
@@ -87,10 +87,11 @@ Herdr에 기본으로 들어 있는 모드 21개는 프로필이 이미 있어�
 
 | Herdr 앱 | 상태 |
 |---|---|
+| 0.1.15 | 테스트 완료 |
 | 0.1.14 | 테스트 완료 |
 | 0.1.13 | 지원하지만 테스트하지 않음. 기기에 배너 표시 |
 | 0.1.13보다 오래된 버전 | 지원하지 않음. 브리지는 돌아가며 배너 표시 |
-| 0.1.14보다 새 버전 | 아직 테스트하지 않음. 배너와 함께 동작 |
+| 0.1.15보다 새 버전 | 아직 테스트하지 않음. 배너와 함께 동작 |
 
 Herdr가 바뀌면 브리지는 실행 중인 버전을 고정해 둔 계약(contract pin)과 비교하고, 달라진 부분을 기기 화면과
 `herdr-relay doctor`로 알립니다. 이때도 모드에 허용하는 범위는 넓히지 않습니다. 자세한 내용은

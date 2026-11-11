@@ -20,6 +20,7 @@ import { renderTerminal, renderView } from "../app/slots.tsx";
 import { RenderContext } from "./context.ts";
 import { useElement } from "./interact.ts";
 import { PathView } from "./path.tsx";
+import { useScrollTo } from "./scroll.ts";
 import { nodeCss } from "./style.ts";
 import { WidgetView } from "./widgets.tsx";
 
@@ -86,12 +87,15 @@ function Frames({ frames }: { frames: unknown }): ReactNode {
 }
 
 function El({ node }: { node: ElNode }): ReactElement {
-  const { dom } = useElement(node, "r-el");
+  const { dom, el } = useElement(node, "r-el");
   const slots = renderSlots(node.slots);
+  const widget = typeof node.widget === "object" && node.widget !== null && typeof node.widget.type === "string";
   const children = node.anim?.frames
     ? [<Frames key="frames" frames={node.anim.frames} />]
     : renderChildren(node.children);
-  if (node.widget && typeof node.widget === "object" && typeof node.widget.type === "string") {
+  // `scrollTo` counts the node's children; the slots drawn before them come first in the DOM.
+  useScrollTo(el, node, widget || node.anim?.frames ? null : SLOTS_BEFORE.filter((s) => slots[s]).length);
+  if (widget) {
     return (
       <WidgetView node={node as ElNode & { widget: NonNullable<ElNode["widget"]> }} dom={dom} slots={slots}>
         {children}

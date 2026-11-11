@@ -21,6 +21,7 @@ paths = [
   '''^packages/protocol/samples/invalid/control/hello\.path-folder\.json$''',
   '''^packages/bridge/test/unit/push/push_test\.ts$''',
   '''^packages/bridge/test/unit/push/push_test_message_test\.ts$''',
+  '''^packages/bridge/test/unit/push/redaction_test\.ts$''',
   '''^packages/bridge/test/unit/server/revoke_sweep_test\.ts$''',
   '''^packages/bridge/test/unit/server/cross_site_nav_test\.ts$''',
   '''^packages/bridge/test/unit/views/layout_profile_test\.ts$''',

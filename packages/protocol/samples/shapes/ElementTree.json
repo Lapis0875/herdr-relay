@@ -186,6 +186,74 @@
       }
     },
     {
+      "k": "el",
+      "tag": "h_flex",
+      "id": "tab-scroll",
+      "style": {
+        "display": "flex",
+        "flexDirection": "row",
+        "alignItems": "center",
+        "overflowX": "auto"
+      },
+      "attrs": {
+        "scrollbar": "x",
+        "track_scroll": "ScrollHandle:6"
+      },
+      "scrollTo": {
+        "seq": 3,
+        "index": 1
+      },
+      "children": [
+        {
+          "k": "text",
+          "style": {},
+          "text": "one"
+        },
+        {
+          "k": "text",
+          "style": {},
+          "text": "two"
+        }
+      ]
+    },
+    {
+      "k": "el",
+      "tag": "v_virtual_list",
+      "id": "rows",
+      "style": {
+        "width": "100%",
+        "height": "100%"
+      },
+      "attrs": {
+        "track_scroll": "VirtualListScrollHandle:7"
+      },
+      "scrollTo": {
+        "seq": 4,
+        "bottom": true
+      },
+      "children": [
+        {
+          "k": "text",
+          "style": {},
+          "text": "a"
+        },
+        {
+          "k": "text",
+          "style": {},
+          "text": "b"
+        }
+      ],
+      "widget": {
+        "type": "vlist",
+        "state": "rows",
+        "props": {
+          "count": 2,
+          "keys": ["a", "b"],
+          "sizes": 20
+        }
+      }
+    },
+    {
       "k": "view",
       "style": {},
       "view": "lstack-herdr-cockpit:queue#2"

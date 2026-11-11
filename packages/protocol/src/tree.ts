@@ -208,6 +208,38 @@ export const WidgetSchema = define(
 );
 export type Widget = Static<typeof WidgetSchema>;
 
+const scrollSeq = () => integer({ minimum: 1, description: "request number of the mod host process (from 1)" });
+const scrollIndex = () => integer({ minimum: 0, description: "zero-based direct child or list item (not slots)" });
+const SCROLL_STRATEGIES = ["top", "center"] as const;
+
+/**
+ * The latest request of the scroll handle an element tracks (`track_scroll`): `{seq, index, strategy?}` from
+ * `scroll_to_item(index, strategy?)` (`ScrollHandle`, `VirtualListScrollHandle`) or `{seq, bottom: true}` from
+ * `VirtualListScrollHandle.scroll_to_bottom()`. `seq` numbers the requests of one mod host process (from 1, again in
+ * every new process); `gen`, set by the bridge, names that process (`toElementTree` option `scrollGen`). Every tree
+ * keeps the latest request and a device carries it out once per `gen` + `seq`, after layout: a plain element reveals
+ * direct child `index` (`bottom`: its last child) on the axes it scrolls (`overflowX`/`overflowY` `auto`/`scroll`), a
+ * virtual list item `index` (`bottom`: its end). `strategy` `top` (absent) takes the smallest scroll, `center`
+ * centres the item. An index past the items does nothing.
+ */
+export const ScrollRequestSchema = define("ScrollRequest", () => {
+  const gen = string({ minLength: 1, maxLength: 64, description: "the mod host process `seq` counts in" });
+  return union([
+    object({ seq: scrollSeq(), index: scrollIndex() }, { strategy: enumOf(SCROLL_STRATEGIES), gen }),
+    object({ seq: scrollSeq(), bottom: literal(true) }, { gen }),
+  ]);
+});
+export type ScrollRequest = Static<typeof ScrollRequestSchema>;
+
+/** A `track_scroll(handle)` argument of a scroll handle with a request, as a mod host records it (no `gen`). */
+const TrackedScrollSchema = object({
+  handle: string({ minLength: 1 }),
+  scroll_to: union([
+    object({ seq: scrollSeq(), index: scrollIndex() }, { strategy: enumOf(SCROLL_STRATEGIES) }),
+    object({ seq: scrollSeq(), bottom: literal(true) }),
+  ]),
+});
+
 /** `PathBuilder` operations, as recorded: `[op, ...args]` (coordinates are px numbers or `"<n>%"` strings). */
 export const PATH_OPS = [
   "move_to",
@@ -263,6 +295,8 @@ interface ElementNodeBase {
   widget?: Widget;
   /** Non-style behavioural settings by gpui-kit method name (`tooltip`, `disabled`, `role`, `scrollbar`, …). */
   attrs?: JsonObject;
+  /** The tracked `ScrollHandle`'s latest `scroll_to_item` request (`ScrollRequest`). */
+  scrollTo?: ScrollRequest;
   /** Named slot elements (`trigger`, `content`, …). */
   slots?: Record<string, ElementNode>;
   children?: ElementNode[];
@@ -319,6 +353,7 @@ const nodeOptional = {
   on: HandlersSchema,
   widget: WidgetSchema,
   attrs: jsonObjectRef,
+  scrollTo: ScrollRequestSchema,
   slots: record(ElementNodeSchema),
   children: array(ElementNodeSchema),
 };
@@ -469,6 +504,8 @@ function withBorderStyle(s: Style): Style {
 class Converter {
   readonly diagnostics: TreeDiagnostic[] = [];
 
+  constructor(private readonly scrollGen: string | undefined) {}
+
   private note(path: string, method: string, message: string): void {
     this.diagnostics.push({ path, method, message });
   }
@@ -538,6 +575,7 @@ class Converter {
     const style: Style = rec.tag === "h_flex" || rec.tag === "v_flex" ? parseStyleName(rec.tag)! : {};
     const attrs: JsonObject = {};
     const anim: Anim = {};
+    let scrollTo = undefined as ScrollRequest | undefined;
     rec.style.forEach(([name, ...args], i) => {
       const at = jsonPointer(`${path}/style`, i);
       if (this.styleCall(style, name, args, at)) return;
@@ -553,9 +591,25 @@ class Converter {
           if (name.endsWith("scrollbar")) attrs.scrollbar = axis;
           return;
         }
-        case "attr":
-          attrs[name] = args.length === 0 ? true : args.length === 1 ? args[0] : args;
+        case "attr": {
+          const value = args.length === 0 ? true : args.length === 1 ? args[0] : args;
+          if (name === "track_scroll" && typeof value === "object" && value !== null && !Array.isArray(value)) {
+            // A scroll handle with a request: the handle id stays an attr, the request becomes `scrollTo`.
+            if (is(TrackedScrollSchema, value)) {
+              attrs.track_scroll = value.handle;
+              scrollTo = this.scrollGen === undefined
+                ? { ...value.scroll_to }
+                : { ...value.scroll_to, gen: this.scrollGen };
+            } else {
+              const got = JSON.stringify(value);
+              this.note(at, name, `expects a handle id or {handle, scroll_to: ScrollRequest}, got ${got}`);
+            }
+            return;
+          }
+          if (name === "track_scroll") scrollTo = undefined;
+          attrs[name] = value;
           return;
+        }
         case undefined:
           this.note(at, name, "not a gpui-kit element method");
           return;
@@ -614,6 +668,7 @@ class Converter {
     if (Object.keys(anim).length > 0) base.anim = anim;
     if (Object.keys(on).length > 0) base.on = on;
     if (Object.keys(attrs).length > 0) base.attrs = attrs;
+    if (scrollTo !== undefined) base.scrollTo = scrollTo;
     if (Object.keys(slots).length > 0) base.slots = slots;
     if (children.length > 0) base.children = children;
 
@@ -653,13 +708,21 @@ class Converter {
   }
 }
 
+export interface ConvertOptions {
+  /**
+   * Names the mod host process that recorded the tree (the bridge: its run and the host generation), put in every
+   * `scrollTo.gen`: request numbers start again in each process, and a device carries out each `gen` + `seq` once.
+   */
+  scrollGen?: string;
+}
+
 /**
  * Converts one recorded render into the client tree. Every recorded call either maps or is reported in
  * `diagnostics` (unknown or misplaced method, refused argument, malformed factory props); a malformed `svg`/`image`/
  * `paint_path`/`terminal`/`TextView` element becomes a `k:"error"` node in place.
  */
-export function toElementTree(root: RecordedTree): ConvertedTree {
-  const c = new Converter();
+export function toElementTree(root: RecordedTree, options: ConvertOptions = {}): ConvertedTree {
+  const c = new Converter(options.scrollGen);
   const tree = c.node(root, "");
   return { tree, diagnostics: c.diagnostics };
 }

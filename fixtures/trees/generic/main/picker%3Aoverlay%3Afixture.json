@@ -56,9 +56,28 @@
         {
           "k": "el",
           "tag": "div",
+          "id": "picker-esc",
           "style": {
+            "paddingLeft": 6,
+            "paddingRight": 6,
+            "paddingTop": 2,
+            "paddingBottom": 2,
+            "borderTopLeftRadius": 5,
+            "borderTopRightRadius": 5,
+            "borderBottomRightRadius": 5,
+            "borderBottomLeftRadius": 5,
             "fontSize": 11,
-            "color": "#5c6370"
+            "color": "#5c6370",
+            "cursor": "pointer"
+          },
+          "states": {
+            "hover": {
+              "backgroundColor": "#2f343e",
+              "color": "#abb2bf"
+            }
+          },
+          "on": {
+            "click": 2
           },
           "children": [
             {
@@ -119,7 +138,7 @@
             "color": "#abb2bf"
           },
           "on": {
-            "change": 2
+            "change": 3
           },
           "widget": {
             "type": "input",
@@ -144,7 +163,7 @@
         "marginBottom": 6
       },
       "on": {
-        "size": 3
+        "size": 4
       },
       "children": [
         {
@@ -163,17 +182,19 @@
             "borderTopWidth": 1,
             "borderColor": "#3a3f4b",
             "fontSize": 12,
-            "color": "#5c6370",
+            "color": "#abb2bf",
             "cursor": "pointer",
+            "backgroundColor": "#2f343e",
             "borderStyle": "solid"
           },
           "states": {
             "hover": {
+              "backgroundColor": "#2f343e",
               "color": "#abb2bf"
             }
           },
           "on": {
-            "click": 4
+            "click": 5
           },
           "children": [
             {
@@ -204,8 +225,7 @@
             "rowGap": 8,
             "columnGap": 8,
             "color": "#7f848e",
-            "cursor": "pointer",
-            "backgroundColor": "#2f343e"
+            "cursor": "pointer"
           },
           "states": {
             "hover": {
@@ -213,7 +233,7 @@
             }
           },
           "on": {
-            "click": 5
+            "click": 6
           },
           "children": [
             {
@@ -265,7 +285,7 @@
             }
           },
           "on": {
-            "click": 6
+            "click": 7
           },
           "children": [
             {

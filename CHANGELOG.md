@@ -31,6 +31,8 @@ The first public version.
   agent template ([docs/INSTALL.md](docs/INSTALL.md)).
 - A Homebrew formula with a `brew services` block, prepared in `packaging/homebrew/` and not published
   ([docs/INSTALL.md](docs/INSTALL.md) §10).
+- Herdr 0.1.15 scroll handles: `ScrollHandle` and `VirtualListScrollHandle` requests (`scroll_to_item`,
+  `scroll_to_bottom`) reveal the item on the device, so the 0.1.15 tab bar loads and keeps the active tab in view.
 - Per-device focus reaches the mods: selecting a tab or pane on a device updates what the mods draw for that device
   (e.g. the tab bar's highlight) without moving the Mac's focus.
 - Hardware keyboards on iPad: Ctrl+Space, Caps Lock and the Globe key switch the input language instead of reaching
@@ -42,8 +44,10 @@ The first public version.
 - Terminals show the name, icon and tile Herdr shows (Deno, npm, Shell, …): the bridge resolves programs as Herdr
   does, from Herdr's built-in program table with the app home's `programs.json` on top.
 - The `herdr-relay-mirror` mod, which reports the Mac window's exact theme, fonts and focus ([RECIPE.md](RECIPE.md)).
-- Herdr compatibility: contract pins for Herdr 0.1.14, drift detection and device banners for other versions
-  ([docs/COMPATIBILITY.md](docs/COMPATIBILITY.md)).
+- Herdr compatibility: contract pins for Herdr 0.1.14 and 0.1.15 (no banner on either), drift detection and device
+  banners for other versions ([docs/COMPATIBILITY.md](docs/COMPATIBILITY.md)). For Herdr 0.1.15's spaces sidebar, the
+  git rules also allow `git symbolic-ref [-q] <name>` and `git rev-list --left-right --count <range>`, in those read
+  forms only.
 - Publishing files: Apache-2.0 [LICENSE](LICENSE), [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES),
   [SECURITY.md](SECURITY.md) with private vulnerability reporting, [CONTRIBUTING.md](CONTRIBUTING.md), README in
   English and Korean, and `deno task scrub:check`, which fails when a file about to be published holds a personal

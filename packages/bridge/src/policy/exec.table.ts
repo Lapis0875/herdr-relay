@@ -1,10 +1,11 @@
 /**
  * The exec allowlist as data (DESIGN-v2 §2.3, rows E1–E16): which row describes a request, and the constants each
  * row's argument check uses. Derived from every `exec`/`hc` call site in Herdr's shipped mods (`fixtures/generic-home`,
- * Herdr 0.1.14; OSS-PLAN §2.1) and the lstack fork. Deciding a row (paths, scope, cockpit.json, the folder's policy
- * profile, the running Herdr version) and running it live in `exec.ts`; the U1–U3 switches in `user-decisions.ts`;
- * which programs open things on this computer (E11/E12) in `../platform.ts`. Tables looked up by a mod's strings are
- * `Set`s (or read with `Object.hasOwn`): a plain object would also answer `constructor`, `__proto__`, `toString`….
+ * Herdr 0.1.14, re-derived for 0.1.15; OSS-PLAN §2.1) and the lstack fork. Deciding a row (paths, scope, cockpit.json,
+ * the folder's policy profile, the running Herdr version) and running it live in `exec.ts`; the U1–U3 switches in
+ * `user-decisions.ts`; which programs open things on this computer (E11/E12) in `../platform.ts`. Tables looked up by a
+ * mod's strings are `Set`s (or read with `Object.hasOwn`): a plain object would also answer `constructor`, `__proto__`,
+ * `toString`….
  */
 
 import type { EXEC_RULES, ScriptRunner, ShLiteralKind } from "@herdr-relay/protocol";
@@ -48,14 +49,14 @@ export const EXEC_TABLE: readonly ExecRow[] = [
   },
   {
     rule: "E4",
-    callers: "changes/main.js:71/74/126, files/main.js:92/96, spaces/main.js:206/214/215, menu/main.js:18–19, " +
-      "worktree/main.js:31/33/65/72/73/76/85/90/100/101/145/186/211, sidebar.js:128, code.js:153",
+    callers: "changes/main.js:74/77/129, files/main.js:92/96, spaces/main.js:206/207/218/219, menu/main.js:18–19, " +
+      "worktree/main.js:31/33/65/72/73/76/85/90/100/101/142/188/213, sidebar.js:128, code.js:153",
     form: "git [-C <dir>] [--git-dir <dir>] [--no-optional-locks] [-c core.fsmonitor=false] " +
       "[-c diff.autoRefreshIndex=false] <RO> …; RO: rev-parse (incl. --git-dir, --git-common-dir, " +
       "--absolute-git-dir, --path-format=absolute, <rev>:<path>), status, diff (inside a work tree, operands " +
       "relative without ..), log, show, branch (listing; names only as patterns of a listing mode, `--` included), " +
-      "ls-files, for-each-ref, show-ref [--verify] [--quiet] <ref>, cat-file -e <object>, " +
-      "rev-list -n1 --all --not --remotes [<rev>], worktree list [--porcelain], " +
+      "ls-files, for-each-ref, show-ref [--verify] [--quiet] <ref>, symbolic-ref [-q] <name>, cat-file -e <object>, " +
+      "rev-list -n1 --all --not --remotes [<rev>], rev-list --left-right --count <range>, worktree list [--porcelain], " +
       "config (--file <f> | --blob <rev:path>) [-z] --get-regexp <re>. Denied options refused by any abbreviation. " +
       "--git-dir/--file/--blob only with the profile's gitDirUnderRoots (full spelling), values under the read " +
       "roots. `worktree add|remove`: refused, toast",
@@ -64,21 +65,21 @@ export const EXEC_TABLE: readonly ExecRow[] = [
   },
   {
     rule: "E5",
-    callers: "changes/main.js:157–158",
+    callers: "changes/main.js:160–161",
     form: "git add -A | git commit -m <message> (cwd = repo root)",
     decision: "conditional",
     executedAs: "git, cleared env {HOME, PATH, TMPDIR, GIT_TERMINAL_PROMPT=0} (U1: act-scope devices only)",
   },
   {
     rule: "E6",
-    callers: "spaces/main.js:128, picker/main.js:52, machine-add/main.js:92, win98/dialog.js:68, editor.js:22",
+    callers: "spaces/main.js:127, picker/main.js:56, machine-add/main.js:98, win98/dialog.js:68, editor.js:22",
     form: "hc machine ls --json",
     decision: "allow",
     executedAs: "hc, cleared env {HOME, PATH}",
   },
   {
     rule: "E7",
-    callers: "spaces/main.js:148 (machine rm/add: refused), machine-add/main.js:121 (host-only overlay)",
+    callers: "spaces/main.js:147 (machine rm/add: refused), machine-add/main.js:127 (host-only overlay)",
     form: "hc ls --json | hc terminal list --json | hc terminal get <id> --json | hc schema | hc --version; " +
       "`hc machine add|rm …`: refused, toast",
     decision: "conditional",
@@ -142,7 +143,7 @@ export const EXEC_TABLE: readonly ExecRow[] = [
   },
   {
     rule: "E16",
-    callers: "any; win98/taskbar.js:51/84, machine-add/main.js:27/150, worktree/main.js:136–137 (with `on`)",
+    callers: "any; win98/taskbar.js:51/84, machine-add/main.js:33/156, worktree/main.js:133–134 (with `on`)",
     form: "any other sh, bash, zsh, env, cat, ls, curl, python, osascript, sips…",
     decision: "refuse",
     executedAs: "—",
@@ -166,20 +167,26 @@ export const KNOWN_SH_LITERALS: Readonly<Record<string, ShLiteralKind>> = {
 
 /**
  * Herdr's own `sh -c` literals by release (E14): what `mods/files/main.js` passes in each listed Herdr version. 0.1.14
- * is checked against its contract (`fixtures/contract/0.1.14/`, the shipped mods synced at that tag in
- * `fixtures/generic-home`); other versions are listed only from the literal itself (no contract pins: their compat
- * stays "not tested"). A profile's pin of one of these runs only while the running Herdr is a listed version that
+ * and 0.1.15 are checked against their contracts (`fixtures/contract/<ver>/`; `fixtures/generic-home` holds the shipped
+ * mods synced at the newest tag); other versions are listed only from the literal itself (no contract pins: their
+ * compat stays "not tested"). A profile's pin of one of these runs only while the running Herdr is a listed version that
  * ships it: no known version, a version not listed here, or a literal that version does not ship is refused (the mod
  * shows its own error).
  */
 export const HERDR_SH_LITERALS: Readonly<Record<string, Readonly<Record<string, ShLiteralKind>>>> = {
   // `defaults/mods/files/main.js` at herdrdev/herdr-app v0.1.13 is git blob fc3c7582c31371b675966b41aa69ebde0a07cc92
-  // (GitHub contents API, 2026-11-10), the same blob as v0.1.14 and `fixtures/generic-home/mods/files/main.js`.
+  // (GitHub contents API, 2026-11-10), the same blob as v0.1.14 and v0.1.15.
   "0.1.13": {
     // `files/main.js:28` directory listing.
     "a3163594cfb779a6a5beefd7c0aeb4a6838b8fce63061c24c245bbb6513d4231": "listing",
   },
   "0.1.14": {
+    // `files/main.js:28` directory listing.
+    "a3163594cfb779a6a5beefd7c0aeb4a6838b8fce63061c24c245bbb6513d4231": "listing",
+  },
+  // `defaults/mods/files/main.js` at v0.1.15 is still git blob fc3c7582c31371b675966b41aa69ebde0a07cc92 (GitHub contents
+  // API, 2026-11-11; `files/main.js` is not in the v0.1.14...v0.1.15 compare).
+  "0.1.15": {
     // `files/main.js:28` directory listing.
     "a3163594cfb779a6a5beefd7c0aeb4a6838b8fce63061c24c245bbb6513d4231": "listing",
   },
@@ -213,9 +220,9 @@ export const PICTURE_SCRIPT_ARG0 = "sh";
 // E4 / E5: git.
 
 /**
- * Subcommands E4 runs (`--version` counts as one). `cat-file`, `rev-list`, `show-ref`, `worktree` and `config` pass
- * only in their read forms (`exec.ts` checks each with the constants below); the rest are read-only as a whole, with
- * {@link GIT_DENIED_ARG} refused before `--`.
+ * Subcommands E4 runs (`--version` counts as one). `cat-file`, `rev-list`, `show-ref`, `symbolic-ref`, `worktree` and
+ * `config` pass only in their read forms (`exec.ts` checks each with the constants below); the rest are read-only as a
+ * whole, with {@link GIT_DENIED_ARG} refused before `--`.
  */
 export const GIT_READ_SUBCOMMANDS: ReadonlySet<string> = new Set([
   "rev-parse",
@@ -227,6 +234,7 @@ export const GIT_READ_SUBCOMMANDS: ReadonlySet<string> = new Set([
   "ls-files",
   "for-each-ref",
   "show-ref",
+  "symbolic-ref",
   "cat-file",
   "rev-list",
   "worktree",
@@ -285,8 +293,18 @@ export const GIT_REV_PARSE_QUERIES: ReadonlySet<string> = new Set(["--git-dir"])
 /** `show-ref` options (the `worktree` mod's branch check: `show-ref --verify --quiet refs/heads/<b>`). */
 export const GIT_SHOW_REF_FLAGS: ReadonlySet<string> = new Set(["--verify", "--quiet", "-q"]);
 
-/** `rev-list` only lists local commits on no remote (then at most one revision to exclude too). */
+/**
+ * `rev-list` only lists local commits on no remote (then at most one revision to exclude too), or counts the commits on
+ * each side of one revision range (the `spaces` mod's ahead/behind: `rev-list --left-right --count HEAD...@{upstream}`).
+ */
 export const GIT_REV_LIST_UNPUSHED = ["-n1", "--all", "--not", "--remotes"] as const;
+export const GIT_REV_LIST_COUNTS = ["--left-right", "--count"] as const;
+
+/**
+ * `symbolic-ref` options of its read form (the `spaces` mod's branch: `symbolic-ref -q HEAD`): exactly one name. Two
+ * names set a symbolic ref, `-d`/`--delete` deletes one; both are refused.
+ */
+export const GIT_SYMBOLIC_REF_FLAGS: ReadonlySet<string> = new Set(["-q", "--quiet"]);
 
 /** `worktree list` options; `worktree add|remove` are named refusals (Herdr window), every other form is refused. */
 export const GIT_WORKTREE_LIST_FLAGS: ReadonlySet<string> = new Set(["--porcelain", "-z", "-v", "--verbose"]);

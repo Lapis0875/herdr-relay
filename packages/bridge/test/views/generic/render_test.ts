@@ -43,11 +43,14 @@ function documentedCall(folder: string, method: string, args: JsonValue[]): bool
         [...changesPrefix, "rev-parse", "--verify", "HEAD"],
         [...changesPrefix, "diff", "HEAD", "--numstat", "-z", "--no-renames"],
       ],
-      spaces: [...common, ["rev-parse", "--path-format=absolute", "--git-common-dir"], [
-        ...gitStatus,
-        "--porcelain=v2",
-        "--branch",
-      ]],
+      spaces: [
+        ...common,
+        ["rev-parse", "--path-format=absolute", "--git-common-dir"],
+        ["rev-parse", "--path-format=absolute", "--show-toplevel"],
+        ["symbolic-ref", "-q", "HEAD"],
+        ["rev-list", "--left-right", "--count", "HEAD...@{upstream}"],
+        [...gitStatus, "--porcelain=v2", "--branch"],
+      ],
       menu: [...common, ["rev-parse", "--path-format=absolute", "--git-common-dir"]],
       worktree: [
         ...common,
@@ -167,7 +170,12 @@ async function renderLayout(name: string, appHome = "fixtures/generic-home", pri
     passthrough: () => Promise.reject(new Error("unexpected passthrough")),
     rpc: (host, msg) => {
       if (msg.method === "exec" || msg.method === "hc") {
-        (shapes[host.folder] ??= []).push(JSON.stringify([msg.method, ...msg.args]));
+        (shapes[host.folder] ??= []).push(
+          JSON.stringify([msg.method, ...msg.args]).replaceAll(
+            resolve(".tmp/fixture-home/project"),
+            ".tmp/fixture-home/project",
+          ),
+        );
         if (!privateRun && !documentedCall(host.folder, msg.method, msg.args)) {
           errors.push(`${host.folder}: undocumented ${msg.method} shape ${JSON.stringify(msg.args)}`);
         }
@@ -176,11 +184,17 @@ async function renderLayout(name: string, appHome = "fixtures/generic-home", pri
         }
         const command = msg.args[0];
         const argv = msg.args[1];
-        if (command === "git" && Array.isArray(argv) && argv[0] === "rev-parse" && argv[1] === "--show-toplevel") {
-          return Promise.resolve({ code: 0, stdout: ".tmp/fixture-home/project\n", stderr: "" });
+        if (command === "git" && Array.isArray(argv) && argv.includes("--show-toplevel")) {
+          return Promise.resolve({ code: 0, stdout: `${resolve(".tmp/fixture-home/project")}\n`, stderr: "" });
         }
         if (command === "git" && Array.isArray(argv) && argv.includes("--git-common-dir")) {
-          return Promise.resolve({ code: 0, stdout: ".tmp/fixture-home/project/.git\n", stderr: "" });
+          return Promise.resolve({ code: 0, stdout: `${resolve(".tmp/fixture-home/project/.git")}\n`, stderr: "" });
+        }
+        if (command === "git" && Array.isArray(argv) && argv[0] === "symbolic-ref") {
+          return Promise.resolve({ code: 1, stdout: "", stderr: "" });
+        }
+        if (command === "git" && Array.isArray(argv) && argv[0] === "rev-list") {
+          return Promise.resolve({ code: 128, stdout: "", stderr: "fatal: no upstream configured\n" });
         }
         if (command === "git" || (host.folder === "files" && command === "sh")) {
           return Promise.resolve({ code: 0, stdout: "", stderr: "" });

@@ -1,6 +1,6 @@
 {
   "$comment": [
-    "Herdr's built-in program table: an unmodified copy of `defaults/programs.json` from herdrdev/herdr-app v0.1.14 (commit 2405bf388c56; fixtures/generic-home/programs.json), Apache-2.0, (c) Herdr contributors (THIRD_PARTY_NOTICES §4). Herdr compiles it in (`src/programs.rs`: `include_str!`) and puts the person's programs.json on top of it, entry by entry.",
+    "Herdr's built-in program table: an unmodified copy of `defaults/programs.json` from herdrdev/herdr-app v0.1.15 (commit 9950887361af; git blob a1b17af91888, unchanged since v0.1.14; fixtures/generic-home/programs.json), Apache-2.0, (c) Herdr contributors (THIRD_PARTY_NOTICES §4). Herdr compiles it in (`src/programs.rs`: `include_str!`) and puts the person's programs.json on top of it, entry by entry.",
     "Copy it again from fixtures/generic-home/programs.json when `deno task contract:update` syncs another tag: packages/bridge/test/unit/herdr/programs_test.ts fails while the two differ."
   ],
   "shells": [

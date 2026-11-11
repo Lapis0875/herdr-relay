@@ -197,10 +197,11 @@ reproduces Herdr's `files` script byte for byte (`listing.ts:1-12`), and E15 run
 - The kind (`listing`, `picture-remote`, `picture-local`) says which replacement answers. Pinning your own unrelated
   script as `listing` gets a directory listing back, not your script's output.
 
-Herdr's own literals are additionally pinned **per Herdr version** (`HERDR_SH_LITERALS`, `exec.table.ts:165-184`:
-0.1.13 and 0.1.14). The native listing reproduces what Herdr 0.1.14's `files/main.js:28` prints. A later Herdr may
-change that script or its output format, and a pin that outlived it would answer in the old format. So when a profile
-pins a hash that is one of Herdr's literals (any profile, any folder), the bridge also requires (`exec.ts:354-370`):
+Herdr's own literals are additionally pinned **per Herdr version** (`HERDR_SH_LITERALS`, `exec.table.ts:168-193`:
+0.1.13, 0.1.14 and 0.1.15). The native listing reproduces what Herdr 0.1.15's `files/main.js:28` prints (the same file
+as in 0.1.13 and 0.1.14). A later Herdr may change that script or its output format, and a pin that outlived it would
+answer in the old format. So when a profile pins a hash that is one of Herdr's literals (any profile, any folder), the
+bridge also requires (`exec.ts:361-377`):
 
 - the running Herdr version is known: the mirror mod's `updates().app.version`, else `herdr-app --version` at start
   (`bridge/herdr/version.ts:110-113`); otherwise `the running Herdr version is not known: its sh -c literals stay off`;
@@ -358,10 +359,10 @@ folder `lstack-herdr`.
 **Step 3: the hashes.** Both literals are byte-identical to known ones (`main.js:4-5`):
 
 - the listing literal is Herdr's own `files/main.js:28` literal,
-  `a3163594cfb779a6a5beefd7c0aeb4a6838b8fce63061c24c245bbb6513d4231` (`exec.table.ts:155-158,173-184`). It is a Herdr
-  literal, so E14 also needs the running Herdr to be 0.1.13 or 0.1.14 (§7);
+  `a3163594cfb779a6a5beefd7c0aeb4a6838b8fce63061c24c245bbb6513d4231` (`exec.table.ts:158-160,176-193`). It is a Herdr
+  literal, so E14 also needs the running Herdr to be 0.1.13, 0.1.14 or 0.1.15 (§7);
 - the picture literal is cockpit's curl + sips variant,
-  `36d9dd22119b98c3137469d3a81cb794dddef92e72b28b4927a743832c5f3077` → `picture-remote` (`exec.table.ts:159`).
+  `36d9dd22119b98c3137469d3a81cb794dddef92e72b28b4927a743832c5f3077` → `picture-remote` (`exec.table.ts:162`).
 
 **Step 4: the read roots.** Call 4 lists `<app>` itself. A read root that contains `<appHome>` is only `**`
 (§4.1), so `reads.appHome` is `["**"]`. No call reads a space folder, so `reads.spaces` is `false`. Calls 1, 3 and 5
@@ -395,7 +396,7 @@ built-in `lstack-herdr`.
 - the `lstack-herdr` host is running (E1);
 - `<appHome>/cockpit.json` has `"bin": "<user>/.local/bin/cockpit"`, and that is the `cockpit` the bridge's
   `--allow-run` resolved (E10);
-- the running Herdr is 0.1.13 or 0.1.14 (E14).
+- the running Herdr is 0.1.13, 0.1.14 or 0.1.15 (E14).
 
 **Step 7: the outcome.** Loaded through `ProfileSet.load` as a 0600 user file, with the context of step 6:
 

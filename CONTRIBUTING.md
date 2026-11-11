@@ -8,7 +8,8 @@ security problem, do not open an issue: follow [SECURITY.md](SECURITY.md).
 - macOS (the mod sandbox and the security tests need `sandbox-exec`).
 - [Deno](https://deno.com) **2.9 or newer**. It is the only toolchain: no Node, no npm scripts. Dependencies are pinned
   in `deno.json` and locked in `deno.lock`, which is frozen.
-- Herdr 0.1.14 and `hc` on `PATH`, only for the live tests and for running the bridge against your own window.
+- Herdr 0.1.15 (or 0.1.14) and `hc` on `PATH`, only for the live tests and for running the bridge against your own
+  window.
 
 ```sh
 deno install --frozen     # fetch the locked dependencies; never rewrites deno.lock
@@ -36,7 +37,7 @@ Opt-in: `deno task test:core` talks to the Herdr core on your Mac (read-only met
 
 ## Fixtures
 
-- `fixtures/generic-home/` is an unmodified copy of Herdr 0.1.14's shipped mods and defaults. Do not edit it; check it
+- `fixtures/generic-home/` is an unmodified copy of Herdr 0.1.15's shipped mods and defaults. Do not edit it; check it
   with `deno run --allow-read=fixtures tools/fixtures/sync.ts --check`. Pinning another Herdr version goes through
   `deno task contract:update` ([docs/COMPATIBILITY.md](docs/COMPATIBILITY.md) §5).
 - `fixtures/trees/` holds recorded render trees; regenerate them with `deno task test:views:update` and review the

@@ -11,7 +11,7 @@ launcher; a Homebrew formula is prepared but not published). Device operations: 
 |---|---|---|
 | macOS | the Seatbelt profile was derived on 27.0; on any other version run its check (§8) | — |
 | Deno | **2.9 or newer** | `brew install deno` or the official installer (`~/.deno/bin`) |
-| Herdr app | 0.1.13 or newer (tested: 0.1.14), with `herdr-app` and `hc` on `PATH` | herdr.dev |
+| Herdr app | 0.1.13 or newer (tested: 0.1.14 and 0.1.15), with `herdr-app` and `hc` on `PATH` | herdr.dev |
 | herdr-core | 0.1.19 or newer (comes with Herdr) | — |
 | Tailscale | the macOS app, logged in, MagicDNS and HTTPS certificates on for the tailnet | tailscale.com |
 | `sandbox-exec` | built into macOS | — |

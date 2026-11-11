@@ -53,9 +53,28 @@
         {
           "k": "el",
           "tag": "div",
+          "id": "ma-esc",
           "style": {
+            "paddingLeft": 6,
+            "paddingRight": 6,
+            "paddingTop": 2,
+            "paddingBottom": 2,
+            "borderTopLeftRadius": 5,
+            "borderTopRightRadius": 5,
+            "borderBottomRightRadius": 5,
+            "borderBottomLeftRadius": 5,
             "fontSize": 11,
-            "color": "#5c6370"
+            "color": "#5c6370",
+            "cursor": "pointer"
+          },
+          "states": {
+            "hover": {
+              "backgroundColor": "#2f343e",
+              "color": "#abb2bf"
+            }
+          },
+          "on": {
+            "click": 2
           },
           "children": [
             {
@@ -172,7 +191,7 @@
             "borderStyle": "solid"
           },
           "on": {
-            "change": 2
+            "change": 3
           },
           "widget": {
             "type": "input",
@@ -205,7 +224,7 @@
             "cursor": "pointer"
           },
           "on": {
-            "click": 3
+            "click": 4
           },
           "children": [
             {

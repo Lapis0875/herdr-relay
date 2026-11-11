@@ -113,7 +113,7 @@ them there by hand). Symbolic links and special files are never copied; inside a
 under `skipped`.
 
 **Review by hand:** `themes/*.json` and `programs.json` that differ from the pinned shipped defaults
-(`fixtures/generic-home/MANIFEST.json`, Herdr v0.1.14), and every file under `my-icons/`, are listed as
+(`fixtures/generic-home/MANIFEST.json`, Herdr v0.1.15), and every file under `my-icons/`, are listed as
 `--include <path>` lines and copied only when that flag is given. Files identical to the shipped defaults are not
 mentioned.
 
@@ -139,7 +139,7 @@ Against `fixtures/private/herdr-home` (the author's app home), sync-config plans
 **Delta from the §2 table:** `mods/lstack-herdr/` is reached through its policy profile, not the layout;
 `themes/*.json`, `programs.json` and `my-icons/` are no longer copied wholesale (only themes a synced layout names;
 the rest is the review list); `mod:<M>` sections of synced mods are merged too; `settings.json` ("partial") is not
-synced; the PC needs the same Herdr version as the Mac (0.1.14 is the pinned one, not 0.1.13).
+synced; the PC needs the same Herdr version as the Mac (0.1.14 and 0.1.15 are the pinned ones, not 0.1.13).
 
 ### Remote targets
 

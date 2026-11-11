@@ -10,7 +10,8 @@
  *   {@link TEST_INTERVAL_MS} per device), and acks what each push service answered;
  * - each message is encrypted per subscription (RFC 8291) and signed (RFC 8292). A subscription the push service
  *   reports gone (404/410), of a device no longer paired, or outside the allowlist is dropped; any other answer keeps
- *   it. Every send is logged as `<service host> <status> [<apns-id or reason>]`, never with the endpoint's path.
+ *   it. Every send is logged as `<service host> <status> [<apns-id or reason>]`; what a push service answers (reason,
+ *   `apns-id`) and delivery errors are redacted first (`./redact.ts`: no endpoint, path, key, URL or token).
  */
 
 import type { PushSub, PushSubscription, PushTest, Visible } from "@herdr-relay/protocol";
@@ -18,6 +19,7 @@ import type { DeviceIdentity } from "../auth/mod.ts";
 import type { CoreClientListener, CoreTerminal } from "../core/mod.ts";
 import { json, type Route, type SessionConnection, text } from "../server/mod.ts";
 import { AlertTracker, type PushAlert } from "./alerts.ts";
+import { apnsIdOf, redactDiagnostic, type SubscriptionSecrets } from "./redact.ts";
 import { ensureVapidKeys, type StoredSubscription, subscriptionProblem, SubscriptionStore } from "./store.ts";
 import { PUSH_SUBJECT_ENV } from "./subject.ts";
 import { encryptPayload, isAllowedEndpoint, MAX_PAYLOAD_BYTES, vapidAuthorization, type VapidKeys } from "./webpush.ts";
@@ -34,8 +36,10 @@ export const TEST_INTERVAL_MS = 5_000;
 export const TEST_TITLE = "herdr-relay";
 /** Tag of the test notification: a newer test replaces it. */
 export const TEST_TAG = "herdr-relay:test";
-/** Longest push-service reason kept for the log and the `push.test` ack. */
+/** Longest push-service reason kept for the log and the `push.test` ack (after redaction). */
 export const REASON_MAX = 120;
+/** Longest delivery error kept for the log and the `push.test` ack (after redaction). */
+export const ERROR_MAX = 240;
 /** Most bytes of a refusal's body read for its reason. */
 const REASON_READ_BYTES = 2048;
 
@@ -61,9 +65,12 @@ export interface PushDelivery {
   endpoint: string;
   /** The push service's HTTP status; null when nothing was sent or no answer came. */
   status: number | null;
-  /** Apple's `apns-id` of a message it accepted. */
+  /** Apple's `apns-id` of the message, when it is a UUID. */
   apnsId?: string;
-  /** Why the push service refused: its JSON `reason`/`message`, else its body text; one line, ≤ {@link REASON_MAX}. */
+  /**
+   * Why the push service refused: its JSON `reason`/`message`, else its body text; redacted, one line,
+   * ≤ {@link REASON_MAX}.
+   */
   reason?: string;
   /** Why nothing was sent (`subscription dropped`) or no answer came (`push service unreachable: …`). */
   error?: string;
@@ -290,7 +297,7 @@ export class PushService {
       try {
         delivery = await this.#send(sub, payload, vapid, subject);
       } catch (e) {
-        const error = withoutPath(messageOf(e), sub.endpoint);
+        const error = oneLine(redactDiagnostic(messageOf(e), sub), ERROR_MAX);
         this.#log(`${host} failed: ${error}`);
         return { endpoint: sub.endpoint, status: null, error: `push service unreachable: ${error}` };
       }
@@ -320,12 +327,12 @@ export class PushService {
       },
     });
     const delivery: PushDelivery = { endpoint: sub.endpoint, status: res.status };
-    const apnsId = oneLine(res.headers.get("apns-id") ?? "", 64);
+    const apnsId = apnsIdOf(res.headers.get("apns-id"));
     if (apnsId) delivery.apnsId = apnsId;
     if (res.ok) {
       await res.body?.cancel();
     } else {
-      const reason = await reasonOf(res);
+      const reason = await reasonOf(res, sub);
       if (reason) delivery.reason = reason;
     }
     return delivery;
@@ -373,8 +380,11 @@ function testResult(deliveries: readonly PushDelivery[]): PushTestResult {
   return { ok: accepted.length > 0, message: parts.join("; ") };
 }
 
-/** A refusal's reason: Apple's `{"reason"}`, Mozilla's `{"message"}`, FCM's `{"error"}`, else the body text. */
-async function reasonOf(res: Response): Promise<string | undefined> {
+/**
+ * A refusal's reason: Apple's `{"reason"}`, Mozilla's `{"message"}`, FCM's `{"error"}`, else the body text; redacted
+ * for `sub` before it is cut to one line.
+ */
+async function reasonOf(res: Response, sub: SubscriptionSecrets): Promise<string | undefined> {
   if (!res.body) return undefined;
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
@@ -395,6 +405,8 @@ async function reasonOf(res: Response): Promise<string | undefined> {
   let reason = body;
   try {
     const data: unknown = JSON.parse(body);
+    // Re-serialised: no `\/` or `\u…` escapes left to hide what redaction looks for.
+    reason = typeof data === "string" ? data : JSON.stringify(data);
     if (isObject(data)) {
       const error = data.error;
       const named = [data.reason, data.message, isObject(error) ? error.message : error]
@@ -404,7 +416,7 @@ async function reasonOf(res: Response): Promise<string | undefined> {
   } catch {
     // Not JSON: the text itself, without markup.
   }
-  return oneLine(reason.replace(/<[^>]*>/g, " "), REASON_MAX) || undefined;
+  return oneLine(redactDiagnostic(reason.replace(/<[^>]*>/g, " "), sub), REASON_MAX) || undefined;
 }
 
 /** `text` as one line of at most `max` characters. */
@@ -412,11 +424,6 @@ function oneLine(text: string, max: number): string {
   // deno-lint-ignore no-control-regex
   const line = text.replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim();
   return line.length > max ? `${line.slice(0, max - 1)}…` : line;
-}
-
-/** `message` without URL paths: a fetch error quotes the endpoint, whose path identifies the subscription. */
-function withoutPath(message: string, endpoint: string): string {
-  return message.replaceAll(endpoint, hostOf(endpoint)).replace(/(https?:\/\/[^/\s)'"]+)\/[^\s)'"]*/g, "$1/…");
 }
 
 function isObject(value: unknown): value is Record<string, unknown> {

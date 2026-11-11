@@ -6,6 +6,12 @@
  *
  * A press on a row reports its key (`on_item_click`; a right press or a touch long press `on_item_secondary_click`).
  * Rows of a list with an item handler are focusable; Enter or Space presses them.
+ *
+ * `track_scroll(VirtualListScrollHandle)`: the handle's latest request (`node.scrollTo`) is carried out once per
+ * `seq` from the row offsets, so the item need not be mounted: `scroll_to_item(index)` brings row `index` in with the
+ * smallest scroll (`"top"`, the near edge) or centres it (`"center"`), `scroll_to_bottom()` scrolls to the end. A row
+ * the host did not record (`index` past them but within `count`) scrolls to the end, where the note says why it is
+ * not shown; an index past `count` does nothing.
  */
 
 import {
@@ -22,6 +28,7 @@ import {
 import type { JsonValue } from "@herdr-relay/protocol";
 import { RenderContext } from "../render/context.ts";
 import { claim, imeKey, modifiersOf, systemKey } from "../render/events.ts";
+import { alignDelta, useScrollRequest } from "../render/scroll.ts";
 import type { WidgetProps } from "../render/widgets.tsx";
 
 /** Rows mounted beyond each edge of the view. */
@@ -59,6 +66,13 @@ function rowAt(offsets: number[], pos: number): number {
   return lo;
 }
 
+/** The rows to mount for a view of `extent` px at scroll position `pos`. */
+function windowAt(offsets: number[], n: number, pos: number, extent: number): { start: number; end: number } {
+  const start = Math.max(0, rowAt(offsets, pos) - OVERSCAN);
+  const end = Math.min(n, rowAt(offsets, pos + extent) + 1 + OVERSCAN);
+  return { start, end };
+}
+
 const numberFormat = new Intl.NumberFormat();
 
 export function VirtualList({ node, dom, children }: WidgetProps): ReactElement {
@@ -78,6 +92,7 @@ export function VirtualList({ node, dom, children }: WidgetProps): ReactElement 
   const secondary = typeof node.on?.itemsecondary === "number" ? node.on.itemsecondary : undefined;
 
   const scroller = useRef<HTMLElement | null>(null);
+  const spacer = useRef<HTMLDivElement | null>(null);
   const ref = useCallback((el: HTMLElement | null) => {
     scroller.current = el;
     dom.ref(el);
@@ -92,9 +107,7 @@ export function VirtualList({ node, dom, children }: WidgetProps): ReactElement 
     const update = () => {
       frame = 0;
       const pos = horizontal ? el.scrollLeft : el.scrollTop;
-      const extent = horizontal ? el.clientWidth : el.clientHeight;
-      const start = Math.max(0, rowAt(offsets, pos) - OVERSCAN);
-      const end = Math.min(n, rowAt(offsets, pos + extent) + 1 + OVERSCAN);
+      const { start, end } = windowAt(offsets, n, pos, horizontal ? el.clientWidth : el.clientHeight);
       setRange((r) => (r.start === start && r.end === end ? r : { start, end }));
     };
     const schedule = () => {
@@ -110,6 +123,27 @@ export function VirtualList({ node, dom, children }: WidgetProps): ReactElement 
       ro.disconnect();
     };
   }, [offsets, n, horizontal]);
+
+  // A scroll handle's request, from the offsets: the rows it brings into view are mounted before the frame is drawn.
+  useScrollRequest(node, ({ item, center }) => {
+    const el = scroller.current;
+    if (!el || (item !== "end" && item >= count)) return;
+    const pos = horizontal ? el.scrollLeft : el.scrollTop;
+    const extent = horizontal ? el.clientWidth : el.clientHeight;
+    const max = (horizontal ? el.scrollWidth : el.scrollHeight) - extent;
+    let to = max;
+    if (item !== "end" && item < n) {
+      // Rows sit in the spacer, which starts after the list's own padding.
+      const base = (horizontal ? spacer.current?.offsetLeft : spacer.current?.offsetTop) ?? 0;
+      to = pos + alignDelta(base + offsets[item], base + offsets[item + 1], pos, pos + extent, center);
+    }
+    to = Math.min(Math.max(0, to), Math.max(0, max));
+    if (to === pos) return;
+    if (horizontal) el.scrollLeft = to;
+    else el.scrollTop = to;
+    const { start, end } = windowAt(offsets, n, horizontal ? el.scrollLeft : el.scrollTop, extent);
+    setRange((r) => (r.start === start && r.end === end ? r : { start, end }));
+  });
 
   /** The key of the row an event happened in (rows of nested lists belong to those lists). */
   const rowKey = (container: HTMLElement, target: EventTarget | null): string | null => {
@@ -214,6 +248,7 @@ export function VirtualList({ node, dom, children }: WidgetProps): ReactElement 
       }}
     >
       <div
+        ref={spacer}
         className="w-vlist__spacer"
         style={horizontal ? { width: offsets[n], height: "100%" } : { height: offsets[n] }}
       >

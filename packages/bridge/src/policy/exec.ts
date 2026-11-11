@@ -38,9 +38,11 @@ import {
   GIT_DIFF_SAFETY,
   GIT_DIFF_SAFETY_FLAGS,
   GIT_READ_SUBCOMMANDS,
+  GIT_REV_LIST_COUNTS,
   GIT_REV_LIST_UNPUSHED,
   GIT_REV_PARSE_QUERIES,
   GIT_SHOW_REF_FLAGS,
+  GIT_SYMBOLIC_REF_FLAGS,
   GIT_WORKTREE_CHANGES,
   GIT_WORKTREE_LIST_FLAGS,
   gitDeniedArg,
@@ -433,12 +435,24 @@ async function decideGitRead(
         refuse("E4", "only `git cat-file -e <object>` is allowed");
       }
       break;
+    case "symbolic-ref": {
+      const names = rest.filter((a) => !GIT_SYMBOLIC_REF_FLAGS.has(a));
+      if (names.length !== 1 || names[0].startsWith("-")) {
+        refuse("E4", "only `git symbolic-ref [-q] <name>` (reading one symbolic ref) is allowed");
+      }
+      break;
+    }
     case "rev-list": {
-      const extra = rest.slice(GIT_REV_LIST_UNPUSHED.length);
-      if (
-        GIT_REV_LIST_UNPUSHED.some((a, k) => rest[k] !== a) || extra.length > 1 || extra.some((a) => a.startsWith("-"))
-      ) {
-        refuse("E4", `only \`git rev-list ${GIT_REV_LIST_UNPUSHED.join(" ")} [<revision>]\` is allowed`);
+      // The unpushed check takes at most one more revision to exclude; the ahead/behind counts exactly one range.
+      const unpushed = GIT_REV_LIST_UNPUSHED.every((a, k) => rest[k] === a);
+      const counts = GIT_REV_LIST_COUNTS.every((a, k) => rest[k] === a);
+      const extra = rest.slice(unpushed ? GIT_REV_LIST_UNPUSHED.length : GIT_REV_LIST_COUNTS.length);
+      if (!(unpushed ? extra.length <= 1 : counts && extra.length === 1) || extra.some((a) => a.startsWith("-"))) {
+        refuse(
+          "E4",
+          `only \`git rev-list ${GIT_REV_LIST_UNPUSHED.join(" ")} [<revision>]\` or ` +
+            `\`git rev-list ${GIT_REV_LIST_COUNTS.join(" ")} <range>\` is allowed`,
+        );
       }
       break;
     }

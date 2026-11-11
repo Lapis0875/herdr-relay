@@ -271,6 +271,11 @@ export class ViewManager implements SessionHandler {
   readonly #overlays = new Map<string, OverlayState>();
   /** The running host generation per folder (0 while none runs). */
   readonly #generations = new Map<string, number>();
+  /**
+   * This bridge run in `scrollTo.gen` (`<run>.<generation>`): host generations count from 1 again after a bridge
+   * restart, and a device may keep a view mounted across one, so the generation alone would not name a host process.
+   */
+  readonly #run = crypto.randomUUID().slice(0, 8);
   /** Folders whose `focus` emits were logged as dropped. */
   readonly #focusNoted = new Set<string>();
   /** `<copy>\0<name>` of origin-less `run`s already logged as ignored. */
@@ -1033,7 +1038,7 @@ export class ViewManager implements SessionHandler {
   #tree(h: HostRef, m: Tree): void {
     const v = this.#views.get(m.copy);
     if (!v || this.#generations.get(h.folder) !== h.generation) return;
-    const { tree, diagnostics } = toElementTree(m.tree);
+    const { tree, diagnostics } = toElementTree(m.tree, { scrollGen: `${this.#run}.${h.generation}` });
     if (diagnostics.length !== v.diagnostics) {
       v.diagnostics = diagnostics.length;
       const first = diagnostics[0];

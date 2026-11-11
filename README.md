@@ -23,7 +23,7 @@ herdr-relay is at **0.1.0**, the first public version.
   ([docs/PLATFORMS.md](docs/PLATFORMS.md)).
 - **Tailscale only.** Devices reach the Mac through `tailscale serve` on your tailnet. Funnel (public internet) is
   refused, and there is no reverse-proxy mode yet.
-- **Tested with Herdr 0.1.14.** Other versions run with a warning banner ([Compatibility](#compatibility)).
+- **Tested with Herdr 0.1.14 and 0.1.15.** Other versions run with a warning banner ([Compatibility](#compatibility)).
 - Devices see the Mac's terminals at the Mac's size. Viewing a terminal never resizes it on the Mac; typing into it
   may briefly resize it, because of a herdr-core attach limitation
   ([docs/AMENDMENTS-c1-wave3.md](docs/AMENDMENTS-c1-wave3.md)).
@@ -35,7 +35,7 @@ herdr-relay is at **0.1.0**, the first public version.
 |---|---|
 | macOS | the sandbox profile was derived on macOS 27; on another version, run its check ([docs/INSTALL.md](docs/INSTALL.md) §8) |
 | [Deno](https://deno.com) | 2.9 or newer |
-| [Herdr](https://herdr.dev) app | 0.1.13 or 0.1.14, with `herdr-app` and `hc` on `PATH` |
+| [Herdr](https://herdr.dev) app | 0.1.13 to 0.1.15, with `herdr-app` and `hc` on `PATH` |
 | [Tailscale](https://tailscale.com) | the macOS app, logged in, with MagicDNS and HTTPS certificates on |
 | Devices | iPhone or iPad with Safari, or Android with Chrome, on the same tailnet |
 
@@ -88,10 +88,11 @@ The threat model and how to report a vulnerability: [SECURITY.md](SECURITY.md). 
 
 | Herdr app | Status |
 |---|---|
+| 0.1.15 | tested |
 | 0.1.14 | tested |
 | 0.1.13 | supported, not tested; devices show a banner |
 | older than 0.1.13 | unsupported; the bridge still runs and shows a banner |
-| newer than 0.1.14 | not tested yet; runs with a banner |
+| newer than 0.1.15 | not tested yet; runs with a banner |
 
 When Herdr changes, the bridge compares the running version with its pinned contract and reports drift to devices and
 `herdr-relay doctor`; it never widens what mods may do. Details: [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md).

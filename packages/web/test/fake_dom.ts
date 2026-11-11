@@ -3,7 +3,7 @@
  * components (`*_test.tsx`). Nodes are `EventTarget`s with a `parentNode`, so Deno's own dispatch runs an event's
  * capture and bubble phases along the tree as a browser does (it ends at the document: listeners on `window` hear
  * only what is dispatched there). Moving the focus fires `blur`, `focusout`, `focus` and `focusin`. There is no
- * layout: every size is 0.
+ * layout: every size is 0 until a test sets an element's `client*`/`scroll*` sizes itself.
  */
 
 import { assertEquals } from "@std/assert";
@@ -119,8 +119,11 @@ export class FakeElement extends FakeNode {
   scrollLeft = 0;
   readonly offsetWidth = 0;
   readonly offsetHeight = 0;
-  readonly clientWidth = 0;
-  readonly clientHeight = 0;
+  /** The scrollport and the scrolled content, as a test lays them out (nothing else moves). */
+  clientWidth = 0;
+  clientHeight = 0;
+  scrollWidth = 0;
+  scrollHeight = 0;
   constructor(readonly tagName: string, doc: FakeDocument, readonly namespaceURI = "http://www.w3.org/1999/xhtml") {
     super(1, tagName, doc);
   }
@@ -219,8 +222,8 @@ export class MemoryStorage {
 
 /**
  * Installs the document and the browser globals a mounted component reads: `window`, `localStorage`, act's flag, and
- * `matchMedia` (a query matches when `media` says), `getComputedStyle` (no custom properties) and `ResizeObserver`
- * (never calls back).
+ * `matchMedia` (a query matches when `media` says), `getComputedStyle` (no custom properties), `ResizeObserver` and
+ * `requestAnimationFrame` (neither calls back).
  */
 export function installDom(media: (query: string) => boolean = () => false): {
   doc: FakeDocument;
@@ -246,6 +249,8 @@ export function installDom(media: (query: string) => boolean = () => false): {
       unobserve() {}
       disconnect() {}
     },
+    requestAnimationFrame: () => 0,
+    cancelAnimationFrame: () => {},
   });
   return { doc, storage };
 }

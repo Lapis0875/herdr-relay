@@ -96,6 +96,27 @@
       "children": [],
       "props": { "format": "markdown", "source": "See [the queue](https://github.com/example/example)" }
     },
+    {
+      "tag": "h_flex",
+      "id": "tab-scroll",
+      "style": [
+        ["overflow_x_scrollbar"],
+        ["track_scroll", { "handle": "ScrollHandle:6", "scroll_to": { "seq": 3, "index": 1 } }]
+      ],
+      "handlers": [],
+      "children": [{ "text": "one" }, { "text": "two" }]
+    },
+    {
+      "tag": "v_virtual_list",
+      "id": "rows",
+      "style": [
+        ["size_full"],
+        ["track_scroll", { "handle": "VirtualListScrollHandle:7", "scroll_to": { "seq": 4, "bottom": true } }]
+      ],
+      "handlers": [],
+      "children": [{ "text": "a" }, { "text": "b" }],
+      "props": { "count": 2, "keys": ["a", "b"], "sizes": 20 }
+    },
     { "entity": "lstack-herdr-cockpit:queue#2" }
   ]
 }

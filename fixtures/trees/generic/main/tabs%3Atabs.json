@@ -41,8 +41,16 @@
         "columnGap": 3,
         "overflowX": "auto"
       },
+      "on": {
+        "size": 3
+      },
       "attrs": {
-        "scrollbar": "x"
+        "scrollbar": "x",
+        "track_scroll": "ScrollHandle:1"
+      },
+      "scrollTo": {
+        "seq": 1,
+        "index": 0
       },
       "children": [
         {
@@ -81,12 +89,13 @@
             }
           },
           "on": {
+            "size": 4,
             "mousedown": {
-              "left": 3,
-              "right": 5
+              "left": 5,
+              "right": 7
             },
             "mouseup": {
-              "left": 4
+              "left": 6
             }
           },
           "children": [
@@ -117,9 +126,9 @@
               },
               "on": {
                 "mousedown": {
-                  "left": 6
+                  "left": 8
                 },
-                "click": 7
+                "click": 9
               },
               "children": [
                 {
@@ -163,9 +172,9 @@
       },
       "on": {
         "mousedown": {
-          "left": 8
+          "left": 10
         },
-        "click": 9
+        "click": 11
       },
       "children": [
         {
@@ -206,9 +215,9 @@
       },
       "on": {
         "mousedown": {
-          "left": 10
+          "left": 12
         },
-        "click": 11
+        "click": 13
       },
       "children": [
         {
@@ -257,9 +266,9 @@
       },
       "on": {
         "mousedown": {
-          "left": 12
+          "left": 14
         },
-        "click": 13
+        "click": 15
       },
       "children": [
         {
