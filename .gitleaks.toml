@@ -4,12 +4,12 @@
 # - packages/protocol/samples/**: made-up loopback tokens and Web Push keys in protocol samples.
 # - push_test.ts: the RFC 8291 Appendix A test vectors.
 # - the other tests: made-up WebSocket keys, tokens and the scrub tool's planted fake secret.
-# A new finding anywhere else fails the job.
+# A new finding anywhere else fails the job. gitleaks 8.24 (the CI action) reads only the singular `[allowlist]` table.
 
 [extend]
 useDefault = true
 
-[[allowlists]]
+[allowlist]
 description = "Test vectors, synthetic samples and file hashes"
 paths = [
   '''^fixtures/generic-home/MANIFEST\.json$''',
